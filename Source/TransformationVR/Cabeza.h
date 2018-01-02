@@ -13,8 +13,19 @@ UCLASS()
 class TRANSFORMATIONVR_API ACabeza : public AParte
 {
 	GENERATED_BODY()
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	ACabeza();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * Cabeza;
 	
-	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * ArticulacionCuello;
 	
 	
 };
