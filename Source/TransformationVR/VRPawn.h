@@ -85,10 +85,19 @@ public:
     float LaserIndice;
 	
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
-    float bGrabParte;
+    bool bGrabRightParte;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    bool bGrabLeftParte;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    bool bRootEstablecida;//si ya existe alguna raiz o no, esta se puede definir automaticamente, o por medio de una jerarquieda definida por el usuario por otra interaccion
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
-	FVector OffsetParte;
+	FVector OffsetLeftParte;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	FVector OffsetRightParte;
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void CambiarLaser(int Indice);
@@ -111,9 +120,33 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void SelectReleased();
 
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabRightPressed();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabRightReleased();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabLeftPressed();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabLeftReleased();
+
     UFUNCTION()
     void OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+    UFUNCTION()
+    void OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	//parte sobrepuesta mas cercana al centro del control derecho
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
-	AParte * OverlapedParte;
+	AParte * OverlapedRightParte;
+
+	//parte sobrepuesta mas cercana al centro del control derecho
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	AParte * OverlapedLeftParte;
+
+	//parte sujetada por el control izquierdo, igual la mas cercana
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	AParte * RootParte;
 };

@@ -24,8 +24,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//colision que envuelve la parte, esta deberia ser la raíz por ahora no lo es
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UCapsuleComponent * Colision;
 
+	//Puntero al padre en una jerarquía generada expresamente para el objeto
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	AParte * Padre;
+
+	//Puntero al padre en una jerarquía generada expresamente para el objeto
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<AParte *> Hijos;
 	
 	
 };

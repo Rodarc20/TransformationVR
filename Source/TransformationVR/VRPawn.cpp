@@ -56,6 +56,7 @@ AVRPawn::AVRPawn()
 	ColisionControllerLeft->InitCapsuleSize(5.0f, 5.0f);
 	ColisionControllerLeft->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
 	ColisionControllerLeft->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+    ColisionControllerLeft->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerLeft);
 
 	ColisionControllerRight = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerRightt"));
 	ColisionControllerRight->SetupAttachment(MotionControllerRight);
@@ -117,7 +118,8 @@ AVRPawn::AVRPawn()
     bPadDerecho = false;
     LaserIndice = 0;
 
-	bGrabParte = false;
+	bGrabRightParte = false;
+	bGrabLeftParte = false;
 }
 
 // Called when the game starts or when spawned
@@ -167,8 +169,20 @@ void AVRPawn::Tick(float DeltaTime)
         MotionControllerRight->AddRelativeRotation(Rotacion);
     }
 
-	if (bGrabParte) {
-		OverlapedParte->SetActorLocation(MotionControllerRight->GetComponentLocation()+ OffsetParte);
+	if (bGrabRightParte) {
+		OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
+	}
+
+	if (bGrabLeftParte) {
+		FVector OffsetEliminar;
+		if (RootParte->Hijos.Num()) {
+			OffsetEliminar = RootParte->Hijos[0]->GetActorLocation() - RootParte->GetActorLocation();
+		}
+		RootParte->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte);
+		//esta traslacion se deberia aplicar a los hijos, por las trasnfomarciones y la jerarquia, por ahora hare una funcion sencilla para lo del hijo asumiendo que una dos cabezas
+		if (RootParte->Hijos.Num()) {
+			RootParte->Hijos[0]->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte + OffsetEliminar);
+		}
 	}
 }
 
@@ -181,6 +195,10 @@ void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     InputComponent->BindAction("Moverse", IE_Released, this, &AVRPawn::PadDerechoReleased);
     InputComponent->BindAction("Select", IE_Pressed, this, &AVRPawn::SelectPressed);
     InputComponent->BindAction("Select", IE_Released, this, &AVRPawn::SelectReleased);
+    InputComponent->BindAction("GrabRight", IE_Pressed, this, &AVRPawn::GrabRightPressed);
+    InputComponent->BindAction("GrabRight", IE_Released, this, &AVRPawn::GrabRightReleased);
+    InputComponent->BindAction("GrabLeft", IE_Pressed, this, &AVRPawn::GrabLeftPressed);
+    InputComponent->BindAction("GrabLeft", IE_Released, this, &AVRPawn::GrabLeftReleased);
 
     InputComponent->BindAxis("MoveForward");
     InputComponent->BindAxis("MoveRight");
@@ -235,23 +253,49 @@ void AVRPawn::PadDerechoReleased() {
 }
 
 void AVRPawn::SelectPressed() {
-	if (OverlapedParte) {
-		bGrabParte = true;
-		//guardar offset de la parte
-		OffsetParte = OverlapedParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
-	}
-	else {
-		Interaction->PressPointerKey(EKeys::LeftMouseButton);
-	}
+	//tomar como referencia el selecte del arbolito
 }
 
 void AVRPawn::SelectReleased() {
-	if (OverlapedParte) {
-		bGrabParte = false;
+}
+
+void AVRPawn::GrabRightPressed() {
+	if (OverlapedRightParte) {
+		bGrabRightParte = true;
+		//guardar offset de la parte
+		OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
 	}
-	else {
-		Interaction->ReleasePointerKey(EKeys::LeftMouseButton);
+}
+
+void AVRPawn::GrabRightReleased() {
+	if (OverlapedRightParte) {
+		bGrabRightParte = false;
+	}
+}
+
+void AVRPawn::GrabLeftPressed() {
+	if (OverlapedLeftParte) {
+		bGrabLeftParte = true;
+		if (bRootEstablecida) {
+			//solo calcular el ofset de la raiz al control
+			//estas traslaciones naturlamente aplican con las tranformaciones
+		}
+		else {
+			RootParte = OverlapedLeftParte;
+			bRootEstablecida = true;
+			//como no hay raiz, establecer una automaticamente a partir de la parte que ha sido sostenida
+			//esto afectara las transformaciones en generale, recalculando los valores usando la posicion global
+		}
+		//guardar offset de la parte
+		OffsetLeftParte = RootParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
+		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
+	}
+}
+
+void AVRPawn::GrabLeftReleased() {
+	if (OverlapedLeftParte) {
+		bGrabLeftParte = false;
 	}
 }
 
@@ -265,7 +309,24 @@ void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComp
             if(MeshParte){
 				if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
-				OverlapedParte = Parte;
+				OverlapedRightParte = Parte;
+                //Animal->RecibirAtaque(Poder, GetActorLocation());
+            }
+        }
+    }
+}
+
+void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+    if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
+        AParte * const Parte = Cast<AParte>(OtherActor);
+        if (Parte && !Parte->IsPendingKill()) {
+            UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+            if(MeshParte){
+				if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+				OverlapedLeftParte = Parte;
                 //Animal->RecibirAtaque(Poder, GetActorLocation());
             }
         }
