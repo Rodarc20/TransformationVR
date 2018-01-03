@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Parte.h"
+#include "Components/SphereComponent.h"
 #include "Cabeza.generated.h"
 
 /**
@@ -27,5 +28,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * ArticulacionCuello;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	USphereComponent * ColisionCuello;
 	
 };
