@@ -35,6 +35,10 @@ public:
 	//Puntero al padre en una jerarquía generada expresamente para el objeto
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	TArray<AParte *> Hijos;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	bool bArticulacionSobrepuesta;//este se vuelve verdadero si cualquiera de las articulaciones se sobrepone, tener cuidado si se sobreponen varias por casualidad
+	//este booleano se usa cuando la parte esta sujetada por el control derecho, la cua busca una articulacion apra unir en el muñeco
 	
 	
 };
