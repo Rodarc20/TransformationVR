@@ -3,7 +3,10 @@
 #include "VRPawn.h"
 #include "MotionControllerComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
+#include "Engine/Engine.h"
+#include "Parte.h"
 #include "Materials/Material.h"
 
 
@@ -47,6 +50,20 @@ AVRPawn::AVRPawn()
             ViveControllerRight->SetMaterial(0, ViveControllerMaterialAsset.Object);
         }
     }
+
+	ColisionControllerLeft = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerLeft"));
+	ColisionControllerLeft->SetupAttachment(MotionControllerLeft);
+	ColisionControllerLeft->InitCapsuleSize(5.0f, 5.0f);
+	ColisionControllerLeft->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
+	ColisionControllerLeft->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+
+	ColisionControllerRight = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerRightt"));
+	ColisionControllerRight->SetupAttachment(MotionControllerRight);
+	ColisionControllerRight->InitCapsuleSize(5.0f, 5.0f);
+	ColisionControllerRight->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
+	ColisionControllerRight->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+    ColisionControllerRight->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerRight);
+
 
     Interaction = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Interaction"));
     Interaction->SetupAttachment(MotionControllerRight);
@@ -99,6 +116,8 @@ AVRPawn::AVRPawn()
     Velocidad = 200.0f;
     bPadDerecho = false;
     LaserIndice = 0;
+
+	bGrabParte = false;
 }
 
 // Called when the game starts or when spawned
@@ -147,6 +166,10 @@ void AVRPawn::Tick(float DeltaTime)
         FRotator Rotacion(CPitch, CYaw, CRoll);
         MotionControllerRight->AddRelativeRotation(Rotacion);
     }
+
+	if (bGrabParte) {
+		OverlapedParte->SetActorLocation(MotionControllerRight->GetComponentLocation()+ OffsetParte);
+	}
 }
 
 // Called to bind functionality to input
@@ -212,9 +235,39 @@ void AVRPawn::PadDerechoReleased() {
 }
 
 void AVRPawn::SelectPressed() {
-    Interaction->PressPointerKey(EKeys::LeftMouseButton);
+	if (OverlapedParte) {
+		bGrabParte = true;
+		//guardar offset de la parte
+		OffsetParte = OverlapedParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
+	}
+	else {
+		Interaction->PressPointerKey(EKeys::LeftMouseButton);
+	}
 }
 
 void AVRPawn::SelectReleased() {
-    Interaction->ReleasePointerKey(EKeys::LeftMouseButton);
+	if (OverlapedParte) {
+		bGrabParte = false;
+	}
+	else {
+		Interaction->ReleasePointerKey(EKeys::LeftMouseButton);
+	}
+}
+
+void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+    if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
+        AParte * const Parte = Cast<AParte>(OtherActor);
+        if (Parte && !Parte->IsPendingKill()) {
+            UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+            if(MeshParte){
+				if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+				OverlapedParte = Parte;
+                //Animal->RecibirAtaque(Poder, GetActorLocation());
+            }
+        }
+    }
 }
