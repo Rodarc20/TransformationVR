@@ -120,6 +120,10 @@ AVRPawn::AVRPawn()
 
 	bGrabRightParte = false;
 	bGrabLeftParte = false;
+	bRootEstablecida = false;
+
+	bBuscarParteLeft = true;
+	bBuscarParteRight = true;
 }
 
 // Called when the game starts or when spawned
@@ -173,7 +177,7 @@ void AVRPawn::Tick(float DeltaTime)
 		OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
 	}
 
-	if (bGrabLeftParte) {
+	if (bGrabLeftParte && RootParte) {
 		FVector OffsetEliminar;
 		if (RootParte->Hijos.Num()) {
 			OffsetEliminar = RootParte->Hijos[0]->GetActorLocation() - RootParte->GetActorLocation();
@@ -261,21 +265,34 @@ void AVRPawn::SelectReleased() {
 
 void AVRPawn::GrabRightPressed() {
 	if (OverlapedRightParte) {
+		bBuscarParteRight = false;
 		bGrabRightParte = true;
 		//guardar offset de la parte
 		OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
 		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
+		OverlapedRightParte->BuscarArticulacion();
 	}
 }
 
 void AVRPawn::GrabRightReleased() {
 	if (OverlapedRightParte) {
+		bBuscarParteRight = true;
+		if (OverlapedRightParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
+			//en teroai se supone que tengo un robot en mi mano izquierda por lo tanto deberia unirlo de frente sin embargo verifico
+			if (RootParte) {
+				//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
+				OverlapedRightParte->UnirConParteSobrepuesta();
+				
+			}
+		}
 		bGrabRightParte = false;
+		OverlapedRightParte->NoBuscarArticulacion();
 	}
 }
 
 void AVRPawn::GrabLeftPressed() {
 	if (OverlapedLeftParte) {
+		bBuscarParteLeft = false;
 		bGrabLeftParte = true;
 		if (bRootEstablecida) {
 			//solo calcular el ofset de la raiz al control
@@ -295,40 +312,46 @@ void AVRPawn::GrabLeftPressed() {
 
 void AVRPawn::GrabLeftReleased() {
 	if (OverlapedLeftParte) {
+		bBuscarParteLeft = true;
 		bGrabLeftParte = false;
+		//RootParte = nullptr;// aun que enteroia la raiz no deberia cambiarse, siempre se mantiene, a pesar de agarrar otra parte del muñeco, pero bueno, luego lo arreglo
 	}
 }
 
 void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-    if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
-        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
-        AParte * const Parte = Cast<AParte>(OtherActor);
-        if (Parte && !Parte->IsPendingKill()) {
-            UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
-            if(MeshParte){
-				if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
-				OverlapedRightParte = Parte;
-                //Animal->RecibirAtaque(Poder, GetActorLocation());
-            }
-        }
-    }
+	if(bBuscarParteRight){//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
+		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
+			AParte * const Parte = Cast<AParte>(OtherActor);
+			if (Parte && !Parte->IsPendingKill()) {
+				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+				if(MeshParte){
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+					OverlapedRightParte = Parte;
+					//Animal->RecibirAtaque(Poder, GetActorLocation());
+				}
+			}
+		}
+	}
 }
 
 void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-    if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
-        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
-        AParte * const Parte = Cast<AParte>(OtherActor);
-        if (Parte && !Parte->IsPendingKill()) {
-            UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
-            if(MeshParte){
-				if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
-				OverlapedLeftParte = Parte;
-                //Animal->RecibirAtaque(Poder, GetActorLocation());
-            }
-        }
-    }
+	if (bBuscarParteLeft) {
+		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
+			AParte * const Parte = Cast<AParte>(OtherActor);
+			if (Parte && !Parte->IsPendingKill()) {
+				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+				if(MeshParte){
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+					OverlapedLeftParte = Parte;
+					//Animal->RecibirAtaque(Poder, GetActorLocation());
+				}
+			}
+		}
+	}
 }

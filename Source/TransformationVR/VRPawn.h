@@ -132,6 +132,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void GrabLeftReleased();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	bool bBuscarParteLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	bool bBuscarParteRight;
+
     UFUNCTION()
     void OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 

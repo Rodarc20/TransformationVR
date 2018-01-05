@@ -46,6 +46,8 @@ ACabeza::ACabeza() {
 	ColisionCuello->SetupAttachment(RootComponent);
 	ColisionCuello->SetRelativeLocation(FVector(0.0f, 0.0f, -8.0f));
     ColisionCuello->InitSphereRadius(2.5f);
+	ColisionCuello->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
+	ColisionCuello->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
 }
 
 

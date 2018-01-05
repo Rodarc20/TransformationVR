@@ -37,10 +37,36 @@ public:
 	TArray<AParte *> Hijos;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	AParte * OverlapedParte;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	bool bConectado;//verdadeor si la parte esta conectada al muñeco, se usa para saber si se esta sujetando una parte o al muñeco.
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	bool bBuscarArticulacion;//verdadeor si la parte esta conectada al muñeco, se usa para saber si se esta sujetando una parte o al muñeco.
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bArticulacionSobrepuesta;//este se vuelve verdadero si cualquiera de las articulaciones se sobrepone, tener cuidado si se sobreponen varias por casualidad
 	//este booleano se usa cuando la parte esta sujetada por el control derecho, la cua busca una articulacion apra unir en el muñeco
 	
-	
+	UFUNCTION()
+	void BuscarArticulacion();
+
+	UFUNCTION()
+	void NoBuscarArticulacion();
+
+	UFUNCTION()
+	virtual void BuscandoArticulacion();
+
+	UFUNCTION()
+	virtual void UnirConParteSobrepuesta();
+
+    UFUNCTION()
+    virtual void OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+    UFUNCTION()
+    virtual void OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
+
 };
 
 
