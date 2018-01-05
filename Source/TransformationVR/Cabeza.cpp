@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 ACabeza::ACabeza() {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Origen"));
@@ -39,6 +40,7 @@ ACabeza::ACabeza() {
         static ConstructorHelpers::FObjectFinder<UMaterial> CuelloMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (CuelloMaterialAsset.Succeeded()) {
             ArticulacionCuello->SetMaterial(0, CuelloMaterialAsset.Object);
+			//ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(CuelloMaterialAsset.Object, this);
         }
     }
 
@@ -48,11 +50,21 @@ ACabeza::ACabeza() {
     ColisionCuello->InitSphereRadius(2.5f);
 	ColisionCuello->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionCuello->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
+
+	ColisionesArticualciones.Add(ColisionCuello);
+}
+
+void ACabeza::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor) {
+	//en el caso de la cabeza solo hay una articualcion, pero deberia o bien buscar el estatic mesh en el arreglo y recibir el indice del arreglo, o recibir directamente el puntero al mesh
+	//por ahor lo hare direco,
+	ArticulacionMaterialDynamic->SetVectorParameterValue(TEXT("Color"), NuevoColor);
+	//usar 3 colores, azul para las articulaciones no unidas, turquesa para cuando se este buscando y haya sobreposicion, y verde para cuando la articulacion este unida
 }
 
 
 void ACabeza::BeginPlay() {
-
+	ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this);
+	ArticulacionCuello->SetMaterial(0, ArticulacionMaterialDynamic);
 }
 
 

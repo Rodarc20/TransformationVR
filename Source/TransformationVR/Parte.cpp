@@ -3,6 +3,7 @@
 #include "Parte.h"
 #include "Components/SphereComponent.h"
 #include "Engine/Engine.h"
+#include "Public/Math/Color.h"
 
 
 
@@ -11,6 +12,11 @@ AParte::AParte()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	ColorArticulacionNoConectada = FLinearColor(0.0f, 0.08336f, 0.234375f, 0.0f);
+	ColorArticulacionSobrepuesta = FLinearColor(0.0f, 0.234375f, 0.097833f, 0.0f);
+	//ColorArticulacionConectada = FLinearColor(0.0f, 0.234375, 0.212609f, 0.0f);
+	ColorArticulacionConectada = FLinearColor(0.234375f, 0.0f, 0.002142f, 0.0f);
 
 }
 
@@ -26,6 +32,14 @@ void AParte::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+int AParte::IndiceColisionArticulacion(USphereComponent * ArticulacionSphere) {
+	int Index;
+	if (ColisionesArticualciones.Find(ArticulacionSphere, Index)) {
+		return Index;
+	}
+	return -1;
 }
 
 void AParte::BuscarArticulacion() {
@@ -47,8 +61,13 @@ void AParte::UnirConParteSobrepuesta() {
 		OverlapedParte->Hijos.Add(this);
 		//aqui deberia haber mas partes de color
 		bConectado = true;
+		if(IndiceArticulacionSobrepuesta != -1)
+			CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionConectada);
 		//tambien se deben inhabilitar los de alguna forma estas articulaciones, dejarlo asi por ahora
 	}
+}
+
+void AParte::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor) {
 }
 
 void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
@@ -65,6 +84,12 @@ void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponen
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Articulacion Sobrepuesta"));
 				//asi mismo debo saber cual de todas mis articulaciones es la que esta en contacto, para ello esta overlappedcomponent, que debo guardarlo despues de castear para luego buscar y saber su inidice para guardar el puntero de la parte padre, e inhabilitar en ese componente el contacto
 				//debo deshabilitar para que en una nueva busqueda de alguna otra parte, no tome en cuenta las rticualciones unidas
+				int IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
+				if(IndiceArticulacionSobrepuesta != -1)
+					CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionSobrepuesta);
+				int IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
+				if(IndiceArticulacionSobrepuestaOtro != -1)
+					ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
 			}
 		}
 	}
@@ -80,6 +105,12 @@ void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent,
 				OverlapedParte = nullptr;
 				if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Saliendo Articulacion Sobrepuesta"));
+				IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
+				if(IndiceArticulacionSobrepuesta != -1)
+					CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionNoConectada);
+				int IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
+				if(IndiceArticulacionSobrepuestaOtro != -1)
+					ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionNoConectada);
 			}
 		}
 		//tambien aplicar los cambios de color adecuados, por ahora solo dejare mensajes en consola

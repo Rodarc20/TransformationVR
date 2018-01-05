@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Public/Math/Color.h"
 #include "Parte.generated.h"
 
 UCLASS()
@@ -36,6 +39,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	TArray<AParte *> Hijos;
 
+	//Puntero al padre en una jerarquía generada expresamente para el objeto
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<USphereComponent *> ColisionesArticualciones;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	AParte * OverlapedParte;
 
@@ -48,7 +55,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bArticulacionSobrepuesta;//este se vuelve verdadero si cualquiera de las articulaciones se sobrepone, tener cuidado si se sobreponen varias por casualidad
 	//este booleano se usa cuando la parte esta sujetada por el control derecho, la cua busca una articulacion apra unir en el muñeco
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	FLinearColor ColorArticulacionNoConectada;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	FLinearColor ColorArticulacionSobrepuesta;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	FLinearColor ColorArticulacionConectada;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	int IndiceArticulacionSobrepuesta;
 	
+	UFUNCTION()
+	int IndiceColisionArticulacion(USphereComponent * ArticulacionSphere);
+
 	UFUNCTION()
 	void BuscarArticulacion();
 
@@ -61,12 +83,21 @@ public:
 	UFUNCTION()
 	virtual void UnirConParteSobrepuesta();
 
+	UFUNCTION(Category = "Transformation")
+	virtual void CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor);
+
     UFUNCTION()
     virtual void OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
     UFUNCTION()
     virtual void OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation", Meta = (BlueprintPublic = "true"))
+    UMaterialInstanceDynamic * ArticulacionMaterialDynamic;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation", Meta = (BlueprintPublic = "true"))
+    UMaterialInstanceDynamic * ArticulacionUnidaMaterialDynamic;
+	//cada iarticulacion deberia tener su porpia isntancia dinamica, o deberia usar dos materiales y cambiar entre ellos cuando lo necesite?
 };
 
 
