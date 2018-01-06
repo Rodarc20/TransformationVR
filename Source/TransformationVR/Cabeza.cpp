@@ -51,7 +51,13 @@ ACabeza::ACabeza() {
 	ColisionCuello->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionCuello->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
 
+	MeshesArticulaciones.Add(ArticulacionCuello);
 	ColisionesArticualciones.Add(ColisionCuello);
+}
+
+void ACabeza::BeginPlay() {
+	ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this);
+	ArticulacionCuello->SetMaterial(0, ArticulacionMaterialDynamic);
 }
 
 void ACabeza::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor) {
@@ -62,10 +68,6 @@ void ACabeza::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor Nuev
 }
 
 
-void ACabeza::BeginPlay() {
-	ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this);
-	ArticulacionCuello->SetMaterial(0, ArticulacionMaterialDynamic);
-}
 
 
 

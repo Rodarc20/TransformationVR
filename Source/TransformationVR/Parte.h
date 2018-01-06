@@ -35,13 +35,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	AParte * Padre;
 
-	//Puntero al padre en una jerarquía generada expresamente para el objeto
+	//Puntero a los hijos en una jerarquía generada expresamente para el objeto
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	TArray<AParte *> Hijos;
 
-	//Puntero al padre en una jerarquía generada expresamente para el objeto
+	//Array de los spherecomponentes de las articulaciones
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	TArray<USphereComponent *> ColisionesArticualciones;
+
+	//Array de los spherecomponentes de las articulaciones
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<UStaticMeshComponent *> MeshesArticulaciones;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	AParte * OverlapedParte;
