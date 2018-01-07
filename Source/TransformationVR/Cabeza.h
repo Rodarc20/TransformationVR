@@ -31,7 +31,5 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	USphereComponent * ColisionCuello;
 	
-	UFUNCTION()
-	virtual void CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor) override;
 
 };

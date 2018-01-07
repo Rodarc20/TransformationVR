@@ -68,6 +68,10 @@ void AParte::UnirConParteSobrepuesta() {
 }
 
 void AParte::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor) {
+	if (IndiceArticulacion >= 0 && IndiceArticulacion < ArticulacionesMaterialDynamic.Num()) {
+		ArticulacionesMaterialDynamic[IndiceArticulacion]->SetVectorParameterValue(TEXT("Color"), NuevoColor);
+	}
+	//usar 3 colores, azul para las articulaciones no unidas, turquesa para cuando se este buscando y haya sobreposicion, y verde para cuando la articulacion este unida
 }
 
 void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {

@@ -99,6 +99,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation", Meta = (BlueprintPublic = "true"))
     UMaterialInstanceDynamic * ArticulacionMaterialDynamic;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation", Meta = (BlueprintPublic = "true"))
+	TArray<UMaterialInstanceDynamic *> ArticulacionesMaterialDynamic;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation", Meta = (BlueprintPublic = "true"))
     UMaterialInstanceDynamic * ArticulacionUnidaMaterialDynamic;
 	//cada iarticulacion deberia tener su porpia isntancia dinamica, o deberia usar dos materiales y cambiar entre ellos cuando lo necesite?

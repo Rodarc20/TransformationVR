@@ -56,16 +56,12 @@ ACabeza::ACabeza() {
 }
 
 void ACabeza::BeginPlay() {
-	ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this);
-	ArticulacionCuello->SetMaterial(0, ArticulacionMaterialDynamic);
+	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this));
+	ArticulacionCuello->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	//ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this);
+	//ArticulacionCuello->SetMaterial(0, ArticulacionMaterialDynamic);
 }
 
-void ACabeza::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor NuevoColor) {
-	//en el caso de la cabeza solo hay una articualcion, pero deberia o bien buscar el estatic mesh en el arreglo y recibir el indice del arreglo, o recibir directamente el puntero al mesh
-	//por ahor lo hare direco,
-	ArticulacionMaterialDynamic->SetVectorParameterValue(TEXT("Color"), NuevoColor);
-	//usar 3 colores, azul para las articulaciones no unidas, turquesa para cuando se este buscando y haya sobreposicion, y verde para cuando la articulacion este unida
-}
 
 
 
