@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Parte.h"
+#include "Components/SphereComponent.h"
 #include "BrazoIzquierdo.generated.h"
 
 /**
@@ -14,7 +15,26 @@ class TRANSFORMATIONVR_API ABrazoIzquierdo : public AParte
 {
 	GENERATED_BODY()
 	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	ABrazoIzquierdo();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BrazoI;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * ArticulacionHombroI;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	USphereComponent * ColisionHombroI;
+	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * ArticulacionMunecaI;
+	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	USphereComponent * ColisionMunecaI;
 	
 };

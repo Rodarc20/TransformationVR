@@ -9,18 +9,10 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 ACabeza::ACabeza() {
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Origen"));
-
-	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
-	Colision->SetupAttachment(RootComponent);
-	Colision->SetRelativeLocation(FVector(0.0f, 0.0f, -3.0f));
-    Colision->InitCapsuleSize(5.0f, 8.0f);
-
     Cabeza = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cabeza"));
-    Cabeza->SetupAttachment(RootComponent);
-	Cabeza->SetWorldScale3D(FVector(0.1f));
+	RootComponent = Cabeza;
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> CabezaMeshAsset(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CabezaMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Cabeza.Cabeza'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (CabezaMeshAsset.Succeeded()) {
         Cabeza->SetStaticMesh(CabezaMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> CabezaMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -29,12 +21,17 @@ ACabeza::ACabeza() {
         }
     }
 
+	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
+	Colision->SetupAttachment(RootComponent);
+	Colision->SetRelativeLocation(FVector(0.0f, 0.0f, -3.0f));
+    Colision->InitCapsuleSize(3.5f, 6.5f);
+
 	ArticulacionCuello = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArticulacionCuello"));
     ArticulacionCuello->SetupAttachment(RootComponent);
-	ArticulacionCuello->SetRelativeLocation(FVector(0.0f, 0.0f, -8.0f));
-	ArticulacionCuello->SetWorldScale3D(FVector(0.05f));
+	ArticulacionCuello->SetRelativeLocation(FVector(0.0f, 0.0f, -7.0f));
+	//ArticulacionCuello->SetWorldScale3D(FVector(0.05f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> CuelloMeshAsset(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CuelloMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (CuelloMeshAsset.Succeeded()) {
         ArticulacionCuello->SetStaticMesh(CuelloMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> CuelloMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -46,8 +43,8 @@ ACabeza::ACabeza() {
 
 	ColisionCuello = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionCuello"));
 	ColisionCuello->SetupAttachment(RootComponent);
-	ColisionCuello->SetRelativeLocation(FVector(0.0f, 0.0f, -8.0f));
-    ColisionCuello->InitSphereRadius(2.5f);
+	ColisionCuello->SetRelativeLocation(FVector(0.0f, 0.0f, -7.0f));
+    ColisionCuello->InitSphereRadius(2.0f);
 	ColisionCuello->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionCuello->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
 
