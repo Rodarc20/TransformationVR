@@ -46,7 +46,7 @@ ABrazoIzquierdo::ABrazoIzquierdo() {
 
 	ColisionHombroI = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionHombroI"));
 	ColisionHombroI->SetupAttachment(RootComponent);
-	ColisionHombroI->SetRelativeLocation(FVector(0.0f, 0.0f, -8.0f));
+	ColisionHombroI->SetRelativeLocation(FVector(0.0f, 0.0f, 8.0f));
     ColisionHombroI->InitSphereRadius(2.0f);
 	ColisionHombroI->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionHombroI->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
@@ -66,7 +66,7 @@ ABrazoIzquierdo::ABrazoIzquierdo() {
 
 	ColisionMunecaI = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionMunecaI"));
 	ColisionMunecaI->SetupAttachment(RootComponent);
-	ColisionMunecaI->SetRelativeLocation(FVector(0.0f, 0.0f, 8.0f));
+	ColisionMunecaI->SetRelativeLocation(FVector(0.0f, 0.0f, -8.0f));
     ColisionMunecaI->InitSphereRadius(2.0f);
 	ColisionMunecaI->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionMunecaI->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
