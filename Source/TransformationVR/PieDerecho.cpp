@@ -9,6 +9,8 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 APieDerecho::APieDerecho() {
+
+	Id = 8;
     PieD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PieDerecho"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = PieD;

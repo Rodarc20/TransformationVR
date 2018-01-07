@@ -9,6 +9,8 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 AManoIzquierda::AManoIzquierda() {
+
+	Id = 7;
     ManoI = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ManoIzquierda"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = ManoI;

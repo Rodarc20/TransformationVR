@@ -13,6 +13,7 @@
 #include "Camera/CameraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Parte.h"
+#include "Jerarquia.h"
 #include "VRPawn.generated.h"
 
 UCLASS()
@@ -155,4 +156,8 @@ public:
 	//parte sujetada por el control izquierdo, igual la mas cercana
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
 	AParte * RootParte;
+	//ahora el root sera el root de la jerarquia, por lo tanto los movimientos de traslacion y rotacion debo darselos a la jerarquia, para que el los aplique a todo el arbol, esta variable podria ya resultar ser inecesara
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	AJerarquia * Jerarquia;
 };

@@ -1,33 +1,79 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Jerarquia.h"
+#include "Transformacion.h"
 
-
-// Sets default values
-AJerarquia::AJerarquia()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	TransformacionesPartes.SetNum(10);
-
+void Transformacion::Trasladar(FVector Traslacion) {
+	H = MultiplicacionMatriz(H, MatrizTraslacion(Traslacion.X, Traslacion.Y, Traslacion.Z));
 }
 
-// Called when the game starts or when spawned
-void AJerarquia::BeginPlay()
-{
-	Super::BeginPlay();
-	
+void Transformacion::Rotar(FRotator Rotacion) {
+	FMatrix RotacionAxis = MatrizRotacionX(Rotacion.Roll);//rotacion en X
+	H = MultiplicacionMatriz(H, RotacionAxis);
+	RotacionAxis = MatrizRotacionY(Rotacion.Pitch);//rotacion en X
+	H = MultiplicacionMatriz(H, RotacionAxis);
+	RotacionAxis = MatrizRotacionZ(Rotacion.Yaw);//rotacion en X
+	H = MultiplicacionMatriz(H, RotacionAxis);
 }
 
-// Called every frame
-void AJerarquia::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+FMatrix Transformacion::HLocal() {
+	//calcula y actualiza el H usando las iversa del hwrold del padre
+	H = FromWorldToLocal(HW);
+	return H;
 }
 
-FMatrix AJerarquia::MatrizTraslacion(float x, float y, float z) {
+FMatrix Transformacion::HWorld() {
+	//calculary aculiza HW  usando el Hworld del padre
+	HW = FromLocalToWorld(H);
+	return HW;
+}
+
+void Transformacion::CalcularHWDesdeH() {
+	if (Padre) {//si
+		HW = MultiplicacionMatriz(Padre->HW, H);
+	}
+	else {
+		HW = H;
+	}
+}
+
+void Transformacion::CalcularHDesdeHW() {//las que probablemente use
+	if (Padre) {
+		H = MultiplicacionMatriz(Padre->HW.Inverse(), HW);
+	}
+	else {
+		H = HW;
+	}
+}
+
+//la pregunta es: debo almanecera una matriz local y otra matriz referente al origen? o debo almancenar la local y calcular esa respecto al origen siempre?
+
+FMatrix Transformacion::FromWorldToLocal(FMatrix NewHW) {
+	//si tengo una matriz local necesito multiplicarla por la inversa de la amtriz del padre, con referencia al aorigen
+	if (Padre) {
+		return MultiplicacionMatriz(Padre->HWorld().Inverse(), NewHW);
+	}
+	else {
+		return NewHW;
+	}
+}
+
+FMatrix Transformacion::FromLocalToWorld(FMatrix NewH) {
+	//para obtener esto necesito el H respecto al origen del padre, para multiplicarla por mi H
+	if (Padre)
+		return MultiplicacionMatriz(Padre->HWorld(), NewH);
+	else
+		return NewH;
+}
+
+Transformacion::Transformacion() {
+	H = FMatrix::Identity;
+	Padre = nullptr;
+}
+
+Transformacion::~Transformacion() {
+}
+
+FMatrix Transformacion::MatrizTraslacion(float x, float y, float z) {
     FMatrix Traslacion;
     Traslacion.M[0][0] = 1;
     Traslacion.M[0][1] = 0;
@@ -48,7 +94,7 @@ FMatrix AJerarquia::MatrizTraslacion(float x, float y, float z) {
     return Traslacion;
 }
 
-FMatrix AJerarquia::MatrizRotacionX(float angle) {
+FMatrix Transformacion::MatrizRotacionX(float angle) {
     FMatrix RotX;
     RotX.M[0][0] = cos(angle);
     RotX.M[0][1] = 0;
@@ -69,7 +115,7 @@ FMatrix AJerarquia::MatrizRotacionX(float angle) {
     return RotX;
 }
 
-FMatrix AJerarquia::MatrizRotacionY(float angle) {
+FMatrix Transformacion::MatrizRotacionY(float angle) {
     FMatrix RotY;
     RotY.M[0][0] = 1;
     RotY.M[0][1] = 0;
@@ -90,7 +136,7 @@ FMatrix AJerarquia::MatrizRotacionY(float angle) {
     return RotY;
 }
 
-FMatrix AJerarquia::MatrizRotacionZ(float angle) {
+FMatrix Transformacion::MatrizRotacionZ(float angle) {
     FMatrix RotZ;//en este caso la matriz z es la identidad por que theta de V es 0 y eso al realziar calculos es la matriz identdad;
     RotZ.M[0][0] = cos(angle);
     RotZ.M[0][1] = -sin(angle);
@@ -111,7 +157,7 @@ FMatrix AJerarquia::MatrizRotacionZ(float angle) {
     return RotZ;
 }
 
-FMatrix AJerarquia::MultiplicacionMatriz(FMatrix a, FMatrix b) {
+FMatrix Transformacion::MultiplicacionMatriz(FMatrix a, FMatrix b) {
     FMatrix c;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
@@ -124,11 +170,11 @@ FMatrix AJerarquia::MultiplicacionMatriz(FMatrix a, FMatrix b) {
     return c;
 }
 
-void AJerarquia::ImprimirMatriz(FMatrix m) {
+/*void Transformacion::ImprimirMatriz(FMatrix m) {
     for (int i = 0; i < 4; i++) {
         UE_LOG(LogClass, Log, TEXT("[%.4f,%.4f,%.4f,%.4f]"), m.M[i][0], m.M[i][1], m.M[i][2], m.M[i][3]);
     }
-}
+}*/
 
 /*
 Ejemplo de uso

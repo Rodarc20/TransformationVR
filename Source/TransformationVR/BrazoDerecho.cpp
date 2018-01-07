@@ -9,6 +9,9 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 ABrazoDerecho::ABrazoDerecho() {
+
+	Id = 2;
+
     BrazoD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BrazoDerecho"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = BrazoD;

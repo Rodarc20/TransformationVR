@@ -9,6 +9,8 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 ACabeza::ACabeza() {
+
+	Id = 1;
     Cabeza = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cabeza"));
 	RootComponent = Cabeza;
 

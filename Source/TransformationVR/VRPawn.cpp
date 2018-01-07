@@ -297,6 +297,7 @@ void AVRPawn::GrabLeftPressed() {
 		if (bRootEstablecida) {
 			//solo calcular el ofset de la raiz al control
 			//estas traslaciones naturlamente aplican con las tranformaciones
+			//aplicar los movimientos a la jerarquia
 		}
 		else {
 			RootParte = OverlapedLeftParte;

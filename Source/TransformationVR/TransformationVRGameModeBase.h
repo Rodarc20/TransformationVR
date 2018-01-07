@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Parte.h"
+#include "Jerarquia.h"
 #include "TransformationVRGameModeBase.generated.h"
 
 /**
@@ -14,6 +16,23 @@ class TRANSFORMATIONVR_API ATransformationVRGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+    ATransformationVRGameModeBase();
+	
+    virtual void BeginPlay() override;
+
+    virtual void Tick(float DeltaTime) override;
+
+    //UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "", Meta = (BlueprintProtected = "true"))//significa que solo se puede cambiar en el constructor
+    //TSubclassOf<class UUserWidget> HUDWidgetClass;  
+	
+    //UUserWidget * WidgetActual;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	AJerarquia * Jerarquia;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    TArray<AParte *> Partes;//se supone que hay 10 partes
 	
 	
 	

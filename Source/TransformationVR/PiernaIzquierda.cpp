@@ -9,6 +9,8 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 APiernaIzquierda::APiernaIzquierda() {
+
+	Id = 5;
     PiernaI = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PiernaIzquierda"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = PiernaI;

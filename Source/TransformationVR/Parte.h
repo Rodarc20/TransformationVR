@@ -27,6 +27,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	int Id;
 	//colision que envuelve la parte, esta deberia ser la raíz por ahora no lo es
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UCapsuleComponent * Colision;
