@@ -38,6 +38,8 @@ public:
 
     FMatrix MultiplicacionMatriz(FMatrix a, FMatrix b);
 
+	void Actualizar();//actualiza toda la jerarquia
+
     void ImprimirMatriz(FMatrix m);
 	
 	

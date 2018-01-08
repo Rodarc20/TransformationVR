@@ -55,7 +55,9 @@ void AParte::BuscandoArticulacion() {
 	//si al final no llego a usar esta funcion, la debo eliminar
 }
 
-void AParte::UnirConParteSobrepuesta() {
+void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse vrpawn o en otro lado, como la jerarquia, el punto es que si necesito esta union fisica de partes, dado que utilizo las partes, 
+	//debo pensar com otratar esto junto con las trasnformaciones de forma coherente
+	//quiza las trasnformaciones deberian utilizar l ainformacion aqui contenida, 
 	if (bArticulacionSobrepuesta) {//si hay una articulacion sobrepuesta entoces si o si habra un overlaperparte, tener en cuenta que esta funcion deberia manerja los caso de articulaciones con varias partes por ahora dejar sencillo
 		Padre = OverlapedParte;
 		OverlapedParte->Hijos.Add(this);

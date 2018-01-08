@@ -2,6 +2,17 @@
 
 #include "Transformacion.h"
 
+void Transformacion::Actualizar() {
+	//quiza deba actualizar las matrices locales
+	ParteAsociada->SetActorLocation(FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]));
+}
+
+void Transformacion::ActualizarDesdeParte() {
+	FVector Posicion = ParteAsociada->GetActorLocation();
+	HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
+	//por ahora solo para la matriz world
+}
+
 void Transformacion::Trasladar(FVector Traslacion) {
 	H = MultiplicacionMatriz(H, MatrizTraslacion(Traslacion.X, Traslacion.Y, Traslacion.Z));
 }

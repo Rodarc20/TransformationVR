@@ -17,6 +17,8 @@ public:
 	TArray<Transformacion *> Hijos;
 
 	AParte * ParteAsociada;
+	void Actualizar();
+	void ActualizarDesdeParte();
 
 	void Trasladar(FVector Traslacion);//realiz las operacions para trasladar este transform
 	void Rotar(FRotator Rotacion);//realiza las operaciones para trasladar este transforma

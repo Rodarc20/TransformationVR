@@ -173,9 +173,10 @@ void AVRPawn::Tick(float DeltaTime)
         MotionControllerRight->AddRelativeRotation(Rotacion);
     }
 
-	if (bGrabRightParte) {
+	/*if (bGrabRightParte) {
 		OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
-	}
+	}*/
+	GrabRightTick();
 
 	if (bGrabLeftParte && RootParte) {
 		FVector OffsetEliminar;
@@ -268,25 +269,67 @@ void AVRPawn::GrabRightPressed() {
 		bBuscarParteRight = false;
 		bGrabRightParte = true;
 		//guardar offset de la parte
-		OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
-		OverlapedRightParte->BuscarArticulacion();
+		if (OverlapedRightParte->bConectado) {
+			if (Jerarquia->Root) {//bRootEstablecida
+				//el calculo deberia ser en base a raiz de la jerarquia
+				//por lo tanto deberia cambiar la parte overlapeada
+				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+			}
+			else {
+				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedRightParte->Id]);
+				bRootEstablecida = true;
+			}
+		}
+		else {//si no esta conectada
+			OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+			//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
+			OverlapedRightParte->BuscarArticulacion();
+		}
+	}
+}
+
+void AVRPawn::GrabRightTick() {
+	if (bGrabRightParte) {
+		if (OverlapedRightParte->bConectado) {
+			//aquia ya no necesito el if else, de jerarquia root, en este punto ya existe un root, creo por si acaso dejarlo, pero eliminar el else
+			if (Jerarquia->Root) {//bRootEstablecida
+				//el calculo deberia ser en base a raiz de la jerarquia
+				//por lo tanto deberia cambiar la parte overlapeada
+				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+				Jerarquia->Root->Trasladar(OffsetRightParte);
+				Jerarquia->Actualizar();
+			}
+		}
+		else {//si no esta conectada
+			//si la parte no esta conectada lo que debo trasladar es el propio trasnforma, esto esta un poco mal implementado ya que eso deveria ser una jerarquia de un solo nive, 
+			//o todas las partes tener una jerarquia que luego se unaa, que seria lo mismo que el trasform, buneo dejarlo asi
+			//trasladar su porpio transform y actualizar el actor con la posicion de ese trasnform, este actulizar es el que se usar repetidas veces dentro del actuaizar de la jerarquia
+			//en este es diferente, usar la posicion de unreal, y pasarla al trasforma apra actualizar la mtriz H
+			OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
+			Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
+		}
 	}
 }
 
 void AVRPawn::GrabRightReleased() {
 	if (OverlapedRightParte) {
 		bBuscarParteRight = true;
-		if (OverlapedRightParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
-			//en teroai se supone que tengo un robot en mi mano izquierda por lo tanto deberia unirlo de frente sin embargo verifico
-			if (RootParte) {
-				//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
-				OverlapedRightParte->UnirConParteSobrepuesta();
-				
+		//guardar offset de la parte
+		if (OverlapedRightParte->bConectado) {
+			//no hago nada por ahora
+		}
+		else {//si no esta conectada
+			if (OverlapedRightParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
+				//en teroai se supone que tengo un robot en mi mano izquierda por lo tanto deberia unirlo de frente sin embargo verifico
+				if (RootParte) {
+					//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
+					OverlapedRightParte->UnirConParteSobrepuesta();
+					
+				}
 			}
+			OverlapedRightParte->NoBuscarArticulacion();
 		}
 		bGrabRightParte = false;
-		OverlapedRightParte->NoBuscarArticulacion();
 	}
 }
 
@@ -309,6 +352,9 @@ void AVRPawn::GrabLeftPressed() {
 		OffsetLeftParte = RootParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
 		//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
 	}
+}
+
+void AVRPawn::GrabLeftTick() {
 }
 
 void AVRPawn::GrabLeftReleased() {

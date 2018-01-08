@@ -125,10 +125,16 @@ public:
     void GrabRightPressed();
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabRightTick();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void GrabRightReleased();
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void GrabLeftPressed();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabLeftTick();
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void GrabLeftReleased();

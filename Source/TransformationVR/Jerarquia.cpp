@@ -8,7 +8,7 @@ AJerarquia::AJerarquia()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	Root = nullptr;
 	TransformacionesPartes.SetNum(10);
 
 }
@@ -122,6 +122,13 @@ FMatrix AJerarquia::MultiplicacionMatriz(FMatrix a, FMatrix b) {
         }
     }
     return c;
+}
+
+void AJerarquia::Actualizar() {
+	//con una busqueda en profundidad, actualizar la jerarquia, multipllicar los frames
+	//y establecer nuevas posiciones
+	//la pregunta es si estoy haciendo un calculo de puntos de world a local o de local a world, me parece que es la primera opcion
+	//asi mismo esta funcion debe actualizar las posciones de los actores en funion de los nuevos calculos
 }
 
 void AJerarquia::ImprimirMatriz(FMatrix m) {
