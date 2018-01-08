@@ -271,15 +271,7 @@ void AVRPawn::GrabRightPressed() {
 		bGrabRightParte = true;
 		//guardar offset de la parte
 		if (OverlapedRightParte->bConectado) {
-			if (Jerarquia->Root) {//bRootEstablecida
-				//el calculo deberia ser en base a raiz de la jerarquia
-				//por lo tanto deberia cambiar la parte overlapeada
-				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-			}
-			else {
-				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedRightParte->Id]);
-				bRootEstablecida = true;
-			}
+			OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
 			bGrabRightMuneco = true;
 		}
 		else {//si no esta conectada
@@ -287,6 +279,19 @@ void AVRPawn::GrabRightPressed() {
 			//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
 			OverlapedRightParte->BuscarArticulacion();
 			bGrabRightMuneco = false;
+
+			if (Jerarquia->Root) {
+				OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+				OverlapedRightParte->BuscarArticulacion();
+				bGrabRightMuneco = false;
+			}
+			else {
+				OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedRightParte->Id]);
+				OverlapedRightParte->bConectado = true;
+				bRootEstablecida = true;
+				bGrabRightMuneco = true;
+			}
 		}
 	}
 }
@@ -294,20 +299,16 @@ void AVRPawn::GrabRightPressed() {
 void AVRPawn::GrabRightTick() {
 	if (bGrabRightParte) {
 		if (OverlapedRightParte->bConectado) {
-			//aquia ya no necesito el if else, de jerarquia root, en este punto ya existe un root, creo por si acaso dejarlo, pero eliminar el else
 			if (Jerarquia->Root) {//bRootEstablecida
-				//el calculo deberia ser en base a raiz de la jerarquia
-				//por lo tanto deberia cambiar la parte overlapeada
-				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-				Jerarquia->Root->Trasladar(OffsetRightParte);
+				//OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//este offset no deberia calcularse solo una vez?
+				FVector Traslado = MotionControllerRight->GetComponentLocation() + OffsetRightParte - Jerarquia->Root->Posicion();
+
+				Jerarquia->Root->Trasladar(Traslado);
+				Jerarquia->TraslacionTemporal = Traslado;
 				Jerarquia->Actualizar();
 			}
 		}
 		else {//si no esta conectada
-			//si la parte no esta conectada lo que debo trasladar es el propio trasnforma, esto esta un poco mal implementado ya que eso deveria ser una jerarquia de un solo nive, 
-			//o todas las partes tener una jerarquia que luego se unaa, que seria lo mismo que el trasform, buneo dejarlo asi
-			//trasladar su porpio transform y actualizar el actor con la posicion de ese trasnform, este actulizar es el que se usar repetidas veces dentro del actuaizar de la jerarquia
-			//en este es diferente, usar la posicion de unreal, y pasarla al trasforma apra actualizar la mtriz H
 			OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
 			Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 		}
@@ -368,10 +369,7 @@ void AVRPawn::GrabLeftTick() {
 		if (OverlapedLeftParte->bConectado) {
 			if (Jerarquia->Root) {//bRootEstablecida
 				//OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//este offset no deberia calcularse solo una vez?
-				FVector PosicionRoot = Jerarquia->Root->Posicion();
-				UE_LOG(LogClass, Log, TEXT("PosicionRoot (%.4f,%.4f,%.4f)"), PosicionRoot.X, PosicionRoot.Y, PosicionRoot.Z);
 				FVector Traslado = MotionControllerLeft->GetComponentLocation() + OffsetLeftParte - Jerarquia->Root->Posicion();
-				UE_LOG(LogClass, Log, TEXT("Traslado (%.4f,%.4f,%.4f)"), Traslado.X, Traslado.Y, Traslado.Z);
 
 				Jerarquia->Root->Trasladar(Traslado);
 				Jerarquia->TraslacionTemporal = Traslado;
