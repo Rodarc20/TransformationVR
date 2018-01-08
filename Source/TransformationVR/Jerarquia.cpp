@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Jerarquia.h"
-
+#include "Transformacion.h"
+#include <stack>
 
 // Sets default values
 AJerarquia::AJerarquia()
@@ -124,11 +125,33 @@ FMatrix AJerarquia::MultiplicacionMatriz(FMatrix a, FMatrix b) {
     return c;
 }
 
+void AJerarquia::UnirPadreHijo(int IdPadre, int IdHijo) {
+	TransformacionesPartes[IdHijo].Padre = &(TransformacionesPartes[IdPadre]);
+	TransformacionesPartes[IdPadre].Hijos.Add(&(TransformacionesPartes[IdHijo]));
+}
+
 void AJerarquia::Actualizar() {
 	//con una busqueda en profundidad, actualizar la jerarquia, multipllicar los frames
 	//y establecer nuevas posiciones
 	//la pregunta es si estoy haciendo un calculo de puntos de world a local o de local a world, me parece que es la primera opcion
 	//asi mismo esta funcion debe actualizar las posciones de los actores en funion de los nuevos calculos
+	//POR AHORA calculare la diferencia entre la posicion de la matriz y la posicino del actor, y esa diferencia la aplicare a toda la jerarquia
+	//ya que en cada tick solo aplico traslacion al root y luego actualiza, que es esl que se encarga de ajustar al mungo global,
+	//por ahora esta funcionalidad esta mal, ya que se deberia aplicar los mismo paso para todos lo selementos incluso la raiz
+	std::stack<Transformacion *> pila;
+	Root->Actualizar();
+	for (int i = 0; i < Root->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
+		pila.push(Root->Hijos[i]);
+	}
+	while (!pila.empty()) {
+		Transformacion * T = pila.top();
+		pila.pop();
+		T->Trasladar(TraslacionTemporal);
+		T->Actualizar();
+		for (int i = 0; i < T->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
+			pila.push(T->Hijos[i]);
+		}
+	}
 }
 
 void AJerarquia::ImprimirMatriz(FMatrix m) {

@@ -38,9 +38,13 @@ public:
 
     FMatrix MultiplicacionMatriz(FMatrix a, FMatrix b);
 
+	void UnirPadreHijo(int IdPadre, int IdHijo);
+
 	void Actualizar();//actualiza toda la jerarquia
 
     void ImprimirMatriz(FMatrix m);
+
+	FVector TraslacionTemporal;//temporalmente usare esta variapble para traslador en funcion de este vector todos los elementso de la jerarquia, pero debo eliminar por que con esto no se trasladara todo
 	
 	
 	
@@ -50,3 +54,5 @@ public:
 //luego el game mode, la instanciar esta objeto, els asigana a estos trasnforma las partes correspondientes con un id, los cuales ua estan fijos en las clases
 //luego el vrpawn al interacutar con las partes, envia la informacion pertiniente a esta clase jerarquia, es decir el ide de la parte movida o unida , etc y los valores aporpiados para que esta jerarquia actualice
 //
+//a diferencia de la conexxion entre las partes la jerarquia no necesita poner los hijos en orden,
+//solo poner padre e hijos, sin ditincion algunas:w

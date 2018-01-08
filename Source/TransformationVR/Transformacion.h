@@ -26,6 +26,7 @@ public:
 	FMatrix HWorld();//retorna el H respecto al origen del mundo
 	void CalcularHWDesdeH();
 	void CalcularHDesdeHW();
+	FVector Posicion();
 	FMatrix FromWorldToLocal(FMatrix NewHW);
 	FMatrix FromLocalToWorld(FMatrix NewH);
 	FMatrix MatrizTraslacion(float x, float y, float z);

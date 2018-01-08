@@ -13,8 +13,8 @@ void Transformacion::ActualizarDesdeParte() {
 	//por ahora solo para la matriz world
 }
 
-void Transformacion::Trasladar(FVector Traslacion) {
-	H = MultiplicacionMatriz(H, MatrizTraslacion(Traslacion.X, Traslacion.Y, Traslacion.Z));
+void Transformacion::Trasladar(FVector Traslacion) {//Gloabal
+	HW = MultiplicacionMatriz(HW, MatrizTraslacion(Traslacion.X, Traslacion.Y, Traslacion.Z));
 }
 
 void Transformacion::Rotar(FRotator Rotacion) {
@@ -54,6 +54,10 @@ void Transformacion::CalcularHDesdeHW() {//las que probablemente use
 	else {
 		H = HW;
 	}
+}
+
+FVector Transformacion::Posicion() {
+	return FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]);
 }
 
 //la pregunta es: debo almanecera una matriz local y otra matriz referente al origen? o debo almancenar la local y calcular esa respecto al origen siempre?

@@ -46,6 +46,7 @@ void ATransformationVRGameModeBase::BeginPlay() {
 
 	for (int i = 0; i < 10 && i < Partes.Num(); i++) {//asociando partes a la jerarquia
 		Jerarquia->TransformacionesPartes[i].ParteAsociada = Partes[i];
+		Jerarquia->TransformacionesPartes[i].ActualizarDesdeParte();
 	}
     AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (MyVRPawn) {

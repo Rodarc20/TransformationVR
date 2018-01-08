@@ -165,5 +165,17 @@ public:
 	//ahora el root sera el root de la jerarquia, por lo tanto los movimientos de traslacion y rotacion debo darselos a la jerarquia, para que el los aplique a todo el arbol, esta variable podria ya resultar ser inecesara
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	bool bGrabLeftMuneco;//muneco sujetado en la mano izquierda
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	bool bGrabRightMuneco;//muneco sujetado en la mano derecha
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
 	AJerarquia * Jerarquia;
 };
+
+//tener cuidado con el puntero overlaped parte para derecha o izquierda, por si llego a aprentar el triger sin que haya alguna parte osbrepuesta.
+//podria haberme equivocado y no haber puesto null esos punteros por no tener un end overlapped
+
+//un tercer en foque es que en el tick siempre este obteniendo todo los actores en overlap para cada control,y me quede con el mas cercano al centro, si no hay nunguo pues el puntoero siempre sera nulo
+//intentar este cambio
