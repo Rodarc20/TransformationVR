@@ -73,6 +73,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	int IndiceArticulacionSobrepuesta;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	int IndiceArticulacionSobrepuestaOtro;
 	
 	UFUNCTION()
 	int IndiceColisionArticulacion(USphereComponent * ArticulacionSphere);

@@ -311,6 +311,8 @@ void AVRPawn::GrabRightTick() {
 		else {//si no esta conectada
 			OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
 			Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
+			//UE_LOG(LogClass, Log, TEXT("Trasladando Parte"));
+
 		}
 	}
 }
@@ -328,6 +330,7 @@ void AVRPawn::GrabRightReleased() {
 				if (bGrabLeftMuneco) {//si tengo sujeto en el otro control algo, manejarlo con un bool, en lugar de tener una parte root ahi, ya que no lo necesito
 					//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
 					OverlapedRightParte->UnirConParteSobrepuesta();
+					Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 					Jerarquia->UnirPadreHijo(OverlapedRightParte->OverlapedParte->Id, OverlapedRightParte->Id);
 					
 				}

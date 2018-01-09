@@ -63,9 +63,27 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 		OverlapedParte->Hijos.Add(this);
 		//aqui deberia haber mas partes de color
 		bConectado = true;
-		if(IndiceArticulacionSobrepuesta != -1)
+		if (IndiceArticulacionSobrepuesta != -1)
 			CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionConectada);
+
+		if (IndiceArticulacionSobrepuestaOtro != -1) {
+			OverlapedParte->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionConectada);
+			FVector OffsetWorld = GetActorLocation() - ColisionesArticualciones[IndiceArticulacionSobrepuesta]->GetComponentLocation();
+			SetActorLocation(OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld);
+
+			//FVector Posicion = GetActorLocation();
+			//UE_LOG(LogClass, Log, TEXT("Trasladando a la articulacion Posicion 1: (%.4f, %.4f, %.4f)"), Posicion.X, Posicion.Y, Posicion.Z);
+			//FVector OffsetWorld = Posicion - ColisionesArticualciones[IndiceArticulacionSobrepuesta]->GetComponentLocation();
+			//Posicion = OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld;
+			//UE_LOG(LogClass, Log, TEXT("Trasladando a la articulacion Posicion 2: (%.4f, %.4f, %.4f)"), Posicion.X, Posicion.Y, Posicion.Z);
+			//SetActorLocation(Posicion);
+			//falta actualizar lla trasnformacion de esta parte
+
+		}
 		//tambien se deben inhabilitar los de alguna forma estas articulaciones, dejarlo asi por ahora
+
+		//aqui debo actualizar las matrices de la transformaicon con los nuevos valores
+		//para que se le pueda plicar los cambios en la jerarquia
 	}
 }
 
@@ -90,10 +108,10 @@ void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponen
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Articulacion Sobrepuesta"));
 				//asi mismo debo saber cual de todas mis articulaciones es la que esta en contacto, para ello esta overlappedcomponent, que debo guardarlo despues de castear para luego buscar y saber su inidice para guardar el puntero de la parte padre, e inhabilitar en ese componente el contacto
 				//debo deshabilitar para que en una nueva busqueda de alguna otra parte, no tome en cuenta las rticualciones unidas
-				int IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
+				IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
 				if(IndiceArticulacionSobrepuesta != -1)
 					CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionSobrepuesta);
-				int IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
+				IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
 				if(IndiceArticulacionSobrepuestaOtro != -1)
 					ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
 			}
