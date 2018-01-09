@@ -139,7 +139,7 @@ void AJerarquia::Actualizar() {
 	//ya que en cada tick solo aplico traslacion al root y luego actualiza, que es esl que se encarga de ajustar al mungo global,
 	//por ahora esta funcionalidad esta mal, ya que se deberia aplicar los mismo paso para todos lo selementos incluso la raiz
 	std::stack<Transformacion *> pila;
-	Root->Actualizar();
+	Root->ActualizarParte();
 	for (int i = 0; i < Root->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
 		pila.push(Root->Hijos[i]);
 	}
@@ -147,7 +147,24 @@ void AJerarquia::Actualizar() {
 		Transformacion * T = pila.top();
 		pila.pop();
 		T->Trasladar(TraslacionTemporal);
-		T->Actualizar();
+		T->ActualizarParte();
+		for (int i = 0; i < T->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
+			pila.push(T->Hijos[i]);
+		}
+	}
+}
+
+void AJerarquia::Actualizar2() {
+	std::stack<Transformacion *> pila;
+	Root->ActualizarParte();
+	for (int i = 0; i < Root->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
+		pila.push(Root->Hijos[i]);
+	}
+	while (!pila.empty()) {
+		Transformacion * T = pila.top();
+		pila.pop();
+		T->Trasladar(TraslacionTemporal);
+		T->ActualizarParte();
 		for (int i = 0; i < T->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
 			pila.push(T->Hijos[i]);
 		}

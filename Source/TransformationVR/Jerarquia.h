@@ -42,6 +42,8 @@ public:
 
 	void Actualizar();//actualiza toda la jerarquia
 
+	void Actualizar2();
+
     void ImprimirMatriz(FMatrix m);
 
 	FVector TraslacionTemporal;//temporalmente usare esta variapble para traslador en funcion de este vector todos los elementso de la jerarquia, pero debo eliminar por que con esto no se trasladara todo

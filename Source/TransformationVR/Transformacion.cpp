@@ -2,7 +2,7 @@
 
 #include "Transformacion.h"
 
-void Transformacion::Actualizar() {
+void Transformacion::ActualizarParte() {
 	//quiza deba actualizar las matrices locales
 	ParteAsociada->SetActorLocation(FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]));
 }
@@ -11,6 +11,34 @@ void Transformacion::ActualizarDesdeParte() {
 	FVector Posicion = ParteAsociada->GetActorLocation();
 	HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
 	//por ahora solo para la matriz world
+}
+
+void Transformacion::SetLocation(FVector Posicion) {
+}
+
+void Transformacion::SetWorldLocation(FVector Posicion) {
+}
+
+void Transformacion::SetRotation(FRotator Rotacion) {
+}
+
+void Transformacion::SetWorldRotation(FRotator Rotacion) {
+}
+
+FVector Transformacion::GetLocation() {
+	return FVector();
+}
+
+FVector Transformacion::GetWorldLocation() {
+	return FVector();
+}
+
+FRotator Transformacion::GetRotation() {
+	return FRotator();
+}
+
+FRotator Transformacion::GetWorldRotation() {
+	return FRotator();
 }
 
 void Transformacion::Trasladar(FVector Traslacion) {//Gloabal

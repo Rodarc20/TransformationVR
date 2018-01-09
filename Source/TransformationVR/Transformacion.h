@@ -17,11 +17,21 @@ public:
 	TArray<Transformacion *> Hijos;
 
 	AParte * ParteAsociada;
-	void Actualizar();
+	void ActualizarParte();
 	void ActualizarDesdeParte();
 
+	//Solo para modificar las matrices, no para actulaizar los valores de las partes
+	void SetLocation(FVector Posicion);//esta funcion estblece la posicion local, y actualiza la posicion global calculandola con la informacion del padre
+	void SetWorldLocation(FVector Posicion);
+	void SetRotation(FRotator Rotacion);
+	void SetWorldRotation(FRotator Rotacion);
+	FVector GetLocation();
+	FVector GetWorldLocation();
+	FRotator GetRotation();
+	FRotator GetWorldRotation();
 	void Trasladar(FVector Traslacion);//realiz las operacions para trasladar este transform
 	void Rotar(FRotator Rotacion);//realiza las operaciones para trasladar este transforma
+
 	FMatrix HLocal();//retorna el H respecto al padre
 	FMatrix HWorld();//retorna el H respecto al origen del mundo
 	void CalcularHWDesdeH();
