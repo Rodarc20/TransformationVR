@@ -154,16 +154,14 @@ void AJerarquia::Actualizar() {
 	}
 }
 
-void AJerarquia::Actualizar2() {
+void AJerarquia::ActualizarWorlds() {//se supone que alguna matriz la que se se ha visto modificada de forma externa, es decir quiza rote alguna parte, por lo tanto su matriz global cambio
+	//en ese mismo instante debo calcular su matriz local, una vez hecho esto debo llamar a esta funcion, que actualizara todo el arbol, aplicando la nueva traslacion de esas matrices donde corresponde, y tambien actualizando las posicones de las partes
 	std::stack<Transformacion *> pila;
-	Root->ActualizarParte();
-	for (int i = 0; i < Root->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
-		pila.push(Root->Hijos[i]);
-	}
+	pila.push(Root);
 	while (!pila.empty()) {
 		Transformacion * T = pila.top();
 		pila.pop();
-		T->Trasladar(TraslacionTemporal);
+		T->CalcularHWorld();
 		T->ActualizarParte();
 		for (int i = 0; i < T->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
 			pila.push(T->Hijos[i]);

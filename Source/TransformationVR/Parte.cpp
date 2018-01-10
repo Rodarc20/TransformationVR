@@ -63,21 +63,12 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 		OverlapedParte->Hijos.Add(this);
 		//aqui deberia haber mas partes de color
 		bConectado = true;
-		if (IndiceArticulacionSobrepuesta != -1)
+		if (IndiceArticulacionSobrepuesta != -1 && IndiceArticulacionSobrepuestaOtro != -1) {
 			CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionConectada);
-
-		if (IndiceArticulacionSobrepuestaOtro != -1) {
 			OverlapedParte->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionConectada);
 			FVector OffsetWorld = GetActorLocation() - ColisionesArticualciones[IndiceArticulacionSobrepuesta]->GetComponentLocation();
 			SetActorLocation(OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld);
-
-			//FVector Posicion = GetActorLocation();
-			//UE_LOG(LogClass, Log, TEXT("Trasladando a la articulacion Posicion 1: (%.4f, %.4f, %.4f)"), Posicion.X, Posicion.Y, Posicion.Z);
-			//FVector OffsetWorld = Posicion - ColisionesArticualciones[IndiceArticulacionSobrepuesta]->GetComponentLocation();
-			//Posicion = OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld;
-			//UE_LOG(LogClass, Log, TEXT("Trasladando a la articulacion Posicion 2: (%.4f, %.4f, %.4f)"), Posicion.X, Posicion.Y, Posicion.Z);
-			//SetActorLocation(Posicion);
-			//falta actualizar lla trasnformacion de esta parte
+			//la actualizacion del trasnform de la parte se hace fuera de esta funcon, ya que aqui no tengo acceso a la jerarquia
 
 		}
 		//tambien se deben inhabilitar los de alguna forma estas articulaciones, dejarlo asi por ahora

@@ -275,11 +275,6 @@ void AVRPawn::GrabRightPressed() {
 			bGrabRightMuneco = true;
 		}
 		else {//si no esta conectada
-			OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-			//en realidad deberia ser un offset relativo al motion controller, y luego cuando se porceda a asiganar a la paoscion de la parte se debe convertir al espacion global
-			OverlapedRightParte->BuscarArticulacion();
-			bGrabRightMuneco = false;
-
 			if (Jerarquia->Root) {
 				OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
 				OverlapedRightParte->BuscarArticulacion();
@@ -301,11 +296,13 @@ void AVRPawn::GrabRightTick() {
 		if (OverlapedRightParte->bConectado) {
 			if (Jerarquia->Root) {//bRootEstablecida
 				//OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//este offset no deberia calcularse solo una vez?
-				FVector Traslado = MotionControllerRight->GetComponentLocation() + OffsetRightParte - Jerarquia->Root->Posicion();
+				FVector Traslado = MotionControllerRight->GetComponentLocation() + OffsetRightParte - Jerarquia->Root->GetWorldLocation();
 
 				Jerarquia->Root->Trasladar(Traslado);
 				Jerarquia->TraslacionTemporal = Traslado;
-				Jerarquia->Actualizar();
+				//Jerarquia->Actualizar();
+				Jerarquia->Root->CalcularHDesdeHW();
+				Jerarquia->ActualizarWorlds();
 			}
 		}
 		else {//si no esta conectada
@@ -330,8 +327,8 @@ void AVRPawn::GrabRightReleased() {
 				if (bGrabLeftMuneco) {//si tengo sujeto en el otro control algo, manejarlo con un bool, en lugar de tener una parte root ahi, ya que no lo necesito
 					//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
 					OverlapedRightParte->UnirConParteSobrepuesta();
-					Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 					Jerarquia->UnirPadreHijo(OverlapedRightParte->OverlapedParte->Id, OverlapedRightParte->Id);
+					Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 					
 				}
 				//pero si no lo hbuiera sobre puesto a otra parte no unida, no deberia uniralas
@@ -372,11 +369,13 @@ void AVRPawn::GrabLeftTick() {
 		if (OverlapedLeftParte->bConectado) {
 			if (Jerarquia->Root) {//bRootEstablecida
 				//OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//este offset no deberia calcularse solo una vez?
-				FVector Traslado = MotionControllerLeft->GetComponentLocation() + OffsetLeftParte - Jerarquia->Root->Posicion();
+				FVector Traslado = MotionControllerLeft->GetComponentLocation() + OffsetLeftParte - Jerarquia->Root->GetWorldLocation();
 
 				Jerarquia->Root->Trasladar(Traslado);
 				Jerarquia->TraslacionTemporal = Traslado;
-				Jerarquia->Actualizar();
+				//Jerarquia->Actualizar();
+				Jerarquia->Root->CalcularHDesdeHW();
+				Jerarquia->ActualizarWorlds();//probar!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			}
 		}
 		else {//si no esta conectada
@@ -400,6 +399,7 @@ void AVRPawn::GrabLeftReleased() {
 					//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
 					OverlapedLeftParte->UnirConParteSobrepuesta();
 					Jerarquia->UnirPadreHijo(OverlapedLeftParte->OverlapedParte->Id, OverlapedLeftParte->Id);
+					Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id].ActualizarDesdeParte();
 					
 				}
 				//pero si no lo hbuiera sobre puesto a otra parte no unida, no deberia uniralas

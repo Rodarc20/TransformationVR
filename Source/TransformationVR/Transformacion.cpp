@@ -11,26 +11,46 @@ void Transformacion::ActualizarDesdeParte() {
 	FVector Posicion = ParteAsociada->GetActorLocation();
 	HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
 	//por ahora solo para la matriz world
+	//actualzar la matriz local
+	CalcularHDesdeHW();
+	/*if (Padre) {
+		H = MultiplicacionMatriz(H, Padre->HW.Inverse());
+	}
+	else {
+		H = HW;
+	}*/
 }
 
 void Transformacion::SetLocation(FVector Posicion) {
+    H.M[0][3] = Posicion.X;
+    H.M[1][3] = Posicion.Y;
+    H.M[2][3] = Posicion.Z;
+	//falta recalcular la matriz world
 }
 
 void Transformacion::SetWorldLocation(FVector Posicion) {
+    HW.M[0][3] = Posicion.X;
+    HW.M[1][3] = Posicion.Y;
+    HW.M[2][3] = Posicion.Z;
+	//falta recalcular la matriz local
 }
 
 void Transformacion::SetRotation(FRotator Rotacion) {
+	//lo mas sencillo que se me ocurre es generar una matriz de rotacion para cada eje, multiplicarlas y sobre una matriz de traslacion de la posicion
+	FVector Posicion = GetLocation();
+	H = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
+	Rotar(Rotacion);
 }
 
 void Transformacion::SetWorldRotation(FRotator Rotacion) {
 }
 
 FVector Transformacion::GetLocation() {
-	return FVector();
+	return FVector(H.M[0][3], H.M[1][3], H.M[2][3]);
 }
 
 FVector Transformacion::GetWorldLocation() {
-	return FVector();
+	return FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]);
 }
 
 FRotator Transformacion::GetRotation() {
@@ -66,6 +86,15 @@ FMatrix Transformacion::HWorld() {
 	return HW;
 }
 
+void Transformacion::CalcularHWorld() {
+	if (Padre) {
+		HW = MultiplicacionMatriz(Padre->HW, H);
+	}
+	else {
+		HW = H;
+	}
+}
+
 void Transformacion::CalcularHWDesdeH() {
 	if (Padre) {//si
 		HW = MultiplicacionMatriz(Padre->HW, H);
@@ -82,10 +111,6 @@ void Transformacion::CalcularHDesdeHW() {//las que probablemente use
 	else {
 		H = HW;
 	}
-}
-
-FVector Transformacion::Posicion() {
-	return FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]);
 }
 
 //la pregunta es: debo almanecera una matriz local y otra matriz referente al origen? o debo almancenar la local y calcular esa respecto al origen siempre?

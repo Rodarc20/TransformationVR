@@ -42,7 +42,7 @@ public:
 
 	void Actualizar();//actualiza toda la jerarquia
 
-	void Actualizar2();
+	void ActualizarWorlds();
 
     void ImprimirMatriz(FMatrix m);
 
