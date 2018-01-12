@@ -271,8 +271,18 @@ void AVRPawn::GrabRightPressed() {
 		bGrabRightParte = true;
 		//guardar offset de la parte
 		if (OverlapedRightParte->bConectado) {
-			OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-			bGrabRightMuneco = true;
+			//deberia tener un if, si tuviera sujetado el muneco en  la otra mano, entonces quiere decir que estoy seleccionadno una parte para rotarla en respecto a asu articulacion
+			//pero si no tengo el muneco en la otra mano, entonces debo hacer esto que estaba aqui antes, de sujetar al muneco y trasladara segun la raiz
+			//OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+			//bGrabRightMuneco = true;
+			//este if podria provocar errores
+			if (bGrabLeftMuneco) {
+				//rotar la pieza
+			}
+			else {
+				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+				bGrabRightMuneco = true;
+			}
 		}
 		else {//si no esta conectada
 			if (Jerarquia->Root) {
@@ -320,6 +330,9 @@ void AVRPawn::GrabRightReleased() {
 		//guardar offset de la parte
 		if (OverlapedRightParte->bConectado) {
 			//no hago nada por ahora
+			if (bGrabLeftMuneco) {
+				//no se hace nada, jeje
+			}
 		}
 		else {//si no esta conectada
 			if (OverlapedRightParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
