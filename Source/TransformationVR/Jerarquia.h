@@ -60,6 +60,23 @@ public:
 	void AplicarLayout();
 
 	void ActualizarNodos();
+
+	void Calculos(Transformacion * V);
+
+	void Calculos2();
+
+	void Calc();
+
+	void Layout();
+
+	float AnchoNodos;
+
+	float AltoNodos;
+
+	float DeltaNiveles;
+
+	float DeltaHermanos;
+
 	
 	
 	

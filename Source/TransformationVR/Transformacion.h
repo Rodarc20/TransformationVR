@@ -45,6 +45,15 @@ public:
 	FMatrix MatrizRotacionZ(float angle);
 	FMatrix MultiplicacionMatriz(FMatrix a, FMatrix b);
 
+	//para el layout
+	float Hojas;
+	int Altura;
+	int Nivel;
+	FVector PosicionNodo;
+	float WTam;
+	float WInicio;
+
+
 	Transformacion();
 	~Transformacion();
 };

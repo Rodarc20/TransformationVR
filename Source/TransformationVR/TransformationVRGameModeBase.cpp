@@ -40,8 +40,9 @@ void ATransformationVRGameModeBase::BeginPlay() {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
+		FVector SpawnLocation(-270.0f, 90.0f, 130.0f);
 
-		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 	}
 
 	for (int i = 0; i < 10 && i < Partes.Num(); i++) {//asociando partes a la jerarquia

@@ -342,6 +342,9 @@ void AVRPawn::GrabRightReleased() {
 					OverlapedRightParte->UnirConParteSobrepuesta();
 					Jerarquia->UnirPadreHijo(OverlapedRightParte->OverlapedParte->Id, OverlapedRightParte->Id);
 					Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
+					Jerarquia->Layout();
+					Jerarquia->AplicarLayout();
+
 					
 				}
 				//pero si no lo hbuiera sobre puesto a otra parte no unida, no deberia uniralas
@@ -369,6 +372,10 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
 			else {
 				OffsetLeftParte = OverlapedLeftParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
 				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id]);
+				Jerarquia->CrearNodo(Jerarquia->Root->ParteAsociada);
+				Jerarquia->ActualizarNodos();
+				Jerarquia->Layout();
+				Jerarquia->AplicarLayout();
 				OverlapedLeftParte->bConectado = true;
 				bRootEstablecida = true;
 				bGrabLeftMuneco = true;

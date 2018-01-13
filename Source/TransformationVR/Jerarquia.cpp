@@ -12,6 +12,7 @@ AJerarquia::AJerarquia()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Root = nullptr;
 	TransformacionesPartes.SetNum(10);
 	Nodos.SetNum(10);
@@ -23,6 +24,10 @@ AJerarquia::AJerarquia()
         TipoNodo = NodoClass.Class;
     }
 
+	AnchoNodos = 25.0f;
+	AltoNodos = 12.5f;
+	DeltaNiveles = 37.5f;
+	DeltaHermanos = 35.0f;
 }
 
 // Called when the game starts or when spawned
@@ -200,6 +205,7 @@ void AJerarquia::CrearNodo(AParte * ParteAsociada) {
 			NodoInstanciado->IdParte = ParteAsociada->Id;//para el texto del numero, quiza este tipo de funcionalidad deberia estar encapsulada en alguna funcion de la clase nodo
 			NodoInstanciado->CambiarNombreParte(ParteAsociada->Id);
 			//NodoInstanciado->bActualizado = false;
+            NodoInstanciado->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
 		}
 
 }
@@ -208,11 +214,6 @@ void AJerarquia::ImprimirMatriz(FMatrix m) {
     for (int i = 0; i < 4; i++) {
         UE_LOG(LogClass, Log, TEXT("[%.4f,%.4f,%.4f,%.4f]"), m.M[i][0], m.M[i][1], m.M[i][2], m.M[i][3]);
     }
-}
-
-void AJerarquia::AplicarLayout() {
-	//la calse transformacion son los nodos sobre los que debo calcular estos layouts
-	//una vez calculados los puntos, solo debo darselos a la clse nodo
 }
 
 void AJerarquia::ActualizarNodos() {
@@ -224,6 +225,96 @@ void AJerarquia::ActualizarNodos() {
 	}
 }
 
+void AJerarquia::Calculos(Transformacion * V) {//lo uso dentro de claculos 2, por alguna razon
+    //calcular hojas, altura,
+    if (V->Hijos.Num() == 0) {//deberia usar si es virtual o no
+        V->Hojas = 1;
+        V->Altura = 0;
+    }
+    else {
+        V->Hojas = 0;
+        V->Altura = 0;
+        for (int i = 0; i < V->Hijos.Num(); i++) {
+            Calculos(V->Hijos[i]);
+            V->Hojas += V->Hijos[i]->Hojas;
+            V->Altura = FMath::Max<float>(V->Altura, V->Hijos[i]->Altura);
+        }
+        V->Altura++;
+    }
+    //si el arbol tiene 4 niveles, el valor de altura de la raiz es 3
+}
+
+void AJerarquia::Calculos2() {//calcula hojas y altura, de otra forma
+    //Transformacion * Root = &TransformacionesPartes[TransformacionesPartes.Num() - 1];
+
+    Calculos(Root->Padre);
+	Root->Altura = 0;
+	Root->Hojas = 0;
+    for (int i = 0; i < Root->Hijos.Num(); i++) {
+        Calculos(Root->Hijos[i]);
+        Root->Hojas += Root->Hijos[i]->Hojas;
+        Root->Altura = FMath::Max<float>(Root->Altura, Root->Hijos[i]->Altura);
+    }
+    Root->Altura++;
+}
+
+void AJerarquia::Calc() {//para hallar niveles
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+    //Transformacion * Root = &TransformacionesPartes[Nodos.Num() - 1];
+	//ya tengo un root
+    Root->Nivel = 0;
+    //pila.push(Root);//no deberia dsencolarlo
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+        if (V->Hijos.Num()) {
+            for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+                V->Hijos[i]->Nivel = V->Nivel + 1;
+                pila.push(V->Hijos[i]);
+            }
+        }
+    }
+}
+
+void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
+    TQueue<Transformacion * > Cola;
+    //la raiz es el ultimo nodo
+    //Transformacion * Root = &TransformacionesPartes[Trasn.Num() - 1];
+    //Calculos2();
+	Calculos(Root);
+    Calc();//no estaba antes
+    
+    Root->WTam = Root->Hojas * DeltaHermanos;
+    Root->WInicio = 0;
+	Root->PosicionNodo = FVector(0.0f, Root->WTam/2, Root->Nivel * DeltaNiveles);//no habra variaconies en x, y todo sera en espacio local de la jerarquia, para poder ubicarla donde sea visible y rotando hacia el susuario
+    //float DeltaPhi = PI / Root->Altura;
+	float WTemp = 0;
+    //debo tener en cuenta al padre para hacer los calculos, ya que esto esta como arbol sin raiz
+	Cola.Enqueue(Root);
+    while (!Cola.IsEmpty()) {
+        Transformacion * V;
+        Cola.Dequeue(V);
+        WTemp = V->WInicio;
+        for (int i = 0; i < V->Hijos.Num(); i++) {
+            V->Hijos[i]->WTam = V->WTam * (float(V->Hijos[i]->Hojas) / V->Hojas);
+            V->Hijos[i]->WInicio = WTemp;
+			V->Hijos[i]->PosicionNodo = FVector(0.0f, V->Hijos[i]->WInicio + V->Hijos[i]->WTam/2, V->Hijos[i]->Nivel * DeltaNiveles * -1);//no habra variaconies en x, y todo sera en espacio local de la jerarquia, para poder ubicarla donde sea visible y rotando hacia el susuario
+            WTemp += V->Hijos[i]->WTam;
+            Cola.Enqueue(V->Hijos[i]);
+        }
+    }
+}
+
+void AJerarquia::AplicarLayout() {
+	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
+	for (int i = 0; i < Nodos.Num(); i++) {
+		if (Nodos[i]) {
+			Nodos[i]->SetActorRelativeLocation(TransformacionesPartes[i].PosicionNodo + Correccion);
+		}
+	}
+}
 /*
 Ejemplo de uso
             if (i & 1) {
