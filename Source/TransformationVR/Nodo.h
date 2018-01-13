@@ -26,6 +26,31 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
     UWidgetComponent * Widget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	bool bActualizado;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	FString NombreParte;//lenar al construir o depues de construir
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	FString TextoTraslacion;//lenar al construir o depues de construir
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	FString TextoRotacion;//lenar al construir o depues de construir
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	int IdParte;
+
+	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+	void CambiarNombreParte(int NuevoIdParte);
+
+	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+	void CambiarTraslacion(FVector NuevaTraslacion);
+
+	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+	void CambiarRotacion(FVector NuevaRotacion);
+
 	
 	
 };

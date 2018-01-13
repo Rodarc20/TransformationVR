@@ -2,6 +2,9 @@
 
 #include "Jerarquia.h"
 #include "Transformacion.h"
+#include "Engine/Engine.h"
+#include "Nodo.h"
+#include "Public/UObject/ConstructorHelpers.h"
 #include <stack>
 
 // Sets default values
@@ -11,6 +14,14 @@ AJerarquia::AJerarquia()
 	PrimaryActorTick.bCanEverTick = true;
 	Root = nullptr;
 	TransformacionesPartes.SetNum(10);
+	Nodos.SetNum(10);
+
+    static ConstructorHelpers::FClassFinder<ANodo> NodoClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/Nodo_BP.Nodo_BP_C'"));
+    if (NodoClass.Succeeded()) {
+        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("TipoNodo encontrado."));
+        TipoNodo = NodoClass.Class;
+    }
 
 }
 
@@ -128,6 +139,9 @@ FMatrix AJerarquia::MultiplicacionMatriz(FMatrix a, FMatrix b) {
 void AJerarquia::UnirPadreHijo(int IdPadre, int IdHijo) {
 	TransformacionesPartes[IdHijo].Padre = &(TransformacionesPartes[IdPadre]);
 	TransformacionesPartes[IdPadre].Hijos.Add(&(TransformacionesPartes[IdHijo]));
+	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
+	CrearNodo(TransformacionesPartes[IdHijo].ParteAsociada);
+	ActualizarNodos();
 }
 
 void AJerarquia::Actualizar() {
@@ -167,12 +181,47 @@ void AJerarquia::ActualizarWorlds() {//se supone que alguna matriz la que se se 
 			pila.push(T->Hijos[i]);
 		}
 	}
+	ActualizarNodos();
+}
+
+void AJerarquia::CrearNodo(AParte * ParteAsociada) {
+        UWorld * const World = GetWorld();
+		if (World) {
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = Instigator;
+
+			FVector SpawnLocation(ParteAsociada->Id * 5);
+			
+			SpawnLocation = GetTransform().TransformPosition(SpawnLocation);
+			SpawnLocation += FVector(-300.0f, 0.0f, 200.0f);
+			ANodo * const NodoInstanciado = World->SpawnActor<ANodo>(TipoNodo, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+			Nodos[ParteAsociada->Id] = NodoInstanciado;
+			NodoInstanciado->IdParte = ParteAsociada->Id;//para el texto del numero, quiza este tipo de funcionalidad deberia estar encapsulada en alguna funcion de la clase nodo
+			NodoInstanciado->CambiarNombreParte(ParteAsociada->Id);
+			//NodoInstanciado->bActualizado = false;
+		}
+
 }
 
 void AJerarquia::ImprimirMatriz(FMatrix m) {
     for (int i = 0; i < 4; i++) {
         UE_LOG(LogClass, Log, TEXT("[%.4f,%.4f,%.4f,%.4f]"), m.M[i][0], m.M[i][1], m.M[i][2], m.M[i][3]);
     }
+}
+
+void AJerarquia::AplicarLayout() {
+	//la calse transformacion son los nodos sobre los que debo calcular estos layouts
+	//una vez calculados los puntos, solo debo darselos a la clse nodo
+}
+
+void AJerarquia::ActualizarNodos() {
+	for (int i = 0; i < Nodos.Num(); i++) {
+		if (Nodos[i]) {//si el nodo existe es por que la parte del cuerpo existe
+			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetLocation());
+			Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetWorldLocation());
+		}
+	}
 }
 
 /*

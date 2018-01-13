@@ -12,7 +12,7 @@ AParte::AParte()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	Id = -1;
 	ColorArticulacionNoConectada = FLinearColor(0.0f, 0.08336f, 0.234375f, 0.0f);
 	ColorArticulacionSobrepuesta = FLinearColor(0.0f, 0.234375f, 0.097833f, 0.0f);
 	//ColorArticulacionConectada = FLinearColor(0.0f, 0.234375, 0.212609f, 0.0f);
