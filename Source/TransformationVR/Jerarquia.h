@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Transformacion.h"
 #include "Nodo.h"
+#include "PilaOpenGL.h"
 #include "Jerarquia.generated.h"
 
 UCLASS()
@@ -52,7 +53,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
     TSubclassOf<class ANodo> TipoNodo;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
 
-
     void ImprimirMatriz(FMatrix m);
 
 	FVector TraslacionTemporal;//temporalmente usare esta variapble para traslador en funcion de este vector todos los elementso de la jerarquia, pero debo eliminar por que con esto no se trasladara todo
@@ -77,7 +77,7 @@ public:
 
 	float DeltaHermanos;
 
-	
+	APilaOpenGL * PilaCodigo;
 	
 	
 };

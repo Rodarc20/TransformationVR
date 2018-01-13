@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Parte.h"
 #include "Jerarquia.h"
+#include "PilaOpenGL.h"
 #include "TransformationVRGameModeBase.generated.h"
 
 /**
@@ -30,6 +31,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
 	AJerarquia * Jerarquia;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+    TSubclassOf<class APilaOpenGL> TipoPila;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	APilaOpenGL * PilaCodigo;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     TArray<AParte *> Partes;//se supone que hay 10 partes

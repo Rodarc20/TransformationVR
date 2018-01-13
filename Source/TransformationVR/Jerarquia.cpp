@@ -4,6 +4,7 @@
 #include "Transformacion.h"
 #include "Engine/Engine.h"
 #include "Nodo.h"
+#include "PilaOpenGL.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include <stack>
 

@@ -4,6 +4,7 @@
 #include "VRPawn.h"
 #include "Parte.h"
 #include "Jerarquia.h"
+#include "PilaOpenGL.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "Public/UObject/ConstructorHelpers.h"
@@ -16,6 +17,14 @@ ATransformationVRGameModeBase::ATransformationVRGameModeBase() {
 	if (PlayerPawnClass.Class != NULL) {
 		DefaultPawnClass = PlayerPawnClass.Class;
 	}
+
+    static ConstructorHelpers::FClassFinder<APilaOpenGL> PilaClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/PilaOpenGL_BP.PilaOpenGL_BP_C'"));
+    if (PilaClass.Succeeded()) {
+        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("TipoNodo encontrado."));
+        TipoPila = PilaClass.Class;
+    }
+
 }
 
 void ATransformationVRGameModeBase::BeginPlay() {
@@ -40,7 +49,7 @@ void ATransformationVRGameModeBase::BeginPlay() {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-270.0f, 90.0f, 130.0f);
+		FVector SpawnLocation(-210.0f, 90.0f, 130.0f);
 
 		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 	}
@@ -49,6 +58,18 @@ void ATransformationVRGameModeBase::BeginPlay() {
 		Jerarquia->TransformacionesPartes[i].ParteAsociada = Partes[i];
 		Jerarquia->TransformacionesPartes[i].ActualizarDesdeParte();
 	}
+
+	if (World) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
+		FVector SpawnLocation(-210.0f, -110.0f, 140.0f);
+
+		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		if (Jerarquia)
+			Jerarquia->PilaCodigo = PilaCodigo;
+	}
+
     AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (MyVRPawn) {
 		MyVRPawn->Jerarquia = Jerarquia;

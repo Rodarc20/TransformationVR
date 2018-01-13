@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/WidgetComponent.h"
 #include "PilaOpenGL.generated.h"
 
 UCLASS()
@@ -23,6 +24,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	bool bActualizado;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+    UWidgetComponent * Widget;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	FString Codigo;//lenar al construir o depues de construir
 	
+	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+	void CambiarCodigo(FString NuevoCodigo);
 };
