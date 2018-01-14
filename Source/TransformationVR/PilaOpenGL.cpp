@@ -16,7 +16,7 @@ APilaOpenGL::APilaOpenGL()
 	RootComponent = Widget;
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(1000.0f, 1500.0f));
+    Widget->SetDrawSize(FVector2D(2000.0f, 1500.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (WidgetClass.Succeeded()) {

@@ -79,7 +79,11 @@ public:
 
 	APilaOpenGL * PilaCodigo;
 
+	int NumeroIdentaciones;
+
 	FString Texto(Transformacion * T);
+
+	FString Identacion(int Tam);
 
 	void ActualizarPila();
 	

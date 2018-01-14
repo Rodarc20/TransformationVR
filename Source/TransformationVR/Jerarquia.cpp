@@ -311,21 +311,33 @@ void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
 FString AJerarquia::Texto(Transformacion * T) {
 	FString res;
 	if (T->Padre) {
-		res = "glPushMatrix();\n";
+		NumeroIdentaciones++;
+		res = Identacion(NumeroIdentaciones) + "glPushMatrix();\n";
 		FVector Posicion = T->GetLocation();
-		res += "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
-		res += "glRotate();\n";
-		res += T->ParteAsociada->NombreParte + "();\n";
+		res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+		res += Identacion(NumeroIdentaciones) + "glRotate();\n";
+		res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
 		for (int i = 0; i < T->Hijos.Num(); i++) {
 			res += Texto(T->Hijos[i]);
 		}
-		res += "glPopMatrix();\n";
+		res += Identacion(NumeroIdentaciones) + "glPopMatrix();\n";
+		NumeroIdentaciones--;
 	}
 	else {
-		res += T->ParteAsociada->NombreParte + "();\n";
+		NumeroIdentaciones = 0;//la raiz
+		res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
 		for (int i = 0; i < T->Hijos.Num(); i++) {
 			res += Texto(T->Hijos[i]);
 		}
+	}
+	return res;
+}
+
+FString AJerarquia::Identacion(int Tam) {
+	FString res;
+	for (int i = 0; i < Tam; i++) {
+		//res += "\t";
+		res += "    ";
 	}
 	return res;
 }
