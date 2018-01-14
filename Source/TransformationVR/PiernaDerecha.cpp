@@ -11,6 +11,7 @@
 APiernaDerecha::APiernaDerecha() {
 
 	Id = 4;
+	NombreParte = "Pierna Derecha";
     PiernaD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PiernaDerecha"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = PiernaD;

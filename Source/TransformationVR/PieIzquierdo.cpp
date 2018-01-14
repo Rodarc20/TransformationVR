@@ -11,6 +11,7 @@
 APieIzquierdo::APieIzquierdo() {
 
 	Id = 9;
+	NombreParte = "Pie Izquierdo";
     PieI = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PieIzquierdo"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = PieI;

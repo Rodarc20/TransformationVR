@@ -313,6 +313,7 @@ void AVRPawn::GrabRightTick() {
 				//Jerarquia->Actualizar();
 				Jerarquia->Root->CalcularHDesdeHW();
 				Jerarquia->ActualizarWorlds();
+				Jerarquia->ActualizarPila();
 			}
 		}
 		else {//si no esta conectada
@@ -344,6 +345,7 @@ void AVRPawn::GrabRightReleased() {
 					Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 					Jerarquia->Layout();
 					Jerarquia->AplicarLayout();
+					Jerarquia->ActualizarPila();
 
 					
 				}
@@ -396,6 +398,7 @@ void AVRPawn::GrabLeftTick() {
 				//Jerarquia->Actualizar();
 				Jerarquia->Root->CalcularHDesdeHW();
 				Jerarquia->ActualizarWorlds();//probar!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				Jerarquia->ActualizarPila();
 			}
 		}
 		else {//si no esta conectada

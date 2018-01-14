@@ -11,6 +11,7 @@
 ATorso::ATorso() {
 
 	Id = 0;
+	NombreParte = "Torso";
     Torso = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Torso"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = Torso;

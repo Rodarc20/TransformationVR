@@ -78,6 +78,10 @@ public:
 	float DeltaHermanos;
 
 	APilaOpenGL * PilaCodigo;
+
+	FString Texto(Transformacion * T);
+
+	void ActualizarPila();
 	
 	
 };

@@ -11,6 +11,7 @@
 ACabeza::ACabeza() {
 
 	Id = 1;
+	NombreParte = "Cabeza";
     Cabeza = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cabeza"));
 	RootComponent = Cabeza;
 

@@ -11,6 +11,7 @@
 AManoIzquierda::AManoIzquierda() {
 
 	Id = 7;
+	NombreParte = "Mano Izquierda";
     ManoI = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ManoIzquierda"));
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = ManoI;

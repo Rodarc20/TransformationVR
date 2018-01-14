@@ -11,6 +11,7 @@
 ABrazoDerecho::ABrazoDerecho() {
 
 	Id = 2;
+	NombreParte = "Brazo Derecho";
 
     BrazoD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BrazoDerecho"));
     //Torso->SetupAttachment(RootComponent);

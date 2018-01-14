@@ -29,6 +29,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	int Id;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	FString NombreParte;
 	//colision que envuelve la parte, esta deberia ser la raíz por ahora no lo es
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UCapsuleComponent * Colision;

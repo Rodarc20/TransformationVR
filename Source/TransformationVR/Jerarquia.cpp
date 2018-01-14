@@ -308,6 +308,32 @@ void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
     }
 }
 
+FString AJerarquia::Texto(Transformacion * T) {
+	FString res;
+	if (T->Padre) {
+		res = "glPushMatrix();\n";
+		FVector Posicion = T->GetLocation();
+		res += "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+		res += "glRotate();\n";
+		res += T->ParteAsociada->NombreParte + "();\n";
+		for (int i = 0; i < T->Hijos.Num(); i++) {
+			res += Texto(T->Hijos[i]);
+		}
+		res += "glPopMatrix();\n";
+	}
+	else {
+		res += T->ParteAsociada->NombreParte + "();\n";
+		for (int i = 0; i < T->Hijos.Num(); i++) {
+			res += Texto(T->Hijos[i]);
+		}
+	}
+	return res;
+}
+
+void AJerarquia::ActualizarPila() {
+	PilaCodigo->CambiarCodigo(Texto(Root));
+}
+
 void AJerarquia::AplicarLayout() {
 	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
 	for (int i = 0; i < Nodos.Num(); i++) {
