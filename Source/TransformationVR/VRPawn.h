@@ -71,7 +71,10 @@ public:
     UParticleSystemComponent * EfectoImpacto;
 
     UPROPERTY(VisibleAnywhere, Category = "VRPawn")
-    USceneComponent * PuntoReferenciaRobot;
+    USceneComponent * PuntoReferenciaRight;
+
+    UPROPERTY(VisibleAnywhere, Category = "VRPawn")
+    USceneComponent * PuntoReferenciaLeft;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
     UFloatingPawnMovement * Movimiento;

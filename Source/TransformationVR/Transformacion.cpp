@@ -4,12 +4,30 @@
 
 void Transformacion::ActualizarParte() {
 	//quiza deba actualizar las matrices locales
-	ParteAsociada->SetActorLocation(FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]));
+	//ParteAsociada->SetActorLocation(FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]));
+	ParteAsociada->SetActorLocation(GetWorldLocation());
+	//float rx = FMath::RadiansToDegrees(FMath::Atan2(-HW.M[2][0], FMath::Sqrt(FMath::Square(HW.M[2][1]) + FMath::Square(HW.M[2][2]))));
+	//float ry = FMath::RadiansToDegrees(FMath::Atan2(HW.M[2][1], HW.M[2][2]));
+	//float rz = FMath::RadiansToDegrees(FMath::Atan2(HW.M[1][0], HW.M[0][0]));
+	//float rx = FMath::Atan2(HW.M[1][2], HW.M[2][0]);
+	
+	//el valor ry parece ser el que esta completamente correcto, y en la posicinocorrecta
+	//ParteAsociada->SetActorRotation(FRotator(ry, rz, rx));//funciona bien
+	//ParteAsociada->SetActorRotation(FRotator(rx, rz, ry));//no estoy cambiando esto
+	//ParteAsociada->SetActorRotation(FRotator(rz, ry, rx));//no estoy cambiando esto
+	//ParteAsociada->SetActorRotation(FRotator(rx, ry, rz));//no estoy cambiando esto
+	//ParteAsociada->SetActorRotation(FRotator(ry, rx, rz));//funciona bien
+	//ParteAsociada->SetActorRotation(FRotator(rz, rx, ry));//no
+
+	//ParteAsociada->SetActorRotation(RotacionActualW);//no estoy cambiando esto
+	ParteAsociada->SetActorRotation(GetWorldRotation());//no estoy cambiando esto
 }
 
 void Transformacion::ActualizarDesdeParte() {
 	FVector Posicion = ParteAsociada->GetActorLocation();
 	HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
+	RotacionActualW = ParteAsociada->GetActorRotation();
+	RotarWorld(RotacionActualW);
 	//por ahora solo para la matriz world
 	//actualzar la matriz local
 	CalcularHDesdeHW();
@@ -26,6 +44,7 @@ void Transformacion::SetLocation(FVector Posicion) {
     H.M[1][3] = Posicion.Y;
     H.M[2][3] = Posicion.Z;
 	//falta recalcular la matriz world
+	CalcularHWDesdeH();
 }
 
 void Transformacion::SetWorldLocation(FVector Posicion) {
@@ -33,6 +52,7 @@ void Transformacion::SetWorldLocation(FVector Posicion) {
     HW.M[1][3] = Posicion.Y;
     HW.M[2][3] = Posicion.Z;
 	//falta recalcular la matriz local
+	CalcularHDesdeHW();
 }
 
 void Transformacion::SetRotation(FRotator Rotacion) {
@@ -40,9 +60,15 @@ void Transformacion::SetRotation(FRotator Rotacion) {
 	FVector Posicion = GetLocation();
 	H = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
 	Rotar(Rotacion);
+	CalcularHWDesdeH();
 }
 
 void Transformacion::SetWorldRotation(FRotator Rotacion) {
+	RotacionActualW = Rotacion;
+	FVector Posicion = GetWorldLocation();
+	HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
+	RotarWorld(Rotacion);//este es un añádido
+	CalcularHDesdeHW();
 }
 
 FVector Transformacion::GetLocation() {
@@ -54,11 +80,21 @@ FVector Transformacion::GetWorldLocation() {
 }
 
 FRotator Transformacion::GetRotation() {
-	return FRotator();
+	float rx = FMath::RadiansToDegrees(FMath::Atan2(-H.M[2][0], FMath::Sqrt(FMath::Square(H.M[2][1]) + FMath::Square(H.M[2][2]))));
+	float ry = FMath::RadiansToDegrees(FMath::Atan2(H.M[2][1], H.M[2][2]));
+	float rz = FMath::RadiansToDegrees(FMath::Atan2(H.M[1][0], H.M[0][0]));
+	return FRotator (ry, rz, rx);
 }
 
 FRotator Transformacion::GetWorldRotation() {
-	return FRotator();
+	float rx = FMath::RadiansToDegrees(FMath::Atan2(-HW.M[2][0], FMath::Sqrt(FMath::Square(HW.M[2][1]) + FMath::Square(HW.M[2][2]))));
+	float ry = FMath::RadiansToDegrees(FMath::Atan2(HW.M[2][1], HW.M[2][2]));
+	float rz = FMath::RadiansToDegrees(FMath::Atan2(HW.M[1][0], HW.M[0][0]));
+	//float rx = FMath::Atan2(HW.M[1][2], HW.M[2][0]);
+	
+	//el valor ry parece ser el que esta completamente correcto, y en la posicinocorrecta
+	//ParteAsociada->SetActorRotation(FRotator(ry, rz, rx));//funciona bien
+	return FRotator (ry, rz, rx);
 }
 
 void Transformacion::Trasladar(FVector Traslacion) {//Gloabal
@@ -97,15 +133,6 @@ FMatrix Transformacion::HWorld() {
 	//calculary aculiza HW  usando el Hworld del padre
 	HW = FromLocalToWorld(H);
 	return HW;
-}
-
-void Transformacion::CalcularHWorld() {
-	if (Padre) {
-		HW = MultiplicacionMatriz(Padre->HW, H);
-	}
-	else {
-		HW = H;
-	}
 }
 
 void Transformacion::CalcularHWDesdeH() {
@@ -176,6 +203,7 @@ FMatrix Transformacion::MatrizTraslacion(float x, float y, float z) {
 }
 
 FMatrix Transformacion::MatrizRotacionX(float angle) {
+	angle = FMath::DegreesToRadians(angle);
     FMatrix RotX;
     RotX.M[0][0] = cos(angle);
     RotX.M[0][1] = 0;
@@ -197,6 +225,7 @@ FMatrix Transformacion::MatrizRotacionX(float angle) {
 }
 
 FMatrix Transformacion::MatrizRotacionY(float angle) {
+	angle = FMath::DegreesToRadians(angle);
     FMatrix RotY;
     RotY.M[0][0] = 1;
     RotY.M[0][1] = 0;
@@ -218,6 +247,7 @@ FMatrix Transformacion::MatrizRotacionY(float angle) {
 }
 
 FMatrix Transformacion::MatrizRotacionZ(float angle) {
+	angle = FMath::DegreesToRadians(angle);
     FMatrix RotZ;//en este caso la matriz z es la identidad por que theta de V es 0 y eso al realziar calculos es la matriz identdad;
     RotZ.M[0][0] = cos(angle);
     RotZ.M[0][1] = -sin(angle);

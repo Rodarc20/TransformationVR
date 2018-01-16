@@ -146,6 +146,9 @@ void AJerarquia::UnirPadreHijo(int IdPadre, int IdHijo) {
 	TransformacionesPartes[IdHijo].Padre = &(TransformacionesPartes[IdPadre]);
 	TransformacionesPartes[IdPadre].Hijos.Add(&(TransformacionesPartes[IdHijo]));
 	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
+	TransformacionesPartes[IdHijo].ActualizarDesdeParte();
+	UE_LOG(LogClass, Log, TEXT("Matrices actualizadas despues de unir hijo"));
+	ImprimirMatrices(&TransformacionesPartes[IdHijo]);
 	CrearNodo(TransformacionesPartes[IdHijo].ParteAsociada);
 	ActualizarNodos();
 }
@@ -178,13 +181,16 @@ void AJerarquia::ActualizarWorlds() {//se supone que alguna matriz la que se se 
 	//en ese mismo instante debo calcular su matriz local, una vez hecho esto debo llamar a esta funcion, que actualizara todo el arbol, aplicando la nueva traslacion de esas matrices donde corresponde, y tambien actualizando las posicones de las partes
 	std::stack<Transformacion *> pila;
 	pila.push(Root);
+	ImprimirMatrices(Root);
 	while (!pila.empty()) {
 		Transformacion * T = pila.top();
 		pila.pop();
-		T->CalcularHWorld();
+		//T->CalcularHWorld();//esto calcula el HWrold()en funcion de la jerarquia
+		T->CalcularHWDesdeH();
 		T->ActualizarParte();
 		for (int i = 0; i < T->Hijos.Num(); i++) {//debiria recorrer de forma inversa?
 			pila.push(T->Hijos[i]);
+			ImprimirMatrices(T->Hijos[i]);
 		}
 	}
 	ActualizarNodos();
@@ -215,6 +221,13 @@ void AJerarquia::ImprimirMatriz(FMatrix m) {
     for (int i = 0; i < 4; i++) {
         UE_LOG(LogClass, Log, TEXT("[%.4f,%.4f,%.4f,%.4f]"), m.M[i][0], m.M[i][1], m.M[i][2], m.M[i][3]);
     }
+}
+
+void AJerarquia::ImprimirMatrices(Transformacion * T) {
+	UE_LOG(LogClass, Log, TEXT("%s Local"), *T->ParteAsociada->NombreParte);
+	ImprimirMatriz(T->H);
+	UE_LOG(LogClass, Log, TEXT("%s World"), *T->ParteAsociada->NombreParte);
+	ImprimirMatriz(T->HW);
 }
 
 void AJerarquia::ActualizarNodos() {

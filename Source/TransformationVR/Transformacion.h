@@ -15,6 +15,8 @@ public:
 	FMatrix HW;//cuando este moviendo las partes, estare modificando esta matriz, para luego calcular la matriz local H
 	Transformacion * Padre;
 	TArray<Transformacion *> Hijos;
+	FRotator RotacionActualW;//global
+	FVector PosicionActualW;
 
 	AParte * ParteAsociada;
 	void ActualizarParte();
@@ -38,7 +40,6 @@ public:
 
 	FMatrix HLocal();//retorna el H respecto al padre
 	FMatrix HWorld();//retorna el H respecto al origen del mundo
-	void CalcularHWorld();
 	void CalcularHWDesdeH();
 	void CalcularHDesdeHW();
 	FMatrix FromWorldToLocal(FMatrix NewHW);

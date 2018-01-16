@@ -113,9 +113,13 @@ AVRPawn::AVRPawn()
     EfectoImpacto->SetRelativeLocation(FVector::ZeroVector);
     EfectoImpacto->Deactivate();
 
-    PuntoReferenciaRobot = CreateDefaultSubobject<USceneComponent>(TEXT("PuntoReferenciaRobot"));
-	PuntoReferenciaRobot->SetupAttachment(MotionControllerRight);
-	PuntoReferenciaRobot->SetRelativeLocation(FVector::ZeroVector);
+    PuntoReferenciaRight = CreateDefaultSubobject<USceneComponent>(TEXT("PuntoReferenciaRight"));
+	PuntoReferenciaRight->SetupAttachment(MotionControllerRight);
+	PuntoReferenciaRight->SetRelativeLocation(FVector::ZeroVector);
+
+    PuntoReferenciaLeft = CreateDefaultSubobject<USceneComponent>(TEXT("PuntoReferenciaLeft"));
+	PuntoReferenciaLeft->SetupAttachment(MotionControllerLeft);
+	PuntoReferenciaLeft->SetRelativeLocation(FVector::ZeroVector);
 
     Velocidad = 200.0f;
     bPadDerecho = false;
@@ -286,20 +290,23 @@ void AVRPawn::GrabRightPressed() {
 				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
 				bGrabRightMuneco = true;
 				//establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
-				PuntoReferenciaRobot->SetupAttachment(MotionControllerRight);
-				PuntoReferenciaRobot->SetWorldLocation(Jerarquia->Root->ParteAsociada->GetActorLocation());
-				PuntoReferenciaRobot->SetWorldRotation(Jerarquia->Root->ParteAsociada->GetActorRotation());
+				PuntoReferenciaRight->SetWorldLocation(Jerarquia->Root->ParteAsociada->GetActorLocation());
+				PuntoReferenciaRight->SetWorldRotation(Jerarquia->Root->ParteAsociada->GetActorRotation());
 				//PuntoReferenciaRobot->SetRelativeLocation(MotionControllerLeft->GetComponentTransform().TransformPosition(Jerarquia->Root->ParteAsociada->GetActorLocation()));
 			}
 		}
 		else {//si no esta conectada
 			if (Jerarquia->Root) {
 				OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+				PuntoReferenciaRight->SetWorldLocation(OverlapedRightParte->GetActorLocation());
+				PuntoReferenciaRight->SetWorldRotation(OverlapedRightParte->GetActorRotation());
 				OverlapedRightParte->BuscarArticulacion();
 				bGrabRightMuneco = false;
 			}
 			else {
 				OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+				PuntoReferenciaRight->SetWorldLocation(OverlapedRightParte->GetActorLocation());
+				PuntoReferenciaRight->SetWorldRotation(OverlapedRightParte->GetActorRotation());
 				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedRightParte->Id]);
 				Jerarquia->CrearNodo(Jerarquia->Root->ParteAsociada);
 				Jerarquia->ActualizarNodos();
@@ -318,18 +325,22 @@ void AVRPawn::GrabRightTick() {
 		if (OverlapedRightParte->bConectado) {
 			if (Jerarquia->Root) {//bRootEstablecida
 				//OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//este offset no deberia calcularse solo una vez?
-				FVector Traslado = MotionControllerRight->GetComponentLocation() + OffsetRightParte - Jerarquia->Root->GetWorldLocation();
+				//FVector Traslado = MotionControllerRight->GetComponentLocation() + OffsetRightParte - Jerarquia->Root->GetWorldLocation();
 
-				Jerarquia->Root->Trasladar(Traslado);
-				Jerarquia->TraslacionTemporal = Traslado;
+				//Jerarquia->Root->Trasladar(Traslado);
+				//Jerarquia->Root->SetWorldLocation(MotionControllerRight->GetComponentLocation());
+				Jerarquia->Root->SetWorldLocation(PuntoReferenciaRight->GetComponentLocation());
+				Jerarquia->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
 				//Jerarquia->Actualizar();
-				Jerarquia->Root->CalcularHDesdeHW();
+				//Jerarquia->Root->CalcularHDesdeHW();
 				Jerarquia->ActualizarWorlds();
 				Jerarquia->ActualizarPila();
 			}
 		}
 		else {//si no esta conectada
-			OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
+			//OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
+			OverlapedRightParte->SetActorLocation(PuntoReferenciaRight->GetComponentLocation());
+			OverlapedRightParte->SetActorRotation(PuntoReferenciaRight->GetComponentRotation());
 			Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 			//UE_LOG(LogClass, Log, TEXT("Trasladando Parte"));
 
@@ -346,6 +357,9 @@ void AVRPawn::GrabRightReleased() {
 			if (bGrabLeftMuneco) {
 				//no se hace nada, jeje
 			}
+			else {
+				bGrabRightMuneco = false;
+			}
 		}
 		else {//si no esta conectada
 			if (OverlapedRightParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
@@ -354,7 +368,6 @@ void AVRPawn::GrabRightReleased() {
 					//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
 					OverlapedRightParte->UnirConParteSobrepuesta();
 					Jerarquia->UnirPadreHijo(OverlapedRightParte->OverlapedParte->Id, OverlapedRightParte->Id);
-					Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 					Jerarquia->Layout();
 					Jerarquia->AplicarLayout();
 					Jerarquia->ActualizarPila();
@@ -380,16 +393,22 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
 			else {
 				OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
 				bGrabLeftMuneco = true;
+				PuntoReferenciaLeft->SetWorldLocation(Jerarquia->Root->ParteAsociada->GetActorLocation());
+				PuntoReferenciaLeft->SetWorldRotation(Jerarquia->Root->ParteAsociada->GetActorRotation());
 			}
 		}
 		else {//si no esta conectada
 			if (Jerarquia->Root) {
 				OffsetLeftParte = OverlapedLeftParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
+				PuntoReferenciaLeft->SetWorldLocation(OverlapedLeftParte->GetActorLocation());
+				PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftParte->GetActorRotation());
 				OverlapedLeftParte->BuscarArticulacion();
 				bGrabLeftMuneco = false;
 			}
 			else {
 				OffsetLeftParte = OverlapedLeftParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
+				PuntoReferenciaLeft->SetWorldLocation(OverlapedLeftParte->GetActorLocation());
+				PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftParte->GetActorRotation());
 				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id]);
 				Jerarquia->CrearNodo(Jerarquia->Root->ParteAsociada);
 				Jerarquia->ActualizarNodos();
@@ -408,18 +427,23 @@ void AVRPawn::GrabLeftTick() {
 		if (OverlapedLeftParte->bConectado) {
 			if (Jerarquia->Root) {//bRootEstablecida
 				//OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//este offset no deberia calcularse solo una vez?
-				FVector Traslado = MotionControllerLeft->GetComponentLocation() + OffsetLeftParte - Jerarquia->Root->GetWorldLocation();
+				//FVector Traslado = MotionControllerLeft->GetComponentLocation() + OffsetLeftParte - Jerarquia->Root->GetWorldLocation();
 
-				Jerarquia->Root->Trasladar(Traslado);
-				Jerarquia->TraslacionTemporal = Traslado;
+				//Jerarquia->Root->Trasladar(Traslado);
+				//Jerarquia->TraslacionTemporal = Traslado;
 				//Jerarquia->Actualizar();
-				Jerarquia->Root->CalcularHDesdeHW();
+				//Jerarquia->Root->CalcularHDesdeHW();
+
+				Jerarquia->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
+				Jerarquia->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
 				Jerarquia->ActualizarWorlds();//probar!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				Jerarquia->ActualizarPila();
 			}
 		}
 		else {//si no esta conectada
-			OverlapedLeftParte->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte);
+			//OverlapedLeftParte->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte);
+			OverlapedLeftParte->SetActorLocation(PuntoReferenciaLeft->GetComponentLocation());
+			OverlapedLeftParte->SetActorRotation(PuntoReferenciaLeft->GetComponentRotation());
 			Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id].ActualizarDesdeParte();
 		}
 	}
@@ -434,6 +458,9 @@ void AVRPawn::GrabLeftReleased() {
 			if (bGrabRightMuneco) {
 				//no se hace nada, jeje
 			}
+			else {
+				bGrabLeftMuneco = false;
+			}
 		}
 		else {//si no esta conectada
 			if (OverlapedLeftParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
@@ -442,7 +469,6 @@ void AVRPawn::GrabLeftReleased() {
 					//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
 					OverlapedLeftParte->UnirConParteSobrepuesta();
 					Jerarquia->UnirPadreHijo(OverlapedLeftParte->OverlapedParte->Id, OverlapedLeftParte->Id);
-					Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id].ActualizarDesdeParte();
 					Jerarquia->Layout();
 					Jerarquia->AplicarLayout();
 					Jerarquia->ActualizarPila();
@@ -468,7 +494,6 @@ void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComp
 					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
 						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
 					OverlapedRightParte = Parte;
-					//Animal->RecibirAtaque(Poder, GetActorLocation());
 				}
 			}
 		}
@@ -487,7 +512,6 @@ void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedCompo
 					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
 						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
 					OverlapedLeftParte = Parte;
-					//Animal->RecibirAtaque(Poder, GetActorLocation());
 				}
 			}
 		}

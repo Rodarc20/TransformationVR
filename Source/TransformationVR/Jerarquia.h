@@ -55,6 +55,8 @@ public:
 
     void ImprimirMatriz(FMatrix m);
 
+	void ImprimirMatrices(Transformacion * T);
+
 	FVector TraslacionTemporal;//temporalmente usare esta variapble para traslador en funcion de este vector todos los elementso de la jerarquia, pero debo eliminar por que con esto no se trasladara todo
 
 	void AplicarLayout();
