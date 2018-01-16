@@ -142,6 +142,9 @@ ATorso::ATorso() {
 	MeshesArticulaciones.Add(ArticulacionCaderaI);
 	ColisionesArticualciones.Add(ColisionCaderaI);
 
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void ATorso::BeginPlay() {

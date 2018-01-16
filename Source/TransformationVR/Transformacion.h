@@ -29,8 +29,12 @@ public:
 	FVector GetWorldLocation();
 	FRotator GetRotation();
 	FRotator GetWorldRotation();
-	void Trasladar(FVector Traslacion);//realiz las operacions para trasladar este transform
-	void Rotar(FRotator Rotacion);//realiza las operaciones para trasladar este transforma
+	void Trasladar(FVector Traslacion);
+	void TrasladarWorld(FVector Traslacion);
+	//realiz las operacions para trasladar este transform
+	void Rotar(FRotator Rotacion);
+	void RotarWorld(FRotator Rotacion);
+	//realiza las operaciones para trasladar este transforma
 
 	FMatrix HLocal();//retorna el H respecto al padre
 	FMatrix HWorld();//retorna el H respecto al origen del mundo

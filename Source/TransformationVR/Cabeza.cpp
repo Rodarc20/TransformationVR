@@ -7,6 +7,7 @@
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "TransformacionWidget.h"
 
 ACabeza::ACabeza() {
 
@@ -54,6 +55,11 @@ ACabeza::ACabeza() {
 
 	MeshesArticulaciones.Add(ArticulacionCuello);
 	ColisionesArticualciones.Add(ColisionCuello);
+
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
+
 }
 
 void ACabeza::BeginPlay() {

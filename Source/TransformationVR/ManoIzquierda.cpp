@@ -58,6 +58,10 @@ AManoIzquierda::AManoIzquierda() {
 
 	MeshesArticulaciones.Add(ArticulacionMunecaI);
 	ColisionesArticualciones.Add(ColisionMunecaI);
+
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void AManoIzquierda::BeginPlay() {

@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Public/Math/Color.h"
+#include "TransformacionWidget.h"
 #include "Parte.generated.h"
 
 UCLASS()
@@ -35,6 +36,9 @@ public:
 	//colision que envuelve la parte, esta deberia ser la raíz por ahora no lo es
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UCapsuleComponent * Colision;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UTransformacionWidget * TWidget;
 
 	//Puntero al padre en una jerarquía generada expresamente para el objeto
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")

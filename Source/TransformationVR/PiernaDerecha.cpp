@@ -80,6 +80,10 @@ APiernaDerecha::APiernaDerecha() {
 	ColisionesArticualciones.Add(ColisionCaderaD);
 	MeshesArticulaciones.Add(ArticulacionTobilloD);
 	ColisionesArticualciones.Add(ColisionTobilloD);
+
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void APiernaDerecha::BeginPlay() {

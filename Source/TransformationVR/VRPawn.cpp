@@ -113,6 +113,9 @@ AVRPawn::AVRPawn()
     EfectoImpacto->SetRelativeLocation(FVector::ZeroVector);
     EfectoImpacto->Deactivate();
 
+    PuntoReferenciaRobot = CreateDefaultSubobject<USceneComponent>(TEXT("PuntoReferenciaRobot"));
+	PuntoReferenciaRobot->SetupAttachment(MotionControllerRight);
+	PuntoReferenciaRobot->SetRelativeLocation(FVector::ZeroVector);
 
     Velocidad = 200.0f;
     bPadDerecho = false;
@@ -279,9 +282,14 @@ void AVRPawn::GrabRightPressed() {
 			if (bGrabLeftMuneco) {
 				//rotar la pieza
 			}
-			else {
-				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();
+			else {//si no tengo el muñeco en la otra mano
+				OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
 				bGrabRightMuneco = true;
+				//establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
+				PuntoReferenciaRobot->SetupAttachment(MotionControllerRight);
+				PuntoReferenciaRobot->SetWorldLocation(Jerarquia->Root->ParteAsociada->GetActorLocation());
+				PuntoReferenciaRobot->SetWorldRotation(Jerarquia->Root->ParteAsociada->GetActorRotation());
+				//PuntoReferenciaRobot->SetRelativeLocation(MotionControllerLeft->GetComponentTransform().TransformPosition(Jerarquia->Root->ParteAsociada->GetActorLocation()));
 			}
 		}
 		else {//si no esta conectada
@@ -293,6 +301,10 @@ void AVRPawn::GrabRightPressed() {
 			else {
 				OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
 				Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedRightParte->Id]);
+				Jerarquia->CrearNodo(Jerarquia->Root->ParteAsociada);
+				Jerarquia->ActualizarNodos();
+				Jerarquia->Layout();
+				Jerarquia->AplicarLayout();
 				OverlapedRightParte->bConectado = true;
 				bRootEstablecida = true;
 				bGrabRightMuneco = true;
@@ -362,8 +374,13 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
 		bBuscarParteLeft = false;
 		bGrabLeftParte = true;
 		if (OverlapedLeftParte->bConectado) {//si la parte ya esta conectada eso quiere decir que la jerarrquia ya teiene raiz
-			OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
-			bGrabLeftMuneco = true;
+			if (bGrabRightMuneco) {
+				//rotar la pieza
+			}
+			else {
+				OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
+				bGrabLeftMuneco = true;
+			}
 		}
 		else {//si no esta conectada
 			if (Jerarquia->Root) {
@@ -414,6 +431,9 @@ void AVRPawn::GrabLeftReleased() {
 		//guardar offset de la parte
 		if (OverlapedLeftParte->bConectado) {
 			//no hago nada por ahora
+			if (bGrabRightMuneco) {
+				//no se hace nada, jeje
+			}
 		}
 		else {//si no esta conectada
 			if (OverlapedLeftParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
@@ -423,6 +443,9 @@ void AVRPawn::GrabLeftReleased() {
 					OverlapedLeftParte->UnirConParteSobrepuesta();
 					Jerarquia->UnirPadreHijo(OverlapedLeftParte->OverlapedParte->Id, OverlapedLeftParte->Id);
 					Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id].ActualizarDesdeParte();
+					Jerarquia->Layout();
+					Jerarquia->AplicarLayout();
+					Jerarquia->ActualizarPila();
 					
 				}
 				//pero si no lo hbuiera sobre puesto a otra parte no unida, no deberia uniralas

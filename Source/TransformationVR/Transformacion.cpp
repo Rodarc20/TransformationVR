@@ -62,6 +62,10 @@ FRotator Transformacion::GetWorldRotation() {
 }
 
 void Transformacion::Trasladar(FVector Traslacion) {//Gloabal
+	H = MultiplicacionMatriz(H, MatrizTraslacion(Traslacion.X, Traslacion.Y, Traslacion.Z));
+}
+
+void Transformacion::TrasladarWorld(FVector Traslacion) {//Gloabal
 	HW = MultiplicacionMatriz(HW, MatrizTraslacion(Traslacion.X, Traslacion.Y, Traslacion.Z));
 }
 
@@ -72,6 +76,15 @@ void Transformacion::Rotar(FRotator Rotacion) {
 	H = MultiplicacionMatriz(H, RotacionAxis);
 	RotacionAxis = MatrizRotacionZ(Rotacion.Yaw);//rotacion en X
 	H = MultiplicacionMatriz(H, RotacionAxis);
+}
+
+void Transformacion::RotarWorld(FRotator Rotacion) {
+	FMatrix RotacionAxis = MatrizRotacionX(Rotacion.Roll);//rotacion en X
+	HW = MultiplicacionMatriz(HW, RotacionAxis);
+	RotacionAxis = MatrizRotacionY(Rotacion.Pitch);//rotacion en X
+	HW = MultiplicacionMatriz(HW, RotacionAxis);
+	RotacionAxis = MatrizRotacionZ(Rotacion.Yaw);//rotacion en X
+	HW = MultiplicacionMatriz(HW, RotacionAxis);
 }
 
 FMatrix Transformacion::HLocal() {
