@@ -35,17 +35,20 @@ ACabeza::ACabeza() {
     }
 
 
-    Cabeza = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cabeza"));
-	Cabeza->SetupAttachment(RootComponent);
-	Cabeza->SetRelativeLocation(FVector(0.0f, 0.0f, 7.0f));
+    ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
+	ParteMesh->SetupAttachment(RootComponent);
+	ParteMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 7.0f));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CabezaMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Cabeza.Cabeza'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (CabezaMeshAsset.Succeeded()) {
-        Cabeza->SetStaticMesh(CabezaMeshAsset.Object);
+        ParteMesh->SetStaticMesh(CabezaMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> CabezaMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (CabezaMaterialAsset.Succeeded()) {
-            Cabeza->SetMaterial(0, CabezaMaterialAsset.Object);
+            ParteMesh->SetMaterial(0, CabezaMaterialAsset.Object);
         }
     }
+    ParteMesh->SetCollisionProfileName(FName(TEXT("Parte")));
+	ParteMesh->bRenderCustomDepth = true;
+
 
 	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
 	Colision->SetupAttachment(RootComponent);

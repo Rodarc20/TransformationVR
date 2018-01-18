@@ -240,7 +240,8 @@ void AVRPawn::CambiarLaser(int Indice) {
 }
 
 void AVRPawn::CambiarPuntoFinal(FVector PuntoFinal) {
-    if (Interaction->IsOverHitTestVisibleWidget()) {
+	Laser->SetBeamTargetPoint(0, PuntoFinal, 0);//o target
+    /*if (Interaction->IsOverHitTestVisibleWidget()) {
         FHitResult HitInteraction = Interaction->GetLastHitResult();
         if ((MotionControllerRight->GetComponentLocation() - HitInteraction.ImpactPoint).Size() < (MotionControllerRight->GetComponentLocation() - PuntoFinal).Size()) {
             Laser->SetBeamTargetPoint(0, HitInteraction.ImpactPoint, 0);//o target
@@ -250,7 +251,7 @@ void AVRPawn::CambiarPuntoFinal(FVector PuntoFinal) {
         //Laser->SetBeamEndPoint(0, PuntoFinal);//o target
         Laser->SetBeamTargetPoint(0, PuntoFinal, 0);//o target
         //Laser->SetBeamTargetPoint(0, GetTransform().InverseTransformPosition(PuntoFinal), 0);//o target
-    }
+    }*/
 }
 
 int AVRPawn::LaserActual() {
@@ -333,7 +334,8 @@ void AVRPawn::GrabRightTick() {
 				Jerarquia->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
 				//Jerarquia->Actualizar();
 				//Jerarquia->Root->CalcularHDesdeHW();
-				Jerarquia->ActualizarWorlds();
+				//Jerarquia->ActualizarWorlds();
+				Jerarquia->ActualizarNodos();
 				Jerarquia->ActualizarPila();
 			}
 		}
@@ -341,7 +343,7 @@ void AVRPawn::GrabRightTick() {
 			//OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
 			OverlapedRightParte->SetActorLocation(PuntoReferenciaRight->GetComponentLocation());
 			OverlapedRightParte->SetActorRotation(PuntoReferenciaRight->GetComponentRotation());
-			Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
+			//Jerarquia->TransformacionesPartes[OverlapedRightParte->Id].ActualizarDesdeParte();
 			//UE_LOG(LogClass, Log, TEXT("Trasladando Parte"));
 
 		}
@@ -436,7 +438,8 @@ void AVRPawn::GrabLeftTick() {
 
 				Jerarquia->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
 				Jerarquia->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
-				Jerarquia->ActualizarWorlds();//probar!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				//Jerarquia->ActualizarWorlds();//probar!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				Jerarquia->ActualizarNodos();
 				Jerarquia->ActualizarPila();
 			}
 		}
@@ -444,7 +447,7 @@ void AVRPawn::GrabLeftTick() {
 			//OverlapedLeftParte->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte);
 			OverlapedLeftParte->SetActorLocation(PuntoReferenciaLeft->GetComponentLocation());
 			OverlapedLeftParte->SetActorRotation(PuntoReferenciaLeft->GetComponentRotation());
-			Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id].ActualizarDesdeParte();
+			//Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id].ActualizarDesdeParte();
 		}
 	}
 }

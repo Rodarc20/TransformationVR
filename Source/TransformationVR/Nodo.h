@@ -49,7 +49,7 @@ public:
 	void CambiarTraslacion(FVector NuevaTraslacion);
 
 	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
-	void CambiarRotacion(FVector NuevaRotacion);
+	void CambiarRotacion(FRotator NuevaRotacion);
 
 	
 	

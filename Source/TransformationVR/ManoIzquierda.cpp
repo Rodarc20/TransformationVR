@@ -36,18 +36,20 @@ AManoIzquierda::AManoIzquierda() {
     }
 
 
-    ManoI = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ManoIzquierda"));
-	ManoI->SetupAttachment(RootComponent);
-	ManoI->SetRelativeLocation(FVector(5.5f, 0.0f, 0.0f));
-	ManoI->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+    ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
+	ParteMesh->SetupAttachment(RootComponent);
+	ParteMesh->SetRelativeLocation(FVector(5.5f, 0.0f, 0.0f));
+	ParteMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ManoIMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/ManoI.ManoI'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (ManoIMeshAsset.Succeeded()) {
-        ManoI->SetStaticMesh(ManoIMeshAsset.Object);
+        ParteMesh->SetStaticMesh(ManoIMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (ParteMaterialAsset.Succeeded()) {
-            ManoI->SetMaterial(0, ParteMaterialAsset.Object);
+            ParteMesh->SetMaterial(0, ParteMaterialAsset.Object);
         }
     }
+    ParteMesh->SetCollisionProfileName(FName(TEXT("Parte")));
+	ParteMesh->bRenderCustomDepth = true;
 
 	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
 	Colision->SetupAttachment(RootComponent);

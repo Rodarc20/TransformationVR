@@ -35,18 +35,20 @@ APieIzquierdo::APieIzquierdo() {
         }
     }
 
-    PieI = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PieIzquierdo"));
-    PieI->SetupAttachment(RootComponent);
-	PieI->SetRelativeLocation(FVector(0.0f, 0.0f, -5.5f));
+    ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
+    ParteMesh->SetupAttachment(RootComponent);
+	ParteMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -5.5f));
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> PieIMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/PieI.PieI'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (PieIMeshAsset.Succeeded()) {
-        PieI->SetStaticMesh(PieIMeshAsset.Object);
+        ParteMesh->SetStaticMesh(PieIMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (ParteMaterialAsset.Succeeded()) {
-            PieI->SetMaterial(0, ParteMaterialAsset.Object);
+            ParteMesh->SetMaterial(0, ParteMaterialAsset.Object);
         }
     }
+    ParteMesh->SetCollisionProfileName(FName(TEXT("Parte")));
+	ParteMesh->bRenderCustomDepth = true;
 
 	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
 	Colision->SetupAttachment(RootComponent);

@@ -33,6 +33,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	FString NombreParte;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * ParteMesh;
+
 	//colision que envuelve la parte, esta deberia ser la raíz por ahora no lo es
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UCapsuleComponent * Colision;
@@ -119,6 +123,18 @@ public:
 	//cada iarticulacion deberia tener su porpia isntancia dinamica, o deberia usar dos materiales y cambiar entre ellos cuando lo necesite?
 
 	FMatrix Frame;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	bool bResaltada;
+
+	UFUNCTION()
+	virtual void ActivarResaltado();
+
+	UFUNCTION()
+	virtual void DesactivarResaltado();
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void CopiarTransform();
 };
 
 

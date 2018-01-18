@@ -40,61 +40,56 @@ void Transformacion::ActualizarDesdeParte() {
 }
 
 void Transformacion::SetLocation(FVector Posicion) {
-    H.M[0][3] = Posicion.X;
-    H.M[1][3] = Posicion.Y;
-    H.M[2][3] = Posicion.Z;
+	ParteAsociada->SetActorRelativeLocation(Posicion);
+    //H.M[0][3] = Posicion.X;
+    //H.M[1][3] = Posicion.Y;
+    //H.M[2][3] = Posicion.Z;
 	//falta recalcular la matriz world
-	CalcularHWDesdeH();
+	//CalcularHWDesdeH();
 }
 
 void Transformacion::SetWorldLocation(FVector Posicion) {
-    HW.M[0][3] = Posicion.X;
-    HW.M[1][3] = Posicion.Y;
-    HW.M[2][3] = Posicion.Z;
+	ParteAsociada->SetActorLocation(Posicion);
+    //HW.M[0][3] = Posicion.X;
+    //HW.M[1][3] = Posicion.Y;
+    //HW.M[2][3] = Posicion.Z;
 	//falta recalcular la matriz local
-	CalcularHDesdeHW();
+	//CalcularHDesdeHW();
 }
 
 void Transformacion::SetRotation(FRotator Rotacion) {
 	//lo mas sencillo que se me ocurre es generar una matriz de rotacion para cada eje, multiplicarlas y sobre una matriz de traslacion de la posicion
-	FVector Posicion = GetLocation();
-	H = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
-	Rotar(Rotacion);
-	CalcularHWDesdeH();
+	ParteAsociada->SetActorRelativeRotation(Rotacion);
+	//FVector Posicion = GetLocation();
+	//H = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
+	//Rotar(Rotacion);
+	//CalcularHWDesdeH();
 }
 
 void Transformacion::SetWorldRotation(FRotator Rotacion) {
-	RotacionActualW = Rotacion;
-	FVector Posicion = GetWorldLocation();
-	HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
-	RotarWorld(Rotacion);//este es un añádido
-	CalcularHDesdeHW();
+	ParteAsociada->SetActorRotation(Rotacion);
+	//RotacionActualW = Rotacion;
+	//FVector Posicion = GetWorldLocation();
+	//HW = MatrizTraslacion(Posicion.X, Posicion.Y, Posicion.Z);
+	//RotarWorld(Rotacion);//este es un añádido
+	//CalcularHDesdeHW();
 }
 
 FVector Transformacion::GetLocation() {
-	return FVector(H.M[0][3], H.M[1][3], H.M[2][3]);
+	//return ParteAsociada->GetActorTransform().GetLocation();//revisar esta
+	return ParteAsociada->GetRootComponent()->GetRelativeTransform().GetLocation();
 }
 
 FVector Transformacion::GetWorldLocation() {
-	return FVector(HW.M[0][3], HW.M[1][3], HW.M[2][3]);
+	return ParteAsociada->GetActorLocation();
 }
 
 FRotator Transformacion::GetRotation() {
-	float rx = FMath::RadiansToDegrees(FMath::Atan2(-H.M[2][0], FMath::Sqrt(FMath::Square(H.M[2][1]) + FMath::Square(H.M[2][2]))));
-	float ry = FMath::RadiansToDegrees(FMath::Atan2(H.M[2][1], H.M[2][2]));
-	float rz = FMath::RadiansToDegrees(FMath::Atan2(H.M[1][0], H.M[0][0]));
-	return FRotator (ry, rz, rx);
+	return ParteAsociada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
 }
 
 FRotator Transformacion::GetWorldRotation() {
-	float rx = FMath::RadiansToDegrees(FMath::Atan2(-HW.M[2][0], FMath::Sqrt(FMath::Square(HW.M[2][1]) + FMath::Square(HW.M[2][2]))));
-	float ry = FMath::RadiansToDegrees(FMath::Atan2(HW.M[2][1], HW.M[2][2]));
-	float rz = FMath::RadiansToDegrees(FMath::Atan2(HW.M[1][0], HW.M[0][0]));
-	//float rx = FMath::Atan2(HW.M[1][2], HW.M[2][0]);
-	
-	//el valor ry parece ser el que esta completamente correcto, y en la posicinocorrecta
-	//ParteAsociada->SetActorRotation(FRotator(ry, rz, rx));//funciona bien
-	return FRotator (ry, rz, rx);
+	return ParteAsociada->GetActorRotation();
 }
 
 void Transformacion::Trasladar(FVector Traslacion) {//Gloabal

@@ -12,18 +12,20 @@ ATorso::ATorso() {
 
 	Id = 0;
 	NombreParte = "Torso";
-    Torso = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Torso"));
+    ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
     //Torso->SetupAttachment(RootComponent);
-	RootComponent = Torso;
+	RootComponent = ParteMesh;
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> TorsoMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Torso.Torso'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (TorsoMeshAsset.Succeeded()) {
-        Torso->SetStaticMesh(TorsoMeshAsset.Object);
+        ParteMesh->SetStaticMesh(TorsoMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> TorsoMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (TorsoMaterialAsset.Succeeded()) {
-            Torso->SetMaterial(0, TorsoMaterialAsset.Object);
+            ParteMesh->SetMaterial(0, TorsoMaterialAsset.Object);
         }
     }
+    ParteMesh->SetCollisionProfileName(FName(TEXT("Parte")));
+	ParteMesh->bRenderCustomDepth = true;
 
 	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
 	Colision->SetupAttachment(RootComponent);

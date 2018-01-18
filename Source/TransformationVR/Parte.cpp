@@ -2,6 +2,7 @@
 
 #include "Parte.h"
 #include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Engine/Engine.h"
 #include "Public/Math/Color.h"
 
@@ -130,6 +131,20 @@ void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent,
 		}
 		//tambien aplicar los cambios de color adecuados, por ahora solo dejare mensajes en consola
 	}
+}
+
+void AParte::ActivarResaltado() {
+	ParteMesh->SetCustomDepthStencilValue(255);
+	bResaltada = true;
+}
+
+void AParte::DesactivarResaltado() {
+	ParteMesh->SetCustomDepthStencilValue(0);
+	bResaltada = false;
+}
+
+void AParte::CopiarTransform() {
+	TWidget->TransformTemporal = GetActorTransform();
 }
 
 //creo que las articulaciones deberian ser un nuevo componente llamado articulacion, el cual tendria un pshere component y un statickmesh

@@ -55,19 +55,21 @@ APiernaDerecha::APiernaDerecha() {
 	ColisionTobilloD->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionTobilloD->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
 
-    PiernaD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PiernaDerecha"));
-    PiernaD->SetupAttachment(RootComponent);
-	PiernaD->SetRelativeLocation(FVector(10.0f, 0.0f, 0.0f));
-	PiernaD->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+    ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
+    ParteMesh->SetupAttachment(RootComponent);
+	ParteMesh->SetRelativeLocation(FVector(10.0f, 0.0f, 0.0f));
+	ParteMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> PiernaDMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/PiernaD.PiernaD'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (PiernaDMeshAsset.Succeeded()) {
-        PiernaD->SetStaticMesh(PiernaDMeshAsset.Object);
+        ParteMesh->SetStaticMesh(PiernaDMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (ParteMaterialAsset.Succeeded()) {
-            PiernaD->SetMaterial(0, ParteMaterialAsset.Object);
+            ParteMesh->SetMaterial(0, ParteMaterialAsset.Object);
         }
     }
+    ParteMesh->SetCollisionProfileName(FName(TEXT("Parte")));
+	ParteMesh->bRenderCustomDepth = true;
 
 	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
 	Colision->SetupAttachment(RootComponent);

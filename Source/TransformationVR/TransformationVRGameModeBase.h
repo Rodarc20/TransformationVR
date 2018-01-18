@@ -7,11 +7,22 @@
 #include "Parte.h"
 #include "Jerarquia.h"
 #include "PilaOpenGL.h"
+#include "VRPawn.h"
 #include "TransformationVRGameModeBase.generated.h"
 
 /**
  * 
  */
+/*UENUM(BlueprintType)
+enum class EVRJerarquiaTask : uint8 {
+    ETraslationTask UMETA(DisplayName = "Trasladar"),
+    ERotationTask UMETA(DisplayName = "Rotar"),
+    EScaleTask UMETA(DisplayName = "Escalar"),
+    EArmarTask UMETA(DisplayName = "Armar"),
+    EPlayTask UMETA(DisplayName = "Play"),
+    ENoTask UMETA(DisplayName = "Ninguno")
+};*/
+
 UCLASS()
 class TRANSFORMATIONVR_API ATransformationVRGameModeBase : public AGameModeBase
 {
@@ -28,7 +39,7 @@ public:
     //TSubclassOf<class UUserWidget> HUDWidgetClass;  
 	
     //UUserWidget * WidgetActual;
-
+	/*
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
 	AJerarquia * Jerarquia;
 
@@ -42,7 +53,52 @@ public:
     TArray<AParte *> Partes;//se supone que hay 10 partes
 	
 	
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    AVRPawn * Usuario;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    UMotionControllerComponent* RightController;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    UMotionControllerComponent* LeftController;
 	
+	UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+	FVector BuscarParte(AParte *& ParteEncontrada);
+
+	UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+	void BuscandoParteConLaser();
+
+	void BuscandoComponenteRotacionConLaser();
+
+	bool ColisionRotacion(FVector Inicio, FVector Fin, ETransformacionEje & EjeColisionado, FVector & Impact);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	AParte * ParteSeleccionada;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	AParte * HitParte;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	bool bHitParte;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	float DistanciaLaserMaxima;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	FVector ImpactPoint;
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    EVRJerarquiaTask CurrentJerarquiaTask;
+	
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask);
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    EVRJerarquiaTask GetJerarquiaTask();
+
+	void SelectPressed();
+*/
 };
 
 //esta clase deberia controlar lo que hace le muñeco, y tambien ser un intermediario entre el pawn y el muñeco y la jerarquia del arbol

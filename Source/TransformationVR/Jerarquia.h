@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Transformacion.h"
 #include "Nodo.h"
+#include "Parte.h"
 #include "PilaOpenGL.h"
+#include "MotionControllerComponent.h"
 #include "Jerarquia.generated.h"
 
 UCLASS()
@@ -25,6 +27,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visualization - Referencias")
+    //UMotionControllerComponent* RightController;
+
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visualization - Referencias")
+    //UMotionControllerComponent* LeftController;
 
 	TArray<Transformacion> TransformacionesPartes;
 
@@ -61,6 +69,8 @@ public:
 
 	void AplicarLayout();
 
+	FVector BuscarParte(AParte *& ParteEncontrada);
+
 	void ActualizarNodos();
 
 	void Calculos(Transformacion * V);
@@ -88,6 +98,8 @@ public:
 	FString Identacion(int Tam);
 
 	void ActualizarPila();
+
+	float DistanciaLaserMaxima;
 	
 	
 };
@@ -98,3 +110,7 @@ public:
 //
 //a diferencia de la conexxion entre las partes la jerarquia no necesita poner los hijos en orden,
 //solo poner padre e hijos, sin ditincion algunas:w
+
+
+//la jeraarquia actuara como las visaulizacion es en el arbolito, detectando las cosas del puntero, y todo lo demas
+//necestio conexion con el usuario, aun que tambien esot lo podria hacer el game mode, pero mejor lo dejo asi

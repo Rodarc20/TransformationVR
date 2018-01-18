@@ -5,7 +5,11 @@
 #include "Engine/Engine.h"
 #include "Nodo.h"
 #include "PilaOpenGL.h"
+#include "VRPawn.h"
+#include "Parte.h"
+#include "MotionControllerComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 #include <stack>
 
 // Sets default values
@@ -29,12 +33,23 @@ AJerarquia::AJerarquia()
 	AltoNodos = 12.5f;
 	DeltaNiveles = 37.5f;
 	DeltaHermanos = 35.0f;
+
+	DistanciaLaserMaxima = 300.0f;
 }
 
 // Called when the game starts or when spawned
 void AJerarquia::BeginPlay()
 {
 	Super::BeginPlay();
+
+    /*AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+    if (MyVRPawn) {
+        RightController = MyVRPawn->MotionControllerRight;
+        LeftController = MyVRPawn->MotionControllerLeft;
+        //MyVRPawn->Visualization = this;
+        //Interaction = MyVRPawn->Interaction;
+        Usuario = MyVRPawn;
+    }*/
 	
 }
 
@@ -146,9 +161,11 @@ void AJerarquia::UnirPadreHijo(int IdPadre, int IdHijo) {
 	TransformacionesPartes[IdHijo].Padre = &(TransformacionesPartes[IdPadre]);
 	TransformacionesPartes[IdPadre].Hijos.Add(&(TransformacionesPartes[IdHijo]));
 	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
-	TransformacionesPartes[IdHijo].ActualizarDesdeParte();
-	UE_LOG(LogClass, Log, TEXT("Matrices actualizadas despues de unir hijo"));
-	ImprimirMatrices(&TransformacionesPartes[IdHijo]);
+
+
+	TransformacionesPartes[IdHijo].ParteAsociada->AttachToActor(TransformacionesPartes[IdPadre].ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
+	//UE_LOG(LogClass, Log, TEXT("Matrices actualizadas despues de unir hijo"));
+	//ImprimirMatrices(&TransformacionesPartes[IdHijo]);
 	CrearNodo(TransformacionesPartes[IdHijo].ParteAsociada);
 	ActualizarNodos();
 }
@@ -233,8 +250,10 @@ void AJerarquia::ImprimirMatrices(Transformacion * T) {
 void AJerarquia::ActualizarNodos() {
 	for (int i = 0; i < Nodos.Num(); i++) {
 		if (Nodos[i]) {//si el nodo existe es por que la parte del cuerpo existe
-			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetLocation());
-			Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetWorldLocation());
+			Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetLocation());
+			Nodos[i]->CambiarRotacion(TransformacionesPartes[i].GetRotation());
+			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetWorldLocation());
+			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetWorldLocation());
 		}
 	}
 }
@@ -328,7 +347,8 @@ FString AJerarquia::Texto(Transformacion * T) {
 		res = Identacion(NumeroIdentaciones) + "glPushMatrix();\n";
 		FVector Posicion = T->GetLocation();
 		res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
-		res += Identacion(NumeroIdentaciones) + "glRotate();\n";
+		FRotator Rotacion = T->GetRotation();
+		res += Identacion(NumeroIdentaciones) + "glRotate(" + FString::SanitizeFloat(Rotacion.Roll) + ", " + FString::SanitizeFloat(Rotacion.Pitch) + ", " + FString::SanitizeFloat(Rotacion.Yaw) + ");\n";
 		res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
 		for (int i = 0; i < T->Hijos.Num(); i++) {
 			res += Texto(T->Hijos[i]);
@@ -367,6 +387,41 @@ void AJerarquia::AplicarLayout() {
 		}
 	}
 }
+
+
+//necestio hacer varias busuqueda, buscar la parte para seleccionar, buscar loos componentes de rotacion y saber cual es cual, esto ultimo despes de haber ya seleccionado una parte, y evidentemente ya se cual es su trasnform
+/*FVector AJerarquia::BuscarParte(AParte * &ParteEncontrada) {//en realidad dbe hacer asignaciones, o poner null si no encuentra nada
+    FCollisionQueryParams ParteTraceParams = FCollisionQueryParams(FName(TEXT("TraceParte")), true, this);
+    FVector PuntoInicial = RightController->GetComponentLocation();//lo mismo que en teorioa, GetComponentTransfor().GetLocation();
+    FVector Vec = RightController->GetForwardVector();
+    FVector PuntoFinal = PuntoInicial + Vec*DistanciaLaserMaxima;
+    //PuntoInical = PuntoInicial + Vec * 10;//para que no se choque con lo que quiero, aun que no deberia importar
+    TArray<TEnumAsByte<EObjectTypeQuery> > TiposObjetos;
+    TiposObjetos.Add(EObjectTypeQuery::ObjectTypeQuery7);//Nodo
+    //TiposObjetos.Add(EObjectTypeQuery::ObjectTypeQuery2);//World dynamic, separado esta funcionando bien, supongo que tendre que hacer oto trace par saber si me estoy chocando con la interfaz, y no tener encuenta esta busqueda
+    //podria agregar los world static y dynamic, para asi avitar siempre encontrar algun nodo que este destrar de algun menu, y que por seleccionar en el menu tambien le de click a el
+    TArray<AActor*> vacio;
+    FHitResult Hit;
+    bool trace = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), PuntoInicial, PuntoFinal, TiposObjetos, false, vacio, EDrawDebugTrace::None, Hit, true, FLinearColor::Blue);//el none es para que no se dibuje nada
+    //hit se supone que devovera al actor y el punto de impacto si encontró algo, castearlo a nodo, y listo
+    if (trace) {
+        //solo que al agregar el worldynamic ,tengo que castear y verificar
+        ParteEncontrada = Cast<AParte>(Hit.Actor.Get());
+        /*if (NodoEncontrado) {//no estaba
+            //en que momento debo incluir la seccion del label? despues de todo esto, en otra funcion, o en este mismo codigo?
+            return Hit.ImpactPoint;
+        }* /
+        //DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 1.5f, 6, FColor::Black, false, 0.0f, 0, 0.25f);
+        
+        return Hit.ImpactPoint;//si quito toto el if anterior debo activar esta linea, y liesto
+    }
+    //y si esta funcion es solo para esto, y luego ya verifico si es tal o cual cosa, en otra parte del codigo?
+
+    //DrawDebugLine(GetWorld(), SourceNodo->GetActorLocation(), TargetNodo->GetActorLocation(), FColor::Black, false, -1.0f, 0, Radio*Escala);
+    ParteEncontrada = nullptr;
+    return FVector::ZeroVector;// los casos manejarlos afuera
+}
+*/
 /*
 Ejemplo de uso
             if (i & 1) {

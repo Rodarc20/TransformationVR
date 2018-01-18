@@ -58,19 +58,21 @@ ABrazoDerecho::ABrazoDerecho() {
 	ColisionMunecaD->OnComponentBeginOverlap.AddDynamic(this, &AParte::OnBeginOverlapArticulacion);
 	ColisionMunecaD->OnComponentEndOverlap.AddDynamic(this, &AParte::OnEndOverlapArticulacion);
 
-    BrazoD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BrazoDerecho"));
-	BrazoD->SetupAttachment(RootComponent);
-	BrazoD->SetRelativeLocation(FVector(8.0f, 0.0f, 0.0f));
-	BrazoD->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+    ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
+	ParteMesh->SetupAttachment(RootComponent);
+	ParteMesh->SetRelativeLocation(FVector(8.0f, 0.0f, 0.0f));
+	ParteMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BrazoDMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/BrazoD.BrazoD'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (BrazoDMeshAsset.Succeeded()) {
-        BrazoD->SetStaticMesh(BrazoDMeshAsset.Object);
+        ParteMesh->SetStaticMesh(BrazoDMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (ParteMaterialAsset.Succeeded()) {
-            BrazoD->SetMaterial(0, ParteMaterialAsset.Object);
+            ParteMesh->SetMaterial(0, ParteMaterialAsset.Object);
         }
     }
 
+    ParteMesh->SetCollisionProfileName(FName(TEXT("Parte")));
+	ParteMesh->bRenderCustomDepth = true;
 
 	Colision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Colision"));
 	Colision->SetupAttachment(RootComponent);
