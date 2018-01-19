@@ -105,6 +105,7 @@ void ARobot::Tick(float DeltaTime)
 					//se supone que cuando se selecciono se grabo la posicion en el presesed
 					//BuscarIntereseccionEjeRotacion();
 					RotarParteEnEje();
+					Jerarquia->ActualizarPila();
 				}
 				else {
 					BuscandoComponenteRotacionConLaser();
