@@ -106,7 +106,9 @@ AVRPawn::AVRPawn()
 
     EfectoImpacto = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EfectoImpacto"));
     EfectoImpacto->SetupAttachment(MotionControllerRight);
-    static ConstructorHelpers::FObjectFinder<UParticleSystem> EfectoImpactoAsset(TEXT("ParticleSystem'/Game/Visualization/ParticleSystems/LaserImpact/LaserImpactRotacion.LaserImpactRotacion'"));
+    //static ConstructorHelpers::FObjectFinder<UParticleSystem> EfectoImpactoAsset(TEXT("ParticleSystem'/Game/Visualization/ParticleSystems/LaserImpact/LaserImpactRotacion.LaserImpactRotacion'"));
+    //static ConstructorHelpers::FObjectFinder<UParticleSystem> EfectoImpactoAsset(TEXT("ParticleSystem'/Game/Visualization/ParticleSystems/LaserImpact/LaserEImpactRotacion.LaserEImpactRotacion'"));
+    static ConstructorHelpers::FObjectFinder<UParticleSystem> EfectoImpactoAsset(TEXT("ParticleSystem'/Game/Visualization/ParticleSystems/LaserImpact/LaserEImpactRotacion1.LaserEImpactRotacion1'"));
     if (EfectoImpactoAsset.Succeeded()) {
         EfectoImpacto->SetTemplate(EfectoImpactoAsset.Object);
     }

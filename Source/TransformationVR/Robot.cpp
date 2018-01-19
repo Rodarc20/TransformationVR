@@ -485,6 +485,7 @@ void ARobot::SelectPressed() {
 					HitEje = ETransformacionEje::ENone;
 					ParteSeleccionada = HitParte;
 					ParteSeleccionada->ActivarResaltado();
+					ParteSeleccionada->TWidget->MostrarWidgetRotacion();
 				}
 			}
 			//una vez que tenga una parte si la selecciono recien se ahbilita y busco componentes
