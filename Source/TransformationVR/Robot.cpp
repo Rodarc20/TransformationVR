@@ -108,6 +108,9 @@ void ARobot::Tick(float DeltaTime)
 				}
 				else {
 					BuscandoComponenteRotacionConLaser();
+					if (HitEje == ETransformacionEje::ENone) {
+						BuscandoParteConLaser();//por ahora, pero este no va aqui
+					}
 				}
 			}
 			else {
@@ -257,6 +260,7 @@ void ARobot::BuscandoComponenteRotacionConLaser() {
 		Usuario->EfectoImpacto->SetWorldLocation(Impacto);
 	}
 	else {
+		HitEje = ETransformacionEje::ENone;
 		Usuario->EfectoImpacto->SetWorldLocation(RightController->GetComponentLocation() + RightController->GetForwardVector()*DistanciaLaserMaxima);
 		//esta funcion deberia administrar le punto recbido, y verficar si acutalmente el puntero de interaccion esta sobre el menu, y tomar el adecuado para cada situacion
 		if (Usuario->LaserActual() != 0) {
@@ -475,6 +479,13 @@ void ARobot::SelectPressed() {
 					BuscarIntereseccionEjeRotacion();
 					PuntoRotacionInicial = PuntoInterseccion;
 
+				}
+				else {
+					if (HitParte && HitParte == ParteSeleccionada) {
+						ParteSeleccionada->DesactivarResaltado();
+						ParteSeleccionada->TWidget->OcultarWidgetRotacion();
+						ParteSeleccionada = nullptr;
+					}
 				}
 				//rotar, es decir ver si hay componete, para capturar su plano, y empezar a hacer los calculos, aqui entra lo de la rotacion de ramas
 				//si hay algun componente seleccionado, o algo, debo marcarlo por ahora
