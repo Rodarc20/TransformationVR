@@ -121,5 +121,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "TransformationVR")
 	void SelectReleased();
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	float AngleTemp;
 	
 };

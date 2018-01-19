@@ -28,6 +28,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void AnimacionRotarTick(float DeltaTime);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	int Id;
 
@@ -135,6 +137,29 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void CopiarTransform();
+
+	void AnimacionRotar(FVector CantidadRotacion);
+
+	bool bRotar;
+	float VelocidadRotacion;
+
+	float AngleXIni;//no tendria que usar nada el angulo fin puede determinar la velocidad de rotaionc, es decir eses seria la velocidad por segundo, entonces el delta de X seria al angulo fin *dletatime y listo
+	float AngleXCurrent;
+	float AngleXFin;
+	int signoX;
+	bool bRotarX;
+
+	float AngleYIni;
+	float AngleYCurrent;
+	float AngleYFin;
+	int signoY;
+	bool bRotarY;
+
+	float AngleZIni;
+	float AngleZCurrent;
+	float AngleZFin;
+	int signoZ;
+	bool bRotarZ;
 };
 
 

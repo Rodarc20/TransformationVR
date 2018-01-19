@@ -19,6 +19,10 @@ AParte::AParte()
 	//ColorArticulacionConectada = FLinearColor(0.0f, 0.234375, 0.212609f, 0.0f);
 	ColorArticulacionConectada = FLinearColor(0.234375f, 0.0f, 0.002142f, 0.0f);
 
+	bRotar = false;
+	bRotarX = false;
+	bRotarY = false;
+	bRotarZ = false;
 }
 
 // Called when the game starts or when spawned
@@ -32,7 +36,134 @@ void AParte::BeginPlay()
 void AParte::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	/*UE_LOG(LogClass, Log, TEXT("TICK"));
 
+	UE_LOG(LogClass, Log, TEXT("bRotar: %b"), bRotar);
+	if (bRotar) {
+
+		UE_LOG(LogClass, Log, TEXT("bRotar: TRUE"));
+		float DeltaX = signoX * VelocidadRotacion * DeltaTime;
+		//float DeltaX = AngleXFin * DeltaTime;
+		AngleXCurrent += DeltaX;
+		if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
+			FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
+			AddActorLocalRotation(DeltaRotation);
+		}
+		else {
+			//llegue al angulo debo dejar de rotar
+			bRotarX = false;
+		}
+
+		float DeltaY = signoY * VelocidadRotacion * DeltaTime;
+		//float DeltaX = AngleXFin * DeltaTime;
+		AngleYCurrent += DeltaY;
+		if (AngleYCurrent <= AngleYFin) {
+			FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
+			AddActorLocalRotation(DeltaRotation);
+		}
+		else {
+			//llegue al angulo debo dejar de rotar
+			bRotarY = false;
+		}
+
+		float DeltaZ = signoZ * VelocidadRotacion * DeltaTime;
+		//float DeltaX = AngleXFin * DeltaTime;
+		AngleZCurrent += DeltaZ;
+		if (AngleZCurrent <= AngleZFin) {
+			FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
+			AddActorLocalRotation(DeltaRotation);
+		}
+		else {
+			//llegue al angulo debo dejar de rotar
+			bRotarZ = false;
+		}
+		bRotar = bRotarX && bRotarY && bRotarZ;
+	}*/
+}
+void AParte::AnimacionRotarTick(float DeltaTime) {
+	//UE_LOG(LogClass, Log, TEXT("bRotar: %b"), bRotar);
+	if (bRotar) {
+
+		//UE_LOG(LogClass, Log, TEXT("bRotar: TRUE"));
+		float DeltaX = signoX * VelocidadRotacion * DeltaTime;
+		//float DeltaX = AngleXFin * DeltaTime;
+		AngleXCurrent += DeltaX;
+		if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
+			FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
+			AddActorLocalRotation(DeltaRotation);
+		}
+		else {
+			//llegue al angulo debo dejar de rotar
+			bRotarX = false;
+		}
+
+		float DeltaY = signoY * VelocidadRotacion * DeltaTime;
+		//float DeltaX = AngleXFin * DeltaTime;
+		AngleYCurrent += DeltaY;
+		if (AngleYCurrent <= AngleYFin) {
+			FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
+			AddActorLocalRotation(DeltaRotation);
+		}
+		else {
+			//llegue al angulo debo dejar de rotar
+			bRotarY = false;
+		}
+
+		float DeltaZ = signoZ * VelocidadRotacion * DeltaTime;
+		//float DeltaX = AngleXFin * DeltaTime;
+		AngleZCurrent += DeltaZ;
+		if (AngleZCurrent <= AngleZFin) {
+			FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
+			AddActorLocalRotation(DeltaRotation);
+		}
+		else {
+			//llegue al angulo debo dejar de rotar
+			bRotarZ = false;
+		}
+		bRotar = bRotarX && bRotarY && bRotarZ;
+	}
+}
+
+void AParte::AnimacionRotar(FVector CantidadRotacion) {// es mejor recibir los angulos como vectores, para manejra loas negativos coreectamente, ya que debo recibir el delta
+	//separar por ejes, calculad pasos, y 
+	//necsito 3 valores, 
+	//necisto que la animaicon ocurra en 1 segudno de preferencia,
+	//neceisto el valor actual
+	UE_LOG(LogClass, Log, TEXT("Ejecutando Animacion %s"), *NombreParte);
+
+	VelocidadRotacion = 45.0f;
+
+	bRotar = true;
+
+	bRotarX = true;
+	AngleXIni = 0;
+	AngleXCurrent = AngleXIni;
+	AngleXFin = CantidadRotacion.X;
+	//este signo x sale del valor angle fin
+	if (AngleXFin >= 0.0f)
+		signoX = 1; //o -1
+	else
+		signoX = -1;
+
+	bRotarY = true;
+	AngleYIni = 0;
+	AngleYCurrent = AngleYIni;
+	AngleYFin = CantidadRotacion.Y;
+	//este signo x sale del valor angle fin
+	if (AngleYFin >= 0.0f)
+		signoY = 1; //o -1
+	else
+		signoY = -1;
+
+	bRotarZ = true;
+	AngleZIni = 0;
+	AngleZCurrent = AngleZIni;
+	AngleZFin = CantidadRotacion.Z;
+	//este signo x sale del valor angle fin
+	if (AngleZFin >= 0.0f)
+		signoZ = 1; //o -1
+	else
+		signoZ = -1;
 }
 
 int AParte::IndiceColisionArticulacion(USphereComponent * ArticulacionSphere) {
@@ -149,3 +280,5 @@ void AParte::CopiarTransform() {
 
 //creo que las articulaciones deberian ser un nuevo componente llamado articulacion, el cual tendria un pshere component y un statickmesh
 //asi cuando este reaacione en el overlap, y deba cambiar el color por ejemplo, solo debo llamar a una funcion de este componente, lo mismo cuando usceda el endoverlap
+
+

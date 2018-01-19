@@ -29,6 +29,8 @@ ARobot::ARobot()
 
 	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
 	CurrentJerarquiaTask = EVRJerarquiaTask::ERotationTask;
+	HitEje = ETransformacionEje::ENone;
+	EjeSeleccionado = ETransformacionEje::ENone;
 }
 
 // Called when the game starts or when spawned
@@ -90,6 +92,7 @@ void ARobot::BeginPlay()
 void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	Jerarquia->EjecutarAnimacionTick(DeltaTime);
 	//esto tal vez tenga pque pasarse al blueprint
 	//BuscandoComponenteRotacionConLaser();
     switch (CurrentJerarquiaTask) {
@@ -375,6 +378,8 @@ void ARobot::RotarParteEnEje() {
 			UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
 			UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
 			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
+			AngleTemp = DeltaAngle;
+			//AngleTemp = -DeltaAngle;
 			FRotator VariacionRotation(0.0f, 0.0f, -DeltaAngle);
 			UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
 			ParteSeleccionada->SetActorRelativeRotation(RotacionInicial);
@@ -403,6 +408,8 @@ void ARobot::RotarParteEnEje() {
 				//DeltaAngle = DeltaAngle * -1;
 			//}
 			//por ahora aplicar la rotacion
+			AngleTemp = DeltaAngle;
+			//AngleTemp = -DeltaAngle;
 			UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
 			UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
 			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
@@ -440,6 +447,8 @@ void ARobot::RotarParteEnEje() {
 			if (DeltaSing >= 0) {
 				DeltaAngle = 360-DeltaAngle;
 			}
+			AngleTemp = DeltaAngle;
+			//AngleTemp = -DeltaAngle;
 			UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
 			UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
 			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
@@ -481,7 +490,7 @@ void ARobot::SelectPressed() {
 					PuntoRotacionInicial = PuntoInterseccion;
 
 				}
-				else {
+			else {
 					if (HitParte && HitParte == ParteSeleccionada) {
 						ParteSeleccionada->DesactivarResaltado();
 						ParteSeleccionada->TWidget->OcultarWidgetRotacion();
@@ -522,7 +531,8 @@ void ARobot::SelectReleased() {
         break;//no se como funciona esto
         case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
 			if (ParteSeleccionada) {
-				if(EjeSeleccionado != ETransformacionEje::ENone)
+				if (EjeSeleccionado != ETransformacionEje::ENone)
+					Jerarquia->EstablecerRotacionEje(ParteSeleccionada->Id, AngleTemp, EjeSeleccionado);
 					ParteSeleccionada->TWidget->DeseleccionarEjeRotacion(EjeSeleccionado);
 				//se edberian aplicar las rotaciones permanentemente
 				EjeSeleccionado = ETransformacionEje::ENone;

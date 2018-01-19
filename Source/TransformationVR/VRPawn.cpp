@@ -208,8 +208,8 @@ void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
     InputComponent->BindAction("Moverse", IE_Pressed, this, &AVRPawn::PadDerechoPressed);
     InputComponent->BindAction("Moverse", IE_Released, this, &AVRPawn::PadDerechoReleased);
-    InputComponent->BindAction("Select", IE_Pressed, this, &AVRPawn::SelectPressed);
-    InputComponent->BindAction("Select", IE_Released, this, &AVRPawn::SelectReleased);
+    InputComponent->BindAction("Seleccionar", IE_Pressed, this, &AVRPawn::SelectPressed);
+    InputComponent->BindAction("Seleccionar", IE_Released, this, &AVRPawn::SelectReleased);
     InputComponent->BindAction("GrabRight", IE_Pressed, this, &AVRPawn::GrabRightPressed);
     InputComponent->BindAction("GrabRight", IE_Released, this, &AVRPawn::GrabRightReleased);
     InputComponent->BindAction("GrabLeft", IE_Pressed, this, &AVRPawn::GrabLeftPressed);
@@ -242,8 +242,8 @@ void AVRPawn::CambiarLaser(int Indice) {
 }
 
 void AVRPawn::CambiarPuntoFinal(FVector PuntoFinal) {
-	Laser->SetBeamTargetPoint(0, PuntoFinal, 0);//o target
-    /*if (Interaction->IsOverHitTestVisibleWidget()) {
+	//Laser->SetBeamTargetPoint(0, PuntoFinal, 0);//o target
+    if (Interaction->IsOverHitTestVisibleWidget()) {
         FHitResult HitInteraction = Interaction->GetLastHitResult();
         if ((MotionControllerRight->GetComponentLocation() - HitInteraction.ImpactPoint).Size() < (MotionControllerRight->GetComponentLocation() - PuntoFinal).Size()) {
             Laser->SetBeamTargetPoint(0, HitInteraction.ImpactPoint, 0);//o target
@@ -253,7 +253,7 @@ void AVRPawn::CambiarPuntoFinal(FVector PuntoFinal) {
         //Laser->SetBeamEndPoint(0, PuntoFinal);//o target
         Laser->SetBeamTargetPoint(0, PuntoFinal, 0);//o target
         //Laser->SetBeamTargetPoint(0, GetTransform().InverseTransformPosition(PuntoFinal), 0);//o target
-    }*/
+    }
 }
 
 int AVRPawn::LaserActual() {
@@ -269,10 +269,12 @@ void AVRPawn::PadDerechoReleased() {
 }
 
 void AVRPawn::SelectPressed() {
-	//tomar como referencia el selecte del arbolito
+    Interaction->PressPointerKey(EKeys::LeftMouseButton);
+
 }
 
 void AVRPawn::SelectReleased() {
+    Interaction->ReleasePointerKey(EKeys::LeftMouseButton);
 }
 
 void AVRPawn::GrabRightPressed() {

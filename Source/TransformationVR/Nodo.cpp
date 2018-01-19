@@ -79,8 +79,18 @@ void ANodo::CambiarTraslacion(FVector NuevaTraslacion) {
 	bActualizado = false;
 }
 
-void ANodo::CambiarRotacion(FRotator NuevaRotacion) {
-	TextoRotacion = "Rotacion (" + FString::SanitizeFloat(NuevaRotacion.Roll) + ", " + FString::SanitizeFloat(NuevaRotacion.Pitch) + ", " + FString::SanitizeFloat(NuevaRotacion.Yaw) + ")";
+void ANodo::CambiarRotacion(FVector NuevaRotacion) {
+	TextoRotacion = "Rotacion (" + FString::SanitizeFloat(NuevaRotacion.X) + ", " + FString::SanitizeFloat(NuevaRotacion.Y) + ", " + FString::SanitizeFloat(NuevaRotacion.Z) + ")";
+	bActualizado = false;
+}
+
+void ANodo::ActualizarTextTraslacion() {
+	TextoTraslacion = "Traslacion (" + FString::SanitizeFloat(Traslacion.X) + ", " + FString::SanitizeFloat(Traslacion.Y) + ", " + FString::SanitizeFloat(Traslacion.Z) + ")";
+	bActualizado = false;
+}
+
+void ANodo::ActualizarTextRotacion() {
+	TextoRotacion = "Rotacion (" + FString::SanitizeFloat(Rotacion.X) + ", " + FString::SanitizeFloat(Rotacion.Y) + ", " + FString::SanitizeFloat(Rotacion.Z) + ")";
 	bActualizado = false;
 }
 

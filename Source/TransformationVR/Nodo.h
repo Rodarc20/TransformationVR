@@ -40,6 +40,12 @@ public:
 	FString TextoRotacion;//lenar al construir o depues de construir
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	FVector Traslacion;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	FVector Rotacion;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	int IdParte;
 
 	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
@@ -49,7 +55,13 @@ public:
 	void CambiarTraslacion(FVector NuevaTraslacion);
 
 	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
-	void CambiarRotacion(FRotator NuevaRotacion);
+	void CambiarRotacion(FVector NuevaRotacion);
+
+	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+	void ActualizarTextTraslacion();
+
+	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+	void ActualizarTextRotacion();
 
 	
 	

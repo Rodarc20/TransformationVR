@@ -31,7 +31,8 @@ AJerarquia::AJerarquia()
 
 	AnchoNodos = 25.0f;
 	AltoNodos = 12.5f;
-	DeltaNiveles = 37.5f;
+	//DeltaNiveles = 37.5f;
+	DeltaNiveles = 30.0f;
 	DeltaHermanos = 35.0f;
 
 	DistanciaLaserMaxima = 300.0f;
@@ -250,10 +251,12 @@ void AJerarquia::ImprimirMatrices(Transformacion * T) {
 void AJerarquia::ActualizarNodos() {
 	for (int i = 0; i < Nodos.Num(); i++) {
 		if (Nodos[i]) {//si el nodo existe es por que la parte del cuerpo existe
-			Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetLocation());
-			Nodos[i]->CambiarRotacion(TransformacionesPartes[i].GetRotation());
+			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetLocation());
+			//Nodos[i]->CambiarRotacion(TransformacionesPartes[i].GetRotation());
 			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetWorldLocation());
 			//Nodos[i]->CambiarTraslacion(TransformacionesPartes[i].GetWorldLocation());
+			Nodos[i]->ActualizarTextRotacion();
+			Nodos[i]->ActualizarTextTraslacion();
 		}
 	}
 }
@@ -379,6 +382,42 @@ void AJerarquia::ActualizarPila() {
 	PilaCodigo->CambiarCodigo(Texto(Root));
 }
 
+void AJerarquia::EstablecerRotacionEjeX(int IdParte, float angle) {
+	Nodos[IdParte]->Rotacion.X = angle;
+}
+
+void AJerarquia::EstablecerRotacionEjeY(int IdParte, float angle) {
+	Nodos[IdParte]->Rotacion.Y = angle;
+}
+
+void AJerarquia::EstablecerRotacionEjeZ(int IdParte, float angle) {
+	Nodos[IdParte]->Rotacion.Z = angle;
+}
+
+void AJerarquia::EstablecerRotacionEje(int IdParte, float angle, ETransformacionEje EjeRotacion) {
+    switch (EjeRotacion) {
+        case ETransformacionEje::EEjeX: {
+			EstablecerRotacionEjeX(IdParte, angle);
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeY: {
+			EstablecerRotacionEjeY(IdParte, angle);
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeZ: {
+			EstablecerRotacionEjeZ(IdParte, angle);
+        }
+        break;//no se como funciona esto
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;//no se como funciona esto
+    }
+	Nodos[IdParte]->ActualizarTextRotacion();
+	
+}
+
 void AJerarquia::AplicarLayout() {
 	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
 	for (int i = 0; i < Nodos.Num(); i++) {
@@ -388,6 +427,32 @@ void AJerarquia::AplicarLayout() {
 	}
 }
 
+void AJerarquia::EjecutarAnimacion(int IdParte) {//para hallar niveles
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+    //Transformacion * Root = &TransformacionesPartes[Nodos.Num() - 1];
+	//ya tengo un root
+	UE_LOG(LogClass, Log, TEXT("Ejecutando Animacion"));
+    //pila.push(Root);//no deberia dsencolarlo
+	pila.push(&TransformacionesPartes[IdParte]);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+		V->ParteAsociada->AnimacionRotar(Nodos[V->ParteAsociada->Id]->Rotacion);
+        if (V->Hijos.Num()) {
+            for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+                pila.push(V->Hijos[i]);
+            }
+        }
+    }
+}
+
+void AJerarquia::EjecutarAnimacionTick(float DeltaTime) {
+	for (int i = 0; i < TransformacionesPartes.Num(); i++) {
+		TransformacionesPartes[i].ParteAsociada->AnimacionRotarTick(DeltaTime);
+	}
+}
 
 //necestio hacer varias busuqueda, buscar la parte para seleccionar, buscar loos componentes de rotacion y saber cual es cual, esto ultimo despes de haber ya seleccionado una parte, y evidentemente ya se cual es su trasnform
 /*FVector AJerarquia::BuscarParte(AParte * &ParteEncontrada) {//en realidad dbe hacer asignaciones, o poner null si no encuentra nada

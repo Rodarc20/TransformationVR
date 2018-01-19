@@ -69,8 +69,12 @@ public:
 
 	void AplicarLayout();
 
-	FVector BuscarParte(AParte *& ParteEncontrada);
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void EjecutarAnimacion(int IdParte);
 
+	void EjecutarAnimacionTick(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void ActualizarNodos();
 
 	void Calculos(Transformacion * V);
@@ -100,6 +104,14 @@ public:
 	void ActualizarPila();
 
 	float DistanciaLaserMaxima;
+
+	void EstablecerRotacionEjeX(int IdParte, float angle);
+
+	void EstablecerRotacionEjeY(int IdParte, float angle);
+
+	void EstablecerRotacionEjeZ(int IdParte, float angle);
+
+	void EstablecerRotacionEje(int IdParte, float angle, ETransformacionEje EjeRotacion);
 	
 	
 };

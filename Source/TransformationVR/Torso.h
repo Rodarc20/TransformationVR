@@ -22,6 +22,8 @@ protected:
 public:
 	ATorso();
 
+	virtual void Tick(float DeltaTime) override;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * Torso;
 	

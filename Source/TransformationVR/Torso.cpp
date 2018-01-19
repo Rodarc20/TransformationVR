@@ -10,6 +10,8 @@
 
 ATorso::ATorso() {
 
+	PrimaryActorTick.bCanEverTick = true;
+
 	Id = 0;
 	NombreParte = "Torso";
     ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
@@ -162,3 +164,10 @@ void ATorso::BeginPlay() {
 	ArticulacionCaderaI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
 
 }
+
+void ATorso::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	UE_LOG(LogClass, Log, TEXT("Torso"));
+
+}
+
