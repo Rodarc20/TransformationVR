@@ -11,6 +11,17 @@
 #include "MotionControllerComponent.h"
 #include "Jerarquia.generated.h"
 
+
+UENUM(BlueprintType)
+enum class EVRJerarquiaTask : uint8 {
+    ETraslationTask UMETA(DisplayName = "Trasladar"),
+    ERotationTask UMETA(DisplayName = "Rotar"),
+    EScaleTask UMETA(DisplayName = "Escalar"),
+    EArmarTask UMETA(DisplayName = "Armar"),
+    EPlayTask UMETA(DisplayName = "Play"),
+    ENoTask UMETA(DisplayName = "Ninguno")
+};
+
 UCLASS()
 class TRANSFORMATIONVR_API AJerarquia : public AActor
 {
@@ -113,6 +124,7 @@ public:
 
 	void EstablecerRotacionEje(int IdParte, float angle, ETransformacionEje EjeRotacion);
 	
+	bool AllNodesCreated();
 	
 };
 

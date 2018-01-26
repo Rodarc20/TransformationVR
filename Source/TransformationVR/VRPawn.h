@@ -178,6 +178,16 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
 	AJerarquia * Jerarquia;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    EVRJerarquiaTask CurrentJerarquiaTask;
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask);
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    EVRJerarquiaTask GetJerarquiaTask();
+
 };
 
 //tener cuidado con el puntero overlaped parte para derecha o izquierda, por si llego a aprentar el triger sin que haya alguna parte osbrepuesta.

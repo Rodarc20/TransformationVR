@@ -27,8 +27,8 @@ ARobot::ARobot()
 
 	DistanciaLaserMaxima = 200.0f;
 
-	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
-	CurrentJerarquiaTask = EVRJerarquiaTask::ERotationTask;
+	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+	//CurrentJerarquiaTask = EVRJerarquiaTask::ERotationTask;
 	HitEje = ETransformacionEje::ENone;
 	EjeSeleccionado = ETransformacionEje::ENone;
 }
@@ -58,7 +58,7 @@ void ARobot::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-210.0f, 90.0f, 130.0f);
+		FVector SpawnLocation(-50.0f, 90.0f, 30.0f);
 
 		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 	}
@@ -72,7 +72,7 @@ void ARobot::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-210.0f, -110.0f, 140.0f);
+		FVector SpawnLocation(-50.0f, -110.0f, 40.0f);
 
 		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 		if (Jerarquia)
@@ -92,13 +92,13 @@ void ARobot::BeginPlay()
 void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Jerarquia->EjecutarAnimacionTick(DeltaTime);
+	Jerarquia->EjecutarAnimacionTick(DeltaTime);//esto esta ya que por alguna razon las partes no ejecutan sus funciones tick
 	//esto tal vez tenga pque pasarse al blueprint
 	//BuscandoComponenteRotacionConLaser();
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {//si el juego esta en Playing
             //activate the spawn volumes
-			BuscandoParteConLaser();//por ahora, pero este no va aqui
+			//BuscandoParteConLaser();//por ahora, pero este no va aqui
 
         }
         break;//no se como funciona esto
@@ -296,6 +296,7 @@ bool ARobot::ColisionRotacion(FVector Inicio, FVector Fin, ETransformacionEje & 
 
 void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
 	CurrentJerarquiaTask = NewJerarquiaTask;
+	UE_LOG(LogClass, Log, TEXT("Cambiando Tarea"));
 }
 
 EVRJerarquiaTask ARobot::GetJerarquiaTask() {
@@ -375,18 +376,41 @@ void ARobot::RotarParteEnEje() {
 			if (DeltaSing >= 0) {
 				DeltaAngle = 360-DeltaAngle;
 			}
-			UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
-			UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
+			//UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
 			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
-			AngleTemp = DeltaAngle;
+			//AngleTemp = DeltaAngle;
 			//AngleTemp = -DeltaAngle;
 			FRotator VariacionRotation(0.0f, 0.0f, -DeltaAngle);
-			UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
 			ParteSeleccionada->SetActorRelativeRotation(RotacionInicial);
 			ParteSeleccionada->AddActorLocalRotation(VariacionRotation);
 			//consigue la rotacion sin errores pero siempre en sentido contrario!!! 
 			FRotator RotacionCambiada = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
-			UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
+
+
+			AnguloActual = DeltaAngle;
+			//UE_LOG(LogClass, Log, TEXT("AnguloAnterior: %f"), AnguloAnterior);
+			//UE_LOG(LogClass, Log, TEXT("AnguloActual: %f"), AnguloActual);
+			float DeltaFrame = AnguloActual - AnguloAnterior;
+			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+
+			if (DeltaFrame > 180.0f) {
+				DeltaFrame = 360.0f - DeltaFrame;
+			}
+			else if (DeltaFrame < -180.0f ) {
+				DeltaFrame = DeltaFrame + 360.0f;
+			}
+			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+			AnguloAcum += DeltaFrame;
+
+			//UE_LOG(LogClass, Log, TEXT("AnguloAcum: %f"), AnguloAcum);
+
+			AnguloAnterior = AnguloActual;
+
+
+
         }
         break;//no se como funciona esto
         case ETransformacionEje::EEjeY: {
@@ -408,10 +432,10 @@ void ARobot::RotarParteEnEje() {
 				//DeltaAngle = DeltaAngle * -1;
 			//}
 			//por ahora aplicar la rotacion
-			AngleTemp = DeltaAngle;
+			//AngleTemp = DeltaAngle;
 			//AngleTemp = -DeltaAngle;
-			UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
-			UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
+			//UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
 			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
 			FRotator VariacionRotation(-DeltaAngle, 0.0f, 0.0f);
 			//ParteSeleccionada->SetActorRelativeRotation(RotacionInicial + VariacionRotation);
@@ -419,7 +443,7 @@ void ARobot::RotarParteEnEje() {
 
 			//FRotator VariacionRotation = RotacionInicial;
 			//VariacionRotation.Add(DeltaAngle, 0.0f, 0.0f);
-			UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
 			//ParteSeleccionada->SetActorRelativeRotation(VariacionRotation);
 
 
@@ -429,7 +453,27 @@ void ARobot::RotarParteEnEje() {
 
 
 			FRotator RotacionCambiada = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
-			UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
+
+			AnguloActual = DeltaAngle;
+			//UE_LOG(LogClass, Log, TEXT("AnguloAnterior: %f"), AnguloAnterior);
+			//UE_LOG(LogClass, Log, TEXT("AnguloActual: %f"), AnguloActual);
+			float DeltaFrame = AnguloActual - AnguloAnterior;
+			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+
+			if (DeltaFrame > 180.0f) {
+				DeltaFrame = 360.0f - DeltaFrame;
+			}
+			else if (DeltaFrame < -180.0f ) {
+				DeltaFrame = DeltaFrame + 360.0f;
+			}
+			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+			AnguloAcum += DeltaFrame;
+
+			//UE_LOG(LogClass, Log, TEXT("AnguloAcum: %f"), AnguloAcum);
+
+			AnguloAnterior = AnguloActual;
+
         }
         break;//no se como funciona esto
         case ETransformacionEje::EEjeZ: {
@@ -447,18 +491,37 @@ void ARobot::RotarParteEnEje() {
 			if (DeltaSing >= 0) {
 				DeltaAngle = 360-DeltaAngle;
 			}
-			AngleTemp = DeltaAngle;
+			//AngleTemp = DeltaAngle;
 			//AngleTemp = -DeltaAngle;
-			UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
-			UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
+			//UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
 			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
 			FRotator VariacionRotation(0.0f, DeltaAngle, 0.0f);
-			UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
 			ParteSeleccionada->SetActorRelativeRotation(RotacionInicial);
 			ParteSeleccionada->AddActorLocalRotation(VariacionRotation);
 			//consigue la rotacion sin errores pero siempre en sentido contrario!!! 
 			FRotator RotacionCambiada = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
-			UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
+			//UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
+
+			AnguloActual = DeltaAngle;
+			//UE_LOG(LogClass, Log, TEXT("AnguloAnterior: %f"), AnguloAnterior);
+			//UE_LOG(LogClass, Log, TEXT("AnguloActual: %f"), AnguloActual);
+			float DeltaFrame = AnguloActual - AnguloAnterior;
+			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+
+			if (DeltaFrame > 180.0f) {
+				DeltaFrame = 360.0f - DeltaFrame;
+			}
+			else if (DeltaFrame < -180.0f ) {
+				DeltaFrame = DeltaFrame + 360.0f;
+			}
+			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+			AnguloAcum += DeltaFrame;
+
+			//UE_LOG(LogClass, Log, TEXT("AnguloAcum: %f"), AnguloAcum);
+
+			AnguloAnterior = AnguloActual;
         }
         break;//no se como funciona esto
         default:
@@ -471,14 +534,19 @@ void ARobot::RotarParteEnEje() {
 }
 
 void ARobot::SelectPressed() {
-    switch (CurrentJerarquiaTask) {
-        case EVRJerarquiaTask::EArmarTask: {//si el juego esta en Playing
-            //activate the spawn volumes
-			BuscandoParteConLaser();//por ahora, pero este no va aqui
+}
 
+void ARobot::SelectReleased() {
+}
+
+void ARobot::GrabRightPressed() {
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {
+			//GrabRightArmarPressed();
         }
-        break;//no se como funciona esto
-        case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+			//GrabRightRotarPressed();
 			if (ParteSeleccionada) {
 				if (HitEje != ETransformacionEje::ENone) {
 					EjeSeleccionado = HitEje;
@@ -488,6 +556,8 @@ void ARobot::SelectPressed() {
 					RotacionInicial = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
 					BuscarIntereseccionEjeRotacion();
 					PuntoRotacionInicial = PuntoInterseccion;
+					AnguloAnterior = 0.0f;
+					AnguloAcum = 0.0f;
 
 				}
 			else {
@@ -512,27 +582,53 @@ void ARobot::SelectPressed() {
 			//una vez que tenga una parte si la selecciono recien se ahbilita y busco componentes
 
         }
-        break;//no se como funciona esto
-        default:
-        case EVRJerarquiaTask::ENoTask: {//unknown/ default state
-            //no hacer nada
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+			//GrabRightTrasladarPressed();
         }
-        break;//no se como funciona esto
+        break;
+        default:
+        case EVRJerarquiaTask::ENoTask: {
+			//GrabRightNingunoPressed();
+        }
+        break;
     }
 }
 
-void ARobot::SelectReleased() {
+void ARobot::GrabRightTick() {
     switch (CurrentJerarquiaTask) {
-        case EVRJerarquiaTask::EArmarTask: {//si el juego esta en Playing
-            //activate the spawn volumes
-			BuscandoParteConLaser();//por ahora, pero este no va aqui
-
+        case EVRJerarquiaTask::EArmarTask: {
+			//GrabRightArmarTick();
         }
-        break;//no se como funciona esto
-        case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+			//GrabRightRotarTick();
+        }
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+			//GrabRightTrasladarTick();
+        }
+        break;
+        default:
+        case EVRJerarquiaTask::ENoTask: {
+			//GrabRightNingunoTick();
+        }
+        break;
+    }
+}
+
+void ARobot::GrabRightReleased() {
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {
+			//GrabRightArmarReleased();
+        }
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+			//GrabRightRotarReleased();
 			if (ParteSeleccionada) {
 				if (EjeSeleccionado != ETransformacionEje::ENone)
-					Jerarquia->EstablecerRotacionEje(ParteSeleccionada->Id, AngleTemp, EjeSeleccionado);
+					//Jerarquia->EstablecerRotacionEje(ParteSeleccionada->Id, AngleTemp, EjeSeleccionado);
+					Jerarquia->EstablecerRotacionEje(ParteSeleccionada->Id, AnguloAcum, EjeSeleccionado);
 					ParteSeleccionada->TWidget->DeseleccionarEjeRotacion(EjeSeleccionado);
 				//se edberian aplicar las rotaciones permanentemente
 				EjeSeleccionado = ETransformacionEje::ENone;
@@ -541,14 +637,85 @@ void ARobot::SelectReleased() {
 			}
 			else {
 			}
-			//una vez que tenga una parte si la selecciono recien se ahbilita y busco componentes
-
         }
-        break;//no se como funciona esto
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+			//GrabRightTrasladarReleased();
+        }
+        break;
         default:
-        case EVRJerarquiaTask::ENoTask: {//unknown/ default state
-            //no hacer nada
+        case EVRJerarquiaTask::ENoTask: {
+			//GrabRightNingunoReleased();
         }
-        break;//no se como funciona esto
+        break;
     }
 }
+
+void ARobot::GrabLeftPressed() {
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {
+			//GrabLeftArmarPressed();
+        }
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+			//GrabLeftRotarPressed();
+        }
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+			//GrabLeftTrasladarPressed();
+        }
+        break;
+        default:
+        case EVRJerarquiaTask::ENoTask: {
+			//GrabLeftNingunoPressed();
+        }
+        break;
+    }
+}
+
+void ARobot::GrabLeftTick() {
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {
+			//GrabLeftArmarTick();
+        }
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+			//GrabLeftRotarTick();
+        }
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+			//GrabLeftTrasladarTick();
+        }
+        break;
+        default:
+        case EVRJerarquiaTask::ENoTask: {
+			//GrabLeftNingunoTick();
+        }
+        break;
+    }
+}
+
+void ARobot::GrabLeftReleased() {
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {
+			//GrabLeftArmarReleased();
+        }
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+			//GrabLeftRotarReleased();
+        }
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+			//GrabLeftTrasladarReleased();
+        }
+        break;
+        default:
+        case EVRJerarquiaTask::ENoTask: {
+			//GrabLeftNingunoReleased();
+        }
+        break;
+    }
+}
+
+//todo estara organizado en las funciones grab en las 3 funciones grab!
+

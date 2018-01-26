@@ -11,7 +11,7 @@
 #include "VRPawn.h"
 #include "Robot.generated.h"
 
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EVRJerarquiaTask : uint8 {
     ETraslationTask UMETA(DisplayName = "Trasladar"),
     ERotationTask UMETA(DisplayName = "Rotar"),
@@ -19,7 +19,7 @@ enum class EVRJerarquiaTask : uint8 {
     EArmarTask UMETA(DisplayName = "Armar"),
     EPlayTask UMETA(DisplayName = "Play"),
     ENoTask UMETA(DisplayName = "Ninguno")
-};
+};*/
 
 UCLASS()
 class TRANSFORMATIONVR_API ARobot : public AActor
@@ -123,5 +123,37 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
 	float AngleTemp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	float AnguloAnterior;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	float AnguloActual;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+	float AnguloAcum;
+
 	
+
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabRightPressed();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabRightTick();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabRightReleased();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabLeftPressed();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabLeftTick();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void GrabLeftReleased();
+
+
+
 };

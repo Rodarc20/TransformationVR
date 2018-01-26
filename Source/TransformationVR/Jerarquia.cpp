@@ -418,6 +418,16 @@ void AJerarquia::EstablecerRotacionEje(int IdParte, float angle, ETransformacion
 	
 }
 
+bool AJerarquia::AllNodesCreated() {
+	bool res = true;
+	for (int i = 0; i < Nodos.Num() && res; i++) {
+		if (!Nodos[i]) {
+			res = false;
+		}
+	}
+	return res;
+}
+
 void AJerarquia::AplicarLayout() {
 	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
 	for (int i = 0; i < Nodos.Num(); i++) {

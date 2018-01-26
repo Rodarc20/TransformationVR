@@ -88,39 +88,79 @@ void AParte::AnimacionRotarTick(float DeltaTime) {
 		float DeltaX = signoX * VelocidadRotacion * DeltaTime;
 		//float DeltaX = AngleXFin * DeltaTime;
 		AngleXCurrent += DeltaX;
-		if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
-			FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
-			AddActorLocalRotation(DeltaRotation);
+		if (signoX >= 0) {
+			if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
+				FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
+				AddActorLocalRotation(DeltaRotation);
+			}
+			else {
+				//llegue al angulo debo dejar de rotar
+				bRotarX = false;
+			}
 		}
 		else {
-			//llegue al angulo debo dejar de rotar
-			bRotarX = false;
+			if (AngleXCurrent >= AngleXFin) {//este if cambia si el anglefine es negativo
+				FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
+				AddActorLocalRotation(DeltaRotation);
+			}
+			else {
+				//llegue al angulo debo dejar de rotar
+				bRotarX = false;
+			}
 		}
 
 		float DeltaY = signoY * VelocidadRotacion * DeltaTime;
 		//float DeltaX = AngleXFin * DeltaTime;
 		AngleYCurrent += DeltaY;
-		if (AngleYCurrent <= AngleYFin) {
-			FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
-			AddActorLocalRotation(DeltaRotation);
+
+		if (signoY >= 0) {
+			if (AngleYCurrent <= AngleYFin) {//este if cambia si el anglefine es negativo
+				FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
+				AddActorLocalRotation(DeltaRotation);
+			}
+			else {
+				//llegue al angulo debo dejar de rotar
+				bRotarY = false;
+			}
 		}
 		else {
-			//llegue al angulo debo dejar de rotar
-			bRotarY = false;
+			if (AngleYCurrent >= AngleYFin) {//este if cambia si el anglefine es negativo
+				FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
+				AddActorLocalRotation(DeltaRotation);
+			}
+			else {
+				//llegue al angulo debo dejar de rotar
+				bRotarY = false;
+			}
 		}
+
 
 		float DeltaZ = signoZ * VelocidadRotacion * DeltaTime;
 		//float DeltaX = AngleXFin * DeltaTime;
 		AngleZCurrent += DeltaZ;
-		if (AngleZCurrent <= AngleZFin) {
-			FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
-			AddActorLocalRotation(DeltaRotation);
+
+		if (signoZ >= 0) {
+			if (AngleZCurrent <= AngleZFin) {//este if cambia si el anglefine es negativo
+				FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
+				AddActorLocalRotation(DeltaRotation);
+			}
+			else {
+				//llegue al angulo debo dejar de rotar
+				bRotarZ = false;
+			}
 		}
 		else {
-			//llegue al angulo debo dejar de rotar
-			bRotarZ = false;
+			if (AngleZCurrent >= AngleZFin) {//este if cambia si el anglefine es negativo
+				FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
+				AddActorLocalRotation(DeltaRotation);
+			}
+			else {
+				//llegue al angulo debo dejar de rotar
+				bRotarZ = false;
+			}
 		}
-		bRotar = bRotarX && bRotarY && bRotarZ;
+
+		bRotar = bRotarX || bRotarY || bRotarZ;
 	}
 }
 
@@ -138,7 +178,7 @@ void AParte::AnimacionRotar(FVector CantidadRotacion) {// es mejor recibir los a
 	bRotarX = true;
 	AngleXIni = 0;
 	AngleXCurrent = AngleXIni;
-	AngleXFin = CantidadRotacion.X;
+	AngleXFin = -CantidadRotacion.X;
 	//este signo x sale del valor angle fin
 	if (AngleXFin >= 0.0f)
 		signoX = 1; //o -1
@@ -148,7 +188,7 @@ void AParte::AnimacionRotar(FVector CantidadRotacion) {// es mejor recibir los a
 	bRotarY = true;
 	AngleYIni = 0;
 	AngleYCurrent = AngleYIni;
-	AngleYFin = CantidadRotacion.Y;
+	AngleYFin = -CantidadRotacion.Y;
 	//este signo x sale del valor angle fin
 	if (AngleYFin >= 0.0f)
 		signoY = 1; //o -1
