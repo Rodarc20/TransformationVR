@@ -561,6 +561,7 @@ void AVRPawn::GrabLeftTick() {
 			if (bGrabLeftParte) {
 				//if (OverlapedLeftParte->bConectado) {
 					if (Jerarquia->Root) {//bRootEstablecida
+						Jerarquia->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
 						Jerarquia->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
 						Jerarquia->ActualizarNodos();
 						Jerarquia->ActualizarPila();
