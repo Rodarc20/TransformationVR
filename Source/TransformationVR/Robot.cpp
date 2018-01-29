@@ -4,6 +4,7 @@
 #include "VRPawn.h"
 #include "Parte.h"
 #include "Jerarquia.h"
+#include "Transformacion.h"
 #include "PilaOpenGL.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
@@ -39,6 +40,8 @@ void ARobot::BeginPlay()
 	Super::BeginPlay();
 	
 	Partes.SetNum(10);
+	Jerarquias.SetNum(10);
+	Transformaciones.SetNum(10);
 
 	TArray<AActor *> PartesEncontradas;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AParte::StaticClass(), PartesEncontradas);
@@ -52,6 +55,16 @@ void ARobot::BeginPlay()
 			Partes[ParteEncontrada->Id] = ParteEncontrada;
 	}
 
+	for (int i = 0; i < Transformaciones.Num(); i++) {//se supone que son 1-
+		Transformaciones[i] = new Transformacion;
+		Transformaciones[i]->ParteAsociada = Partes[i];
+		Transformaciones[i]->ActualizarDesdeParte();
+	}
+
+	UE_LOG(LogClass, Log, TEXT("Instanciadas las transformaciones"));
+
+	//las 10 trsanformaciones ya tiene asociada su parte
+
 	//Instanciando jerarquia
 	UWorld * const World = GetWorld();
 	if (World) {
@@ -60,15 +73,29 @@ void ARobot::BeginPlay()
 		SpawnParams.Instigator = Instigator;
 		FVector SpawnLocation(-50.0f, 90.0f, 30.0f);
 
-		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation - FVector(-30.0f, 0.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+		//creadas las jerarquias para cada parte
+		for (int i = 0; i < Jerarquias.Num(); i++) {
+			Jerarquias[i] = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation + (i+1)*FVector(0.0f, -20.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+		}
 	}
 
-	for (int i = 0; i < 10 && i < Partes.Num(); i++) {//asociando partes a la jerarquia
-		Jerarquia->TransformacionesPartes[i].ParteAsociada = Partes[i];
-		Jerarquia->TransformacionesPartes[i].ActualizarDesdeParte();
-	}
+	UE_LOG(LogClass, Log, TEXT("Instanciadas las jerarquias"));
 
-	if (World) {
+	//copiar las transformaciones a cada jerarquia
+	//y establecer la trasnformacion root que le corresponde, quiza ya no tenga que tener un array de transformaciones ne la jerarquia si ya lo tengo en el robot, por ahora dejarlo en los dos
+	for (int i = 0; i < Jerarquias.Num(); i++) {//asociando partes a la jerarquia
+		Jerarquias[i]->Root = Transformaciones[i];
+		Jerarquias[i]->CantidadPartes = 1;
+		for (int j = 0; j < Transformaciones.Num(); j++) {
+			Jerarquias[i]->TransformacionesPartesPunteros[j] = Transformaciones[j];
+		}
+	}
+	UE_LOG(LogClass, Log, TEXT("Datos copiados a las jerarquias"));
+
+	//la pila hoara se instancia cuando queda una sola jerarquia
+
+	/*if (World) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
@@ -77,23 +104,34 @@ void ARobot::BeginPlay()
 		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 		if (Jerarquia)
 			Jerarquia->PilaCodigo = PilaCodigo;
-	}
+	}*/
 
     AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (MyVRPawn) {
 		Usuario = MyVRPawn;
-		MyVRPawn->Jerarquia = Jerarquia;
+		//MyVRPawn->Jerarquia = Jerarquia;
+		//Aqui le copie la jerarquia al usario, es decir el necesita conocer las jerarquias, para algo, para comprobar si esta unido a algo, o si hay jerarquia
+		//ahora sempre hay jeraruia, solo que necesitara acceder a todas para llmamar a las guncionces de cada una segun sea el caso, ya que no accedmos a la clase robot aun que se podria hacer por esta via.
+		MyVRPawn->Jerarquias.SetNum(10);
+		for (int i = 0; i < MyVRPawn->Jerarquias.Num(); i++) {
+			MyVRPawn->Jerarquias[i] = Jerarquias[i];
+		}
+
         RightController = MyVRPawn->MotionControllerRight;
         LeftController = MyVRPawn->MotionControllerLeft;
 	}
+	UE_LOG(LogClass, Log, TEXT("Informacion pasada al VRPawn"));
 }
 
 // Called every frame
 void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Jerarquia->EjecutarAnimacionTick(DeltaTime);//esto esta ya que por alguna razon las partes no ejecutan sus funciones tick
+	//Jerarquia->EjecutarAnimacionTick(DeltaTime);//esto esta ya que por alguna razon las partes no ejecutan sus funciones tick
 	//esto tal vez tenga pque pasarse al blueprint
+	//esta ejecucion de animacion se da solo en la tarea de rotar, en el armado no , por ello no necesito ejecutar essa funcion en el arreglo de jerarquias
+
+
 	//BuscandoComponenteRotacionConLaser();
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {//si el juego esta en Playing
@@ -717,5 +755,73 @@ void ARobot::GrabLeftReleased() {
     }
 }
 
+void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
+	//ya que esta funcion se llama desde la funcion unir con parte de la clase parte
+	//estos ids son de las partes que se unira, que comaprten la misma articulaciones, por lo tanto hay que buscar quien es raiz de quien, sin mebargo el hijo es quien si es raiz, si o si, es raiz
+	//de cualquier forma corresponde obtener su parte rai
+	//estos ids son de las partes que el vrpawn ha sujetado, etos idse se consegiue primero por la jerarquia que estoy sujetando, y el segund a travez del componente colision, 
+	//aun que otro enfoque seria que las partes sean los que envien las señáles de union, en la funcon contectar en cada parte
+	//si es que esta una articulacion disponible solapada con l a que le corresponde, pues esta llama a robot y le dice que sze unana, asi vrpawn no tiene que hacer nada
+	//para esta funcon ser llamada se debe activar las articulaciones solo en las partes que he sujetado, pero que detecte cualquier articulacion solapada.
+	//es decir todas las articulaciones terminales de la jerarquia deben detectar solapamientos con sus contrapartes
+	//ya que esto esta restringido, no iporta quien se une a quien
+
+	int IdRaizPadre = Partes[IdPadre]->IdParteRaiz;
+	int IdRaizHijo = Partes[IdHijo]->IdParteRaiz;
+	//estos son paa acceder a la jas jerarquias a las que pertencen
+	//o lo hago desde afuera, sin la funcion absorber?
+	//Jerarquias[IdRaizPadre]->AbsorberJerarquia(Jerarquias[IdRaizHijo]);
+
+	Transformaciones[IdHijo]->Padre = Transformaciones[IdPadre];
+	Transformaciones[IdPadre]->Hijos.Add(Transformaciones[IdHijo]);
+	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
+
+	Jerarquias[IdRaizHijo]->ActualizarIdRaizParte(IdRaizPadre);
+	//raiz actuazada
+
+	//debo actualizar el IdParteRaiz de la jerarquia hijo a todas sus partes
+	
+	Transformaciones[IdHijo]->ParteAsociada->AttachToActor(Transformaciones[IdPadre]->ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
+
+	//listo hora a solo lajerar
+	Jerarquias[IdRaizPadre]->ActualizarNodos();
+	Jerarquias[IdRaizPadre]->CantidadPartes += Jerarquias[IdRaizHijo]->CantidadPartes;
+	//debo dejar sin raiz a la otra jerarquia
+	Jerarquias[IdRaizHijo]->Root = nullptr;
+	Jerarquias[IdRaizHijo]->CantidadPartes = 0;
+	//cuando haga desuniones debo recontablilizar a mano, las partes en la jerarquias
+	//y quiza sea mejor usar esa funcion aqui, esa funcon contara desde la razi todas las partes
+	
+}
+
 //todo estara organizado en las funciones grab en las 3 funciones grab!
 
+//las 10 jerarquias trabajan con las misma 10 trasnformaciones, encontces cuando uno jerarquia, y por dentro uno sus transformaciones, en el fondo estoy alterando en todas las jerarquias,
+//lo unico que las diferencia es que tienen cada jerarquia un raiz diferente, entonce al unir jeraruias, unire las transformaciones que tienen como raiz.
+//ademas de hacer los attachment apropiados.
+//y actulaizar los calculos, de la matrices locales y globales, tal cual esta sucediendo ahora, tener cudado con ello, aunque suficiente con los atachments, ya que actualizo por ahora las amtrices en fucnion de unreal
+//
+//el problema es identificar la raiz o la jerarquia a la que pertenece una parte, quiza deba tener un identificador de a que jerarqui estoy conectada, la parte, en lugar del bool bConectado.
+
+
+//las articulaciones deben tener un nombre exatamente igual y unco con su contraparte, para que se resalte al entrar en contacto solo con esa parte, y quiza un efecto cnouando entre en contacto con una parte que no debe
+//que esto se exxprese omo mayor ilumincaion o menor ilumnacion, es decir intensidad, 
+//y cuando la articulacion estes conectadad que se ponga de color blanco, asi tendra al final todas las articulaciones del mismo color.
+//lo mismo al soltar se verfica que este sobreponiendo la articulacion, ahora debe ser solotrue cuando sobreponga la articulacion que le corresponde
+//o quiza solo unir, si la articulacion sobre puesta es la que le corresponde
+
+//los nodos, destaran todos dispuestos en el excenario, al igula que las trasnformaciones estaran asociados a sus partes y todas las jerarquias.
+//el layout depende de cada jerarquias, listo, facil.
+
+
+//el desunir, debo ser capaza de detectar un parte a desunir, poder encontrarla en la jerarquia de la que voy a desunir, y luego tambien generar una nueva jerarquia con ese sub arbol.
+//para esto se puede usar los arreglos de jerarquias y trasnformaciones que se tenian, poniendo punteros como deberian ser, etc.
+
+//cuando se termine la tarea de armar el robot, debo destruir las otras jerarquias y quedarme con la que contiene al robot
+//tener en cuanta esta desunion, al momento de implementar el armado del robot
+
+
+//la desunion sujetando, para entrar en el modo desunion se debe sujetar en cada mano alguna parte que esten en la misma jerarquia y que ademas una sea hija de la otra. revisando esto
+//las articualaciones entran en un modo especia en el que el movimeintos es libre y la aarticulacion se estira.
+
+//la desunion con puntero seraia apuntar a ala articulacion de unio seleccionar y desunir .

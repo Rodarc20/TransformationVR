@@ -13,6 +13,7 @@ ATorso::ATorso() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	Id = 0;
+	IdParteRaiz = Id;
 	NombreParte = "Torso";
     ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
     //Torso->SetupAttachment(RootComponent);

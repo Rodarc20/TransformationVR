@@ -45,7 +45,7 @@ public:
     //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visualization - Referencias")
     //UMotionControllerComponent* LeftController;
 
-	TArray<Transformacion> TransformacionesPartes;
+	TArray<Transformacion * > TransformacionesPartesPunteros;
 
 	TArray<ANodo *> Nodos;
 
@@ -125,6 +125,18 @@ public:
 	void EstablecerRotacionEje(int IdParte, float angle, ETransformacionEje EjeRotacion);
 	
 	bool AllNodesCreated();
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void AbsorberJerarquia(AJerarquia * Otra, int IdPadre, int IdHijo);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void ActualizarIdRaizParte(int NuevoIdRaizParte);
+
+	bool ArticulacionSobrepuesta();
+
+	bool RealizarUniones();
+
+	int CantidadPartes;
 	
 };
 

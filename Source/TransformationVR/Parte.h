@@ -69,6 +69,9 @@ public:
 	bool bConectado;//verdadeor si la parte esta conectada al muñeco, se usa para saber si se esta sujetando una parte o al muñeco.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	int IdParteRaiz;//cual es la raiz a la que esta conectada esta parte, si es el mismo id que la parte, pues estoy sujetando la raiz del gurpo
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bBuscarArticulacion;//verdadeor si la parte esta conectada al muñeco, se usa para saber si se esta sujetando una parte o al muñeco.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")

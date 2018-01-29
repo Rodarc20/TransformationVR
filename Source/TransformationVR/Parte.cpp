@@ -5,6 +5,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/Engine.h"
 #include "Public/Math/Color.h"
+#include "Robot.h"
+#include "Kismet/GameplayStatics.h"
 
 
 
@@ -231,6 +233,8 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 	//debo pensar com otratar esto junto con las trasnformaciones de forma coherente
 	//quiza las trasnformaciones deberian utilizar l ainformacion aqui contenida, 
 	if (bArticulacionSobrepuesta) {//si hay una articulacion sobrepuesta entoces si o si habra un overlaperparte, tener en cuenta que esta funcion deberia manerja los caso de articulaciones con varias partes por ahora dejar sencillo
+		//solo es verdadero si estoy superopoiniendo a una articulacion que correponda
+		//el ide de la articulaion me puede decir si es uira como hijo o como padre, no necesito mas
 		Padre = OverlapedParte;
 		OverlapedParte->Hijos.Add(this);
 		//aqui deberia haber mas partes de color
@@ -242,11 +246,32 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 			SetActorLocation(OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld);
 			//la actualizacion del trasnform de la parte se hace fuera de esta funcon, ya que aqui no tengo acceso a la jerarquia
 
+			TArray<AActor *> RobotsEncontrados;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
+			//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+			for (int i = 0; i < RobotsEncontrados.Num(); i++) {
+				//if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+					//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("PARTES ENCONTRADAS"));
+				//UE_LOG(LogClass, Log, TEXT("Partes Encontradas %d"), i);
+				ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[i]);
+				if (RobotEncontrado) {
+					if (Id > OverlapedParte->Id) {
+						RobotEncontrado->UnirJerarquiaPadreHijo(Id, OverlapedParte->Id);//depende de cual sea el mayor de las partes
+						//no se si debo pasare esos ids, o los ide raiz, para que haga la union aporpiada, o que mejor lo haga denotr de la funcion de la clase robot
+					}
+					else {
+						RobotEncontrado->UnirJerarquiaPadreHijo(OverlapedParte->Id, Id);//depende de cual sea el mayor de las partes
+					}
+				}
+
+			}
+
 		}
 		//tambien se deben inhabilitar los de alguna forma estas articulaciones, dejarlo asi por ahora
 
 		//aqui debo actualizar las matrices de la transformaicon con los nuevos valores
 		//para que se le pueda plicar los cambios en la jerarquia
+		//Debo deshabilitar las articulaciones que acabo de unir, para que no sean detectadas
 	}
 }
 
@@ -258,7 +283,33 @@ void AParte::CambiarColorArticulacion(int IndiceArticulacion, FLinearColor Nuevo
 }
 
 void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-	if (bBuscarArticulacion) {
+	//solo si los nombres de las articulaciones son iguales, si no no se deben unir
+	if (OverlappedComponent->GetName() == OtherComp->GetName()) {
+		AParte * const ParteEncontrada = Cast<AParte>(OtherActor);
+		if (ParteEncontrada) {
+			if (Id > ParteEncontrada->Id) {
+				//debo deshabilitar el del mayor, es decir si la parte es mayor dehabilito su colicion, la de la parte menor, es la colision que tambien se dehabilita, pero su mesh si se amtniene
+				USphereComponent * const ArticulacionEncontrada = Cast<USphereComponent>(OtherComp);//en realidad deberia manejar canles para que esto solo se active con los spherecomponents ocnfigurados como articulacion
+				if (ArticulacionEncontrada) {
+					//debo cambiar el color de esta articulacion y de la otra, parte para ello debo darle, el componente encontrado, y que lo busque en su array de sphere components, el indice me dira cual es su mesh corresondiente para cambiarlo de color
+					bArticulacionSobrepuesta = true;
+					OverlapedParte = ParteEncontrada;
+
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Articulacion Sobrepuesta"));
+					//asi mismo debo saber cual de todas mis articulaciones es la que esta en contacto, para ello esta overlappedcomponent, que debo guardarlo despues de castear para luego buscar y saber su inidice para guardar el puntero de la parte padre, e inhabilitar en ese componente el contacto
+					//debo deshabilitar para que en una nueva busqueda de alguna otra parte, no tome en cuenta las rticualciones unidas
+					IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
+					if(IndiceArticulacionSobrepuesta != -1)
+						CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionSobrepuesta);
+					IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
+					if(IndiceArticulacionSobrepuestaOtro != -1)
+						ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
+				}
+			}
+		}
+	}
+	/*if (bBuscarArticulacion) {
 		AParte * const ParteEncontrada = Cast<AParte>(OtherActor);
 		if (ParteEncontrada) {
 			USphereComponent * const ArticulacionEncontrada = Cast<USphereComponent>(OtherComp);//en realidad deberia manejar canles para que esto solo se active con los spherecomponents ocnfigurados como articulacion
@@ -279,7 +330,7 @@ void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponen
 					ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
 			}
 		}
-	}
+	}*/
 }
 
 void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {

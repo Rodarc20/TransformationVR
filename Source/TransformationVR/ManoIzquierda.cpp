@@ -11,6 +11,7 @@
 AManoIzquierda::AManoIzquierda() {
 
 	Id = 7;
+	IdParteRaiz = Id;
 	NombreParte = "Mano Izquierda";
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

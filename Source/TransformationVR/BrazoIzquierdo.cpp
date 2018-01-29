@@ -11,6 +11,7 @@
 ABrazoIzquierdo::ABrazoIzquierdo() {
 
 	Id = 3;
+	IdParteRaiz = Id;
 	NombreParte = "Brazo Izquierdo";
 
 

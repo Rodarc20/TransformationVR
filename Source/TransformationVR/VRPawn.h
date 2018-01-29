@@ -180,6 +180,9 @@ public:
 	AJerarquia * Jerarquia;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	TArray<AJerarquia *> Jerarquias;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
     EVRJerarquiaTask CurrentJerarquiaTask;
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")

@@ -12,6 +12,7 @@
 ACabeza::ACabeza() {
 
 	Id = 1;
+	IdParteRaiz = Id;
 	NombreParte = "Cabeza";
 
 	ColisionCuello = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionCuello"));
