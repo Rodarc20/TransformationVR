@@ -61,6 +61,7 @@ AVRPawn::AVRPawn()
 	ColisionControllerLeft->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
 	ColisionControllerLeft->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
     ColisionControllerLeft->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerLeft);
+    ColisionControllerLeft->OnComponentEndOverlap.AddDynamic(this, &AVRPawn::OnEndOverlapControllerLeft);
 
 	ColisionControllerRight = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerRightt"));
 	ColisionControllerRight->SetupAttachment(MotionControllerRight);
@@ -68,6 +69,7 @@ AVRPawn::AVRPawn()
 	ColisionControllerRight->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
 	ColisionControllerRight->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
     ColisionControllerRight->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerRight);
+    ColisionControllerRight->OnComponentEndOverlap.AddDynamic(this, &AVRPawn::OnEndOverlapControllerRight);
 
 
     Interaction = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Interaction"));
@@ -305,10 +307,12 @@ void AVRPawn::GrabRightPressed() {
 					//como hago en los demas, y da igual si
 					OffsetRightParte = Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
 					//establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
+					UE_LOG(LogClass, Log, TEXT("Calculando offset"));
 					PuntoReferenciaRight->SetWorldLocation(Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
 					PuntoReferenciaRight->SetWorldRotation(Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
+					UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
 
-					OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
+					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
 					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
 				//}
 			}
@@ -335,10 +339,11 @@ void AVRPawn::GrabRightTick() {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
 			//GrabRightArmarTick();
-			if (bGrabRightParte) {
+			if (bGrabRightParte && OverlapedRightParte) {
 				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaRight->GetComponentLocation());
 				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
-				Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarNodos();
+				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+				//Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarNodos();
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarPila();
 			}
         }
@@ -440,7 +445,7 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
 					PuntoReferenciaLeft->SetWorldLocation(Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
 					PuntoReferenciaLeft->SetWorldRotation(Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
 
-					OverlapedLeftParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
+					//OverlapedLeftParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
 					//toda la jerarauiq que busque colisiones
 					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
 				//}
@@ -485,7 +490,7 @@ void AVRPawn::GrabLeftTick() {
 			if (bGrabLeftParte) {
 				Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
 				Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
-				Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarNodos();
+				//Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarNodos();
 				//Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarPila();
 			}
         }
@@ -619,3 +624,43 @@ void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedCompo
 		}
 	}
 }
+
+void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+	if(!bBuscarParteRight){//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
+		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("EndOverlap"));
+			AParte * const Parte = Cast<AParte>(OtherActor);
+			if (Parte && !Parte->IsPendingKill() && OverlapedRightParte == Parte) {
+				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+				if(MeshParte){
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+					OverlapedRightParte = nullptr;
+				}
+			}
+		}
+	}
+}
+
+void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+	if (bBuscarParteLeft) {
+		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("EndOverlap"));
+			AParte * const Parte = Cast<AParte>(OtherActor);
+			if (Parte && !Parte->IsPendingKill()) {
+				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+				if(MeshParte){
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+					OverlapedLeftParte = nullptr;
+				}
+			}
+		}
+	}
+}
+
+//debo mejorar el sistema de reconocimiento de partes, quiza manejaro en el tick en lugar de aqui, para quedarme con el mas cercano si hay varios
+
+//si decido deguir con el el modelo de being y end, debo agregar el end, para qpue ponga en null, el OverlapedParte

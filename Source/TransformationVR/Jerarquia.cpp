@@ -243,6 +243,44 @@ void AJerarquia::ImprimirMatriz(FMatrix m) {
     }
 }
 
+void AJerarquia::ImprimirTransformacion(Transformacion * T) {
+	UE_LOG(LogClass, Log, TEXT("Trasformacion Id (%d), ParteRaiz (%d)"), T->ParteAsociada->Id, T->ParteAsociada->IdParteRaiz);
+	if (T->Padre) {
+		UE_LOG(LogClass, Log, TEXT("Padre Id (%d)"), T->Padre->ParteAsociada->Id);
+	}
+	else {
+		UE_LOG(LogClass, Log, TEXT("Padre Id (%d)"), -1);
+	}
+	for (int i = 0; i < T->Hijos.Num(); i++) {
+		UE_LOG(LogClass, Log, TEXT("Hijo (%d)"), T->Hijos[i]->ParteAsociada->Id);
+	}
+}
+
+void AJerarquia::Imprimir() {
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+	if (Root) {
+		UE_LOG(LogClass, Log, TEXT("Jerarquia (%d)"), Root->ParteAsociada->Id);
+	}
+	else {
+		UE_LOG(LogClass, Log, TEXT("Jerarquia (%d)"), -1);
+	}
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+		if (V) {
+			ImprimirTransformacion(V);
+			if (V->Hijos.Num()) {
+				for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+					pila.push(V->Hijos[i]);
+				}
+			}
+		}
+    }
+}
+
 void AJerarquia::ImprimirMatrices(Transformacion * T) {
 	UE_LOG(LogClass, Log, TEXT("%s Local"), *T->ParteAsociada->NombreParte);
 	ImprimirMatriz(T->H);
@@ -508,11 +546,11 @@ bool AJerarquia::RealizarUniones() {
 		if (V->ParteAsociada->bArticulacionSobrepuesta) {
 			V->ParteAsociada->UnirConParteSobrepuesta();
 		}
-        if (V->Hijos.Num()) {
+        //if (V->Hijos.Num()) {
             for (int i = V->Hijos.Num()-1; i >= 0; i--) {
                 pila.push(V->Hijos[i]);
             }
-        }
+        //}
     }
 	return res;
 }

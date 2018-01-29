@@ -789,6 +789,9 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	//debo dejar sin raiz a la otra jerarquia
 	Jerarquias[IdRaizHijo]->Root = nullptr;
 	Jerarquias[IdRaizHijo]->CantidadPartes = 0;
+
+	Jerarquias[IdRaizPadre]->Imprimir();
+	Jerarquias[IdRaizHijo]->Imprimir();
 	//cuando haga desuniones debo recontablilizar a mano, las partes en la jerarquias
 	//y quiza sea mejor usar esa funcion aqui, esa funcon contara desde la razi todas las partes
 	

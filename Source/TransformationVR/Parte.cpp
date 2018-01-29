@@ -25,6 +25,7 @@ AParte::AParte()
 	bRotarX = false;
 	bRotarY = false;
 	bRotarZ = false;
+	bBuscarArticulacion = true;
 }
 
 // Called when the game starts or when spawned
@@ -246,6 +247,16 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 			SetActorLocation(OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld);
 			//la actualizacion del trasnform de la parte se hace fuera de esta funcon, ya que aqui no tengo acceso a la jerarquia
 
+			ColisionesArticualciones[IndiceArticulacionSobrepuesta]->OnComponentBeginOverlap.RemoveDynamic(this, &AParte::OnBeginOverlapArticulacion);
+			OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->OnComponentBeginOverlap.RemoveDynamic(this, &AParte::OnBeginOverlapArticulacion);
+
+			ColisionesArticualciones[IndiceArticulacionSobrepuesta]->OnComponentEndOverlap.RemoveDynamic(this, &AParte::OnEndOverlapArticulacion);
+			OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->OnComponentEndOverlap.RemoveDynamic(this, &AParte::OnEndOverlapArticulacion);
+			bArticulacionSobrepuesta = false;
+
+
+
+
 			TArray<AActor *> RobotsEncontrados;
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
 			//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
@@ -256,11 +267,11 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 				ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[i]);
 				if (RobotEncontrado) {
 					if (Id > OverlapedParte->Id) {
-						RobotEncontrado->UnirJerarquiaPadreHijo(Id, OverlapedParte->Id);//depende de cual sea el mayor de las partes
+						RobotEncontrado->UnirJerarquiaPadreHijo(OverlapedParte->Id, Id);//depende de cual sea el mayor de las partes
 						//no se si debo pasare esos ids, o los ide raiz, para que haga la union aporpiada, o que mejor lo haga denotr de la funcion de la clase robot
 					}
 					else {
-						RobotEncontrado->UnirJerarquiaPadreHijo(OverlapedParte->Id, Id);//depende de cual sea el mayor de las partes
+						RobotEncontrado->UnirJerarquiaPadreHijo(Id, OverlapedParte->Id);//depende de cual sea el mayor de las partes
 					}
 				}
 
@@ -309,28 +320,6 @@ void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponen
 			}
 		}
 	}
-	/*if (bBuscarArticulacion) {
-		AParte * const ParteEncontrada = Cast<AParte>(OtherActor);
-		if (ParteEncontrada) {
-			USphereComponent * const ArticulacionEncontrada = Cast<USphereComponent>(OtherComp);//en realidad deberia manejar canles para que esto solo se active con los spherecomponents ocnfigurados como articulacion
-			if (ArticulacionEncontrada) {
-				//debo cambiar el color de esta articulacion y de la otra, parte para ello debo darle, el componente encontrado, y que lo busque en su array de sphere components, el indice me dira cual es su mesh corresondiente para cambiarlo de color
-				bArticulacionSobrepuesta = true;
-				OverlapedParte = ParteEncontrada;
-
-				if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Articulacion Sobrepuesta"));
-				//asi mismo debo saber cual de todas mis articulaciones es la que esta en contacto, para ello esta overlappedcomponent, que debo guardarlo despues de castear para luego buscar y saber su inidice para guardar el puntero de la parte padre, e inhabilitar en ese componente el contacto
-				//debo deshabilitar para que en una nueva busqueda de alguna otra parte, no tome en cuenta las rticualciones unidas
-				IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
-				if(IndiceArticulacionSobrepuesta != -1)
-					CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionSobrepuesta);
-				IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
-				if(IndiceArticulacionSobrepuestaOtro != -1)
-					ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
-			}
-		}
-	}*/
 }
 
 void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {

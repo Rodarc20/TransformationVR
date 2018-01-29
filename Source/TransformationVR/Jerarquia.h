@@ -47,6 +47,7 @@ public:
 
 	TArray<Transformacion * > TransformacionesPartesPunteros;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	TArray<ANodo *> Nodos;
 
 	Transformacion * Root;
@@ -73,6 +74,10 @@ public:
     TSubclassOf<class ANodo> TipoNodo;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
 
     void ImprimirMatriz(FMatrix m);
+
+	void ImprimirTransformacion(Transformacion * T);
+
+	void Imprimir();
 
 	void ImprimirMatrices(Transformacion * T);
 
@@ -136,6 +141,7 @@ public:
 
 	bool RealizarUniones();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	int CantidadPartes;
 	
 };
