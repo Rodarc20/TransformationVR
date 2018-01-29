@@ -7,6 +7,7 @@
 #include "Public/Math/Color.h"
 #include "Robot.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 
@@ -241,8 +242,19 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 		//aqui deberia haber mas partes de color
 		bConectado = true;
 		if (IndiceArticulacionSobrepuesta != -1 && IndiceArticulacionSobrepuestaOtro != -1) {
-			CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionConectada);
-			OverlapedParte->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionConectada);
+
+			ColorConectadoArticulacion(IndiceArticulacionSobrepuesta);
+			//OverlapedParte->ColorConectadoArticulacion(IndiceArticulacionSobrepuestaOtro);
+			OverlapedParte->MeshesArticulaciones[IndiceArticulacionSobrepuestaOtro]->SetVisibility(false);
+
+			//ColorResaltadoArticulacion(IndiceArticulacionSobrepuesta);
+			//OverlapedParte->ColorResaltadoArticulacion(IndiceArticulacionSobrepuestaOtro);
+
+			//ColorNormalArticulacion(IndiceArticulacionSobrepuesta);
+			//OverlapedParte->ColorNormalArticulacion(IndiceArticulacionSobrepuestaOtro);
+
+			//CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionConectada);
+			//OverlapedParte->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionConectada);
 			FVector OffsetWorld = GetActorLocation() - ColisionesArticualciones[IndiceArticulacionSobrepuesta]->GetComponentLocation();
 			SetActorLocation(OverlapedParte->ColisionesArticualciones[IndiceArticulacionSobrepuestaOtro]->GetComponentLocation() + OffsetWorld);
 			//la actualizacion del trasnform de la parte se hace fuera de esta funcon, ya que aqui no tengo acceso a la jerarquia
@@ -311,11 +323,13 @@ void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponen
 					//asi mismo debo saber cual de todas mis articulaciones es la que esta en contacto, para ello esta overlappedcomponent, que debo guardarlo despues de castear para luego buscar y saber su inidice para guardar el puntero de la parte padre, e inhabilitar en ese componente el contacto
 					//debo deshabilitar para que en una nueva busqueda de alguna otra parte, no tome en cuenta las rticualciones unidas
 					IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
-					if(IndiceArticulacionSobrepuesta != -1)
-						CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionSobrepuesta);
+					if (IndiceArticulacionSobrepuesta != -1)
+						ColorResaltadoArticulacion(IndiceArticulacionSobrepuesta);
+						//CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionSobrepuesta);
 					IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
 					if(IndiceArticulacionSobrepuestaOtro != -1)
-						ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
+						ParteEncontrada->ColorResaltadoArticulacion(IndiceArticulacionSobrepuestaOtro);
+						//ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionSobrepuesta);
 				}
 			}
 		}
@@ -323,7 +337,8 @@ void AParte::OnBeginOverlapArticulacion(UPrimitiveComponent * OverlappedComponen
 }
 
 void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
-	if (bBuscarArticulacion) {
+	//if (bBuscarArticulacion) {
+	if (OverlappedComponent->GetName() == OtherComp->GetName()) {
 		AParte * const ParteEncontrada = Cast<AParte>(OtherActor);
 		if (ParteEncontrada) {
 			USphereComponent * const ArticulacionEncontrada = Cast<USphereComponent>(OtherComp);//en realidad deberia manejar canles para que esto solo se active con los spherecomponents ocnfigurados como articulacion
@@ -334,10 +349,12 @@ void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent,
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Saliendo Articulacion Sobrepuesta"));
 				IndiceArticulacionSobrepuesta = IndiceColisionArticulacion(Cast<USphereComponent>(OverlappedComponent));// que busque mejor la parte en lugar de yo hacerlo aqui, por un lado reduzco busquedas si lo hago antes
 				if(IndiceArticulacionSobrepuesta != -1)
-					CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionNoConectada);
+					ColorNormalArticulacion(IndiceArticulacionSobrepuesta);
+					//CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionNoConectada);
 				int IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
 				if(IndiceArticulacionSobrepuestaOtro != -1)
-					ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionNoConectada);
+					ParteEncontrada->ColorNormalArticulacion(IndiceArticulacionSobrepuestaOtro);
+					//ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionNoConectada);
 			}
 		}
 		//tambien aplicar los cambios de color adecuados, por ahora solo dejare mensajes en consola
@@ -354,6 +371,20 @@ void AParte::DesactivarResaltado() {
 	bResaltada = false;
 }
 
+void AParte::ColorResaltadoArticulacion(int IdArticulacion) {
+	CambiarColorArticulacion(IdArticulacion, UKismetMathLibrary::HSVToRGB(HueArticulaciones[IdArticulacion], 1.0f, 2.0f, 1.0f));
+}
+
+void AParte::ColorNormalArticulacion(int IdArticulacion) {
+	CambiarColorArticulacion(IdArticulacion, UKismetMathLibrary::HSVToRGB(HueArticulaciones[IdArticulacion], 1.0f, 1.0f, 1.0f));
+}
+
+void AParte::ColorConectadoArticulacion(int IdArticulacion) {
+	CambiarColorArticulacion(IdArticulacion, UKismetMathLibrary::HSVToRGB(HueArticulaciones[IdArticulacion], 0.0f, 1.0f, 1.0f));
+	//CambiarColorArticulacion(IdArticulacion, UKismetMathLibrary::HSVToRGB(218.0f, 1.0f, 1.0f, 1.0f));
+	//CambiarColorArticulacion(IdArticulacion, UKismetMathLibrary::HSVToRGB(258.0f, 1.0f, 1.0f, 1.0f));
+}
+
 void AParte::CopiarTransform() {
 	TWidget->TransformTemporal = GetActorTransform();
 }
@@ -362,3 +393,7 @@ void AParte::CopiarTransform() {
 //asi cuando este reaacione en el overlap, y deba cambiar el color por ejemplo, solo debo llamar a una funcion de este componente, lo mismo cuando usceda el endoverlap
 
 
+//debereia tener un arreglo de colores, al igual que tengo el arreglo de articulacion, para que cada articulacion tenga un colore que le corresponda.
+//debo tener 3 funciones
+//ResaltarArticulacion(int IdArticulacion)
+//esta funcion tomara el color de articulacion del arreglo dde colores sgund el indice, sumara algun valor al que lo hara mas birllante, y eso lo asignara al material

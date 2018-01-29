@@ -139,6 +139,8 @@ UTransformacionWidget::UTransformacionWidget()
 	ArcoY->SetCustomDepthStencilValue(252);
 	ArcoZ->SetCustomDepthStencilValue(253);
 
+	OcultarWidgetOrigen();
+	OcultarWidgetTraslacion();
 	OcultarWidgetRotacion();
 	
 }
@@ -174,6 +176,14 @@ void UTransformacionWidget::OcultarWidget() {
 	FlechaX->SetVisibility(false);
 	FlechaY->SetVisibility(false);
 	FlechaZ->SetVisibility(false);
+}
+
+void UTransformacionWidget::MostrarWidgetOrigen() {
+	Origen->SetVisibility(true);
+}
+
+void UTransformacionWidget::OcultarWidgetOrigen() {
+	Origen->SetVisibility(false);
 }
 
 void UTransformacionWidget::MostrarWidgetTraslacion() {

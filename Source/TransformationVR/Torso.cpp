@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 ATorso::ATorso() {
@@ -138,14 +139,28 @@ ATorso::ATorso() {
 
 	MeshesArticulaciones.Add(ArticulacionCuello);
 	ColisionesArticualciones.Add(ColisionCuello);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(218.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(218.0f);
+	
 	MeshesArticulaciones.Add(ArticulacionHombroD);
 	ColisionesArticualciones.Add(ColisionHombroD);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(258.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(258.0f);
+
 	MeshesArticulaciones.Add(ArticulacionCaderaD);
 	ColisionesArticualciones.Add(ColisionCaderaD);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(338.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(338.0f);
+
 	MeshesArticulaciones.Add(ArticulacionHombroI);
 	ColisionesArticualciones.Add(ColisionHombroI);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(298.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(298.0f);
+
 	MeshesArticulaciones.Add(ArticulacionCaderaI);
 	ColisionesArticualciones.Add(ColisionCaderaI);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(18.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(18.0f);
 
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
@@ -155,14 +170,19 @@ ATorso::ATorso() {
 void ATorso::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this));
 	ArticulacionCuello->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionHombroD->GetMaterial(0), this));
 	ArticulacionHombroD->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(1);
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionCaderaD->GetMaterial(0), this));
 	ArticulacionCaderaD->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(2);
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionHombroI->GetMaterial(0), this));
 	ArticulacionHombroI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(3);
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionCaderaI->GetMaterial(0), this));
 	ArticulacionCaderaI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(4);
 
 }
 

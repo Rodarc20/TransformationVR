@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 APiernaIzquierda::APiernaIzquierda() {
@@ -83,8 +84,13 @@ APiernaIzquierda::APiernaIzquierda() {
 
 	MeshesArticulaciones.Add(ArticulacionCaderaI);
 	ColisionesArticualciones.Add(ColisionCaderaI);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(18.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(18.0f);
+
 	MeshesArticulaciones.Add(ArticulacionTobilloI);
 	ColisionesArticualciones.Add(ColisionTobilloI);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(178.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(178.0f);
 
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
@@ -94,8 +100,10 @@ APiernaIzquierda::APiernaIzquierda() {
 void APiernaIzquierda::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionCaderaI->GetMaterial(0), this));
 	ArticulacionCaderaI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionTobilloI->GetMaterial(0), this));
 	ArticulacionTobilloI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(1);
 
 }
 

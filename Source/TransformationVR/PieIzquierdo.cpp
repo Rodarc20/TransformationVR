@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 APieIzquierdo::APieIzquierdo() {
@@ -60,6 +61,8 @@ APieIzquierdo::APieIzquierdo() {
 
 	MeshesArticulaciones.Add(ArticulacionTobilloI);
 	ColisionesArticualciones.Add(ColisionTobilloI);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(178.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(178.0f);
 
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
@@ -69,5 +72,6 @@ APieIzquierdo::APieIzquierdo() {
 void APieIzquierdo::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionTobilloI->GetMaterial(0), this));
 	ArticulacionTobilloI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 
 }

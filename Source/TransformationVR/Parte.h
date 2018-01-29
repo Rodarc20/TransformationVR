@@ -79,6 +79,12 @@ public:
 	//este booleano se usa cuando la parte esta sujetada por el control derecho, la cua busca una articulacion apra unir en el muñeco
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<FLinearColor> ColoresArticulaciones;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<float> HueArticulaciones;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	FLinearColor ColorArticulacionNoConectada;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
@@ -137,6 +143,15 @@ public:
 
 	UFUNCTION()
 	virtual void DesactivarResaltado();
+
+	UFUNCTION()
+	void ColorResaltadoArticulacion(int IdArticulacion);
+
+	UFUNCTION()
+	void ColorNormalArticulacion(int IdArticulacion);
+
+	UFUNCTION()
+	void ColorConectadoArticulacion(int IdArticulacion);
 
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void CopiarTransform();
