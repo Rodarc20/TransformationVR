@@ -26,6 +26,13 @@ ARobot::ARobot()
         TipoPila = PilaClass.Class;
     }
 
+    static ConstructorHelpers::FClassFinder<ANodo> NodoClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/Nodo_BP.Nodo_BP_C'"));
+    if (NodoClass.Succeeded()) {
+        if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("TipoNodo encontrado."));
+        TipoNodo = NodoClass.Class;
+    }
+
 	DistanciaLaserMaxima = 200.0f;
 
 	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
@@ -41,6 +48,7 @@ void ARobot::BeginPlay()
 	
 	Partes.SetNum(10);
 	Jerarquias.SetNum(10);
+	Nodos.SetNum(10);
 	Transformaciones.SetNum(10);
 
 	TArray<AActor *> PartesEncontradas;
@@ -55,6 +63,25 @@ void ARobot::BeginPlay()
 			Partes[ParteEncontrada->Id] = ParteEncontrada;
 	}
 
+	UWorld * const World = GetWorld();
+
+	for (int i = 0; World && i < Partes.Num(); i++) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
+
+		FVector SpawnLocation(Partes[i]->Id * 5);
+		
+		SpawnLocation = GetTransform().TransformPosition(SpawnLocation);
+		SpawnLocation += FVector(-300.0f, 0.0f, 200.0f);
+		ANodo * const NodoInstanciado = World->SpawnActor<ANodo>(TipoNodo, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		Nodos[Partes[i]->Id] = NodoInstanciado;
+		NodoInstanciado->IdParte = Partes[i]->Id;//para el texto del numero, quiza este tipo de funcionalidad deberia estar encapsulada en alguna funcion de la clase nodo
+		NodoInstanciado->CambiarNombreParte(Partes[i]->Id);
+		//NodoInstanciado->bActualizado = false;
+		NodoInstanciado->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+	}
+
 	for (int i = 0; i < Transformaciones.Num(); i++) {//se supone que son 1-
 		Transformaciones[i] = new Transformacion;
 		Transformaciones[i]->ParteAsociada = Partes[i];
@@ -66,7 +93,7 @@ void ARobot::BeginPlay()
 	//las 10 trsanformaciones ya tiene asociada su parte
 
 	//Instanciando jerarquia
-	UWorld * const World = GetWorld();
+	//UWorld * const World = GetWorld();
 	if (World) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
@@ -89,22 +116,24 @@ void ARobot::BeginPlay()
 		Jerarquias[i]->CantidadPartes = 1;
 		for (int j = 0; j < Transformaciones.Num(); j++) {
 			Jerarquias[i]->TransformacionesPartesPunteros[j] = Transformaciones[j];
+			Jerarquias[i]->Nodos[j] = Nodos[j];
 		}
+		Nodos[i]->AttachToActor(Jerarquias[i], FAttachmentTransformRules::KeepRelativeTransform);
 	}
 	UE_LOG(LogClass, Log, TEXT("Datos copiados a las jerarquias"));
 
 	//la pila hoara se instancia cuando queda una sola jerarquia
 
-	/*if (World) {
+	if (World) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
 		FVector SpawnLocation(-50.0f, -110.0f, 40.0f);
 
 		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-		if (Jerarquia)
-			Jerarquia->PilaCodigo = PilaCodigo;
-	}*/
+		//if (Jerarquia)
+			//Jerarquia->PilaCodigo = PilaCodigo;
+	}
 
     AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (MyVRPawn) {
@@ -784,6 +813,8 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	Transformaciones[IdHijo]->ParteAsociada->AttachToActor(Transformaciones[IdPadre]->ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
 
 	//listo hora a solo lajerar
+	Jerarquias[IdRaizPadre]->Layout();
+	Jerarquias[IdRaizPadre]->AplicarLayout();
 	Jerarquias[IdRaizPadre]->ActualizarNodos();
 	Jerarquias[IdRaizPadre]->CantidadPartes += Jerarquias[IdRaizHijo]->CantidadPartes;
 	//debo dejar sin raiz a la otra jerarquia

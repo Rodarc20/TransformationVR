@@ -323,7 +323,7 @@ void AJerarquia::Calculos(Transformacion * V) {//lo uso dentro de claculos 2, po
 void AJerarquia::Calculos2() {//calcula hojas y altura, de otra forma
     //Transformacion * Root = &TransformacionesPartes[TransformacionesPartes.Num() - 1];
 
-    Calculos(Root->Padre);
+    //Calculos(Root->Padre);
 	Root->Altura = 0;
 	Root->Hojas = 0;
     for (int i = 0; i < Root->Hijos.Num(); i++) {

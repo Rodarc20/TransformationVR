@@ -45,6 +45,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
 	TArray<AJerarquia *> Jerarquias;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	TArray<ANodo *> Nodos;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    TSubclassOf<class ANodo> TipoNodo;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
+
 	TArray<Transformacion *> Transformaciones;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")

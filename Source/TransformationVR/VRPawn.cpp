@@ -343,7 +343,7 @@ void AVRPawn::GrabRightTick() {
 				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaRight->GetComponentLocation());
 				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
 				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
-				//Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarNodos();
+				Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarNodos();
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarPila();
 			}
         }
@@ -487,10 +487,10 @@ void AVRPawn::GrabLeftTick() {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
 			//GrabLeftArmarTick();
-			if (bGrabLeftParte) {
+			if (bGrabLeftParte && OverlapedLeftParte) {
 				Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
 				Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
-				//Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarNodos();
+				Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarNodos();
 				//Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarPila();
 			}
         }
