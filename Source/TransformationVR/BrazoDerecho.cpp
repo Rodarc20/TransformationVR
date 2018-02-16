@@ -6,11 +6,13 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 ABrazoDerecho::ABrazoDerecho() {
 
 	Id = 2;
+	IdParteRaiz = Id;
 	NombreParte = "Brazo Derecho";
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -82,8 +84,13 @@ ABrazoDerecho::ABrazoDerecho() {
 
 	MeshesArticulaciones.Add(ArticulacionHombroD);
 	ColisionesArticualciones.Add(ColisionHombroD);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(258.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(258.0f);
+
 	MeshesArticulaciones.Add(ArticulacionMunecaD);
 	ColisionesArticualciones.Add(ColisionMunecaD);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(58.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(58.0f);
 
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
@@ -93,8 +100,10 @@ ABrazoDerecho::ABrazoDerecho() {
 void ABrazoDerecho::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionHombroD->GetMaterial(0), this));
 	ArticulacionHombroD->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionMunecaD->GetMaterial(0), this));
 	ArticulacionMunecaD->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(1);
 
 }
 

@@ -6,11 +6,13 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 APieIzquierdo::APieIzquierdo() {
 
 	Id = 9;
+	IdParteRaiz = Id;
 	NombreParte = "Pie Izquierdo";
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -59,6 +61,8 @@ APieIzquierdo::APieIzquierdo() {
 
 	MeshesArticulaciones.Add(ArticulacionTobilloI);
 	ColisionesArticualciones.Add(ColisionTobilloI);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(178.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(178.0f);
 
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
@@ -68,5 +72,6 @@ APieIzquierdo::APieIzquierdo() {
 void APieIzquierdo::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionTobilloI->GetMaterial(0), this));
 	ArticulacionTobilloI->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 
 }

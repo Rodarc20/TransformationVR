@@ -8,6 +8,7 @@
 #include "TransformacionWidget.h"
 #include "Jerarquia.h"
 #include "PilaOpenGL.h"
+#include "Transformacion.h"
 #include "VRPawn.h"
 #include "Robot.generated.h"
 
@@ -41,7 +42,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
 	AJerarquia * Jerarquia;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	TArray<AJerarquia *> Jerarquias;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	TArray<ANodo *> Nodos;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    TSubclassOf<class ANodo> TipoNodo;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
+
+	TArray<Transformacion *> Transformaciones;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     TSubclassOf<class APilaOpenGL> TipoPila;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
@@ -153,6 +165,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void GrabLeftReleased();
+
+	UFUNCTION(BlueprintCallable, Category = "VRPawn")
+	void UnirJerarquiaPadreHijo(int IdPadre, int IdHijo);
 
 
 

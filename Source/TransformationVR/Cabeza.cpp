@@ -7,11 +7,13 @@
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "TransformacionWidget.h"
 
 ACabeza::ACabeza() {
 
 	Id = 1;
+	IdParteRaiz = Id;
 	NombreParte = "Cabeza";
 
 	ColisionCuello = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionCuello"));
@@ -63,11 +65,17 @@ ACabeza::ACabeza() {
 	TWidget->SetupAttachment(RootComponent);
 	TWidget->SetRelativeLocation(FVector::ZeroVector);
 
+	ColorArticulacionNoConectada = UKismetMathLibrary::HSVToRGB(231.0f, 1.0f, 1.0f, 1.0f);
+
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(218.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(218.0f);
+
 }
 
 void ACabeza::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this));
 	ArticulacionCuello->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 	//ArticulacionMaterialDynamic = UMaterialInstanceDynamic::Create(ArticulacionCuello->GetMaterial(0), this);
 	//ArticulacionCuello->SetMaterial(0, ArticulacionMaterialDynamic);
 }

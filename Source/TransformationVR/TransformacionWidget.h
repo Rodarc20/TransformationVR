@@ -77,6 +77,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Transdormaciones")
 	void OcultarWidget();
 
+	void MostrarWidgetOrigen();
+
+	void OcultarWidgetOrigen();
+
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void MostrarWidgetTraslacion();
 

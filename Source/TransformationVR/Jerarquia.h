@@ -45,8 +45,9 @@ public:
     //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visualization - Referencias")
     //UMotionControllerComponent* LeftController;
 
-	TArray<Transformacion> TransformacionesPartes;
+	TArray<Transformacion * > TransformacionesPartesPunteros;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	TArray<ANodo *> Nodos;
 
 	Transformacion * Root;
@@ -73,6 +74,10 @@ public:
     TSubclassOf<class ANodo> TipoNodo;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
 
     void ImprimirMatriz(FMatrix m);
+
+	void ImprimirTransformacion(Transformacion * T);
+
+	void Imprimir();
 
 	void ImprimirMatrices(Transformacion * T);
 
@@ -125,6 +130,19 @@ public:
 	void EstablecerRotacionEje(int IdParte, float angle, ETransformacionEje EjeRotacion);
 	
 	bool AllNodesCreated();
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void AbsorberJerarquia(AJerarquia * Otra, int IdPadre, int IdHijo);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void ActualizarIdRaizParte(int NuevoIdRaizParte);
+
+	bool ArticulacionSobrepuesta();
+
+	bool RealizarUniones();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	int CantidadPartes;
 	
 };
 

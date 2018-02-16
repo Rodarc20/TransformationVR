@@ -19,7 +19,7 @@ AJerarquia::AJerarquia()
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Root = nullptr;
-	TransformacionesPartes.SetNum(10);
+	TransformacionesPartesPunteros.SetNum(10);
 	Nodos.SetNum(10);
 
     static ConstructorHelpers::FClassFinder<ANodo> NodoClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/Nodo_BP.Nodo_BP_C'"));
@@ -36,6 +36,8 @@ AJerarquia::AJerarquia()
 	DeltaHermanos = 35.0f;
 
 	DistanciaLaserMaxima = 300.0f;
+
+	CantidadPartes = 0;
 }
 
 // Called when the game starts or when spawned
@@ -159,15 +161,15 @@ FMatrix AJerarquia::MultiplicacionMatriz(FMatrix a, FMatrix b) {
 }
 
 void AJerarquia::UnirPadreHijo(int IdPadre, int IdHijo) {
-	TransformacionesPartes[IdHijo].Padre = &(TransformacionesPartes[IdPadre]);
-	TransformacionesPartes[IdPadre].Hijos.Add(&(TransformacionesPartes[IdHijo]));
+	//TransformacionesPartes[IdHijo].Padre = &(TransformacionesPartes[IdPadre]);
+	//TransformacionesPartes[IdPadre].Hijos.Add(&(TransformacionesPartes[IdHijo]));
 	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
 
 
-	TransformacionesPartes[IdHijo].ParteAsociada->AttachToActor(TransformacionesPartes[IdPadre].ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
+	//TransformacionesPartes[IdHijo].ParteAsociada->AttachToActor(TransformacionesPartes[IdPadre].ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
 	//UE_LOG(LogClass, Log, TEXT("Matrices actualizadas despues de unir hijo"));
 	//ImprimirMatrices(&TransformacionesPartes[IdHijo]);
-	CrearNodo(TransformacionesPartes[IdHijo].ParteAsociada);
+	//CrearNodo(TransformacionesPartes[IdHijo].ParteAsociada);
 	ActualizarNodos();
 }
 
@@ -241,6 +243,44 @@ void AJerarquia::ImprimirMatriz(FMatrix m) {
     }
 }
 
+void AJerarquia::ImprimirTransformacion(Transformacion * T) {
+	UE_LOG(LogClass, Log, TEXT("Trasformacion Id (%d), ParteRaiz (%d)"), T->ParteAsociada->Id, T->ParteAsociada->IdParteRaiz);
+	if (T->Padre) {
+		UE_LOG(LogClass, Log, TEXT("Padre Id (%d)"), T->Padre->ParteAsociada->Id);
+	}
+	else {
+		UE_LOG(LogClass, Log, TEXT("Padre Id (%d)"), -1);
+	}
+	for (int i = 0; i < T->Hijos.Num(); i++) {
+		UE_LOG(LogClass, Log, TEXT("Hijo (%d)"), T->Hijos[i]->ParteAsociada->Id);
+	}
+}
+
+void AJerarquia::Imprimir() {
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+	if (Root) {
+		UE_LOG(LogClass, Log, TEXT("Jerarquia (%d)"), Root->ParteAsociada->Id);
+	}
+	else {
+		UE_LOG(LogClass, Log, TEXT("Jerarquia (%d)"), -1);
+	}
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+		if (V) {
+			ImprimirTransformacion(V);
+			if (V->Hijos.Num()) {
+				for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+					pila.push(V->Hijos[i]);
+				}
+			}
+		}
+    }
+}
+
 void AJerarquia::ImprimirMatrices(Transformacion * T) {
 	UE_LOG(LogClass, Log, TEXT("%s Local"), *T->ParteAsociada->NombreParte);
 	ImprimirMatriz(T->H);
@@ -283,7 +323,7 @@ void AJerarquia::Calculos(Transformacion * V) {//lo uso dentro de claculos 2, po
 void AJerarquia::Calculos2() {//calcula hojas y altura, de otra forma
     //Transformacion * Root = &TransformacionesPartes[TransformacionesPartes.Num() - 1];
 
-    Calculos(Root->Padre);
+    //Calculos(Root->Padre);
 	Root->Altura = 0;
 	Root->Hojas = 0;
     for (int i = 0; i < Root->Hijos.Num(); i++) {
@@ -428,11 +468,98 @@ bool AJerarquia::AllNodesCreated() {
 	return res;
 }
 
+void AJerarquia::AbsorberJerarquia(AJerarquia * Otra, int IdPadre, int IdHijo) {
+	//solo es unir las trasnformaciones en el lugar aporpiado
+	//pero apra esto necestio saber donde, o quiza ni siqueira deba absorver la jerarquia,
+	//antes en la clase robot, solo debo hacer el atachmente de la razi de la jerarauia a absorber a la ptrasnformacion que le corresponde, y esta clase simplemente se encarga de actualizar el layout de los hijo, y sus respectivas aristas
+	//y la informacion pertinenete
+	//a la jerarquia tamien ya tiene los punteros a los nodos, asi que solo seria denuevo actualizar
+
+	TransformacionesPartesPunteros[IdHijo]->Padre = (TransformacionesPartesPunteros[IdPadre]);
+	TransformacionesPartesPunteros[IdPadre]->Hijos.Add((TransformacionesPartesPunteros[IdHijo]));
+	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
+
+
+	TransformacionesPartesPunteros[IdHijo]->ParteAsociada->AttachToActor(TransformacionesPartesPunteros[IdPadre]->ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
+	//UE_LOG(LogClass, Log, TEXT("Matrices actualizadas despues de unir hijo"));
+	//ImprimirMatrices(&TransformacionesPartes[IdHijo]);
+	ActualizarNodos();
+}
+
+void AJerarquia::ActualizarIdRaizParte(int NuevoIdRaizParte) {
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+	UE_LOG(LogClass, Log, TEXT("Actualizando IdParteRaiz"));
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+		if (V) {
+			V->ParteAsociada->IdParteRaiz = NuevoIdRaizParte;
+			if (V->Hijos.Num()) {
+				for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+					pila.push(V->Hijos[i]);
+				}
+			}
+		}
+    }
+}
+
+bool AJerarquia::ArticulacionSobrepuesta() {
+	//esta funcion quiza no sea necesario, es decir al soltar deberia comporbar receien en ese momento si hay alguna parte sobre puesta,
+	//y en caso de que sea asi, debo unirtas, por lo tanto al solatar hago un recorrido por la jerarquia, veo si las aprtes estan solapaas y las uno
+	//tener cuidado 
+	bool res = false;
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+	UE_LOG(LogClass, Log, TEXT("COmprobando si hay parte sobrepuesta"));
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+		res = res || V->ParteAsociada->bArticulacionSobrepuesta;
+        if (V->Hijos.Num()) {
+            for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+                pila.push(V->Hijos[i]);
+            }
+        }
+    }
+	return res;
+}
+
+bool AJerarquia::RealizarUniones() {
+	//esta funcion quiza no sea necesario, es decir al soltar deberia comporbar receien en ese momento si hay alguna parte sobre puesta,
+	//y en caso de que sea asi, debo unirtas, por lo tanto al solatar hago un recorrido por la jerarquia, veo si las aprtes estan solapaas y las uno
+	//tener cuidado 
+	bool res = false;
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+	UE_LOG(LogClass, Log, TEXT("COmprobando si hay parte sobrepuesta"));
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+		res = res || V->ParteAsociada->bArticulacionSobrepuesta;
+		if (V->ParteAsociada->bArticulacionSobrepuesta) {
+			V->ParteAsociada->UnirConParteSobrepuesta();
+		}
+        //if (V->Hijos.Num()) {
+            for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+                pila.push(V->Hijos[i]);
+            }
+        //}
+    }
+	return res;
+}
+
 void AJerarquia::AplicarLayout() {
 	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
 	for (int i = 0; i < Nodos.Num(); i++) {
 		if (Nodos[i]) {
-			Nodos[i]->SetActorRelativeLocation(TransformacionesPartes[i].PosicionNodo + Correccion);
+			Nodos[i]->SetActorRelativeLocation(TransformacionesPartesPunteros[i]->PosicionNodo + Correccion);
 		}
 	}
 }
@@ -444,7 +571,7 @@ void AJerarquia::EjecutarAnimacion(int IdParte) {//para hallar niveles
 	//ya tengo un root
 	UE_LOG(LogClass, Log, TEXT("Ejecutando Animacion"));
     //pila.push(Root);//no deberia dsencolarlo
-	pila.push(&TransformacionesPartes[IdParte]);
+	pila.push(TransformacionesPartesPunteros[IdParte]);
     while (!pila.empty()) {
         Transformacion * V = pila.top();
         pila.pop();
@@ -459,44 +586,12 @@ void AJerarquia::EjecutarAnimacion(int IdParte) {//para hallar niveles
 }
 
 void AJerarquia::EjecutarAnimacionTick(float DeltaTime) {
-	for (int i = 0; i < TransformacionesPartes.Num(); i++) {
-		TransformacionesPartes[i].ParteAsociada->AnimacionRotarTick(DeltaTime);
+	for (int i = 0; i < TransformacionesPartesPunteros.Num(); i++) {
+		TransformacionesPartesPunteros[i]->ParteAsociada->AnimacionRotarTick(DeltaTime);
 	}
 }
 
 //necestio hacer varias busuqueda, buscar la parte para seleccionar, buscar loos componentes de rotacion y saber cual es cual, esto ultimo despes de haber ya seleccionado una parte, y evidentemente ya se cual es su trasnform
-/*FVector AJerarquia::BuscarParte(AParte * &ParteEncontrada) {//en realidad dbe hacer asignaciones, o poner null si no encuentra nada
-    FCollisionQueryParams ParteTraceParams = FCollisionQueryParams(FName(TEXT("TraceParte")), true, this);
-    FVector PuntoInicial = RightController->GetComponentLocation();//lo mismo que en teorioa, GetComponentTransfor().GetLocation();
-    FVector Vec = RightController->GetForwardVector();
-    FVector PuntoFinal = PuntoInicial + Vec*DistanciaLaserMaxima;
-    //PuntoInical = PuntoInicial + Vec * 10;//para que no se choque con lo que quiero, aun que no deberia importar
-    TArray<TEnumAsByte<EObjectTypeQuery> > TiposObjetos;
-    TiposObjetos.Add(EObjectTypeQuery::ObjectTypeQuery7);//Nodo
-    //TiposObjetos.Add(EObjectTypeQuery::ObjectTypeQuery2);//World dynamic, separado esta funcionando bien, supongo que tendre que hacer oto trace par saber si me estoy chocando con la interfaz, y no tener encuenta esta busqueda
-    //podria agregar los world static y dynamic, para asi avitar siempre encontrar algun nodo que este destrar de algun menu, y que por seleccionar en el menu tambien le de click a el
-    TArray<AActor*> vacio;
-    FHitResult Hit;
-    bool trace = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), PuntoInicial, PuntoFinal, TiposObjetos, false, vacio, EDrawDebugTrace::None, Hit, true, FLinearColor::Blue);//el none es para que no se dibuje nada
-    //hit se supone que devovera al actor y el punto de impacto si encontró algo, castearlo a nodo, y listo
-    if (trace) {
-        //solo que al agregar el worldynamic ,tengo que castear y verificar
-        ParteEncontrada = Cast<AParte>(Hit.Actor.Get());
-        /*if (NodoEncontrado) {//no estaba
-            //en que momento debo incluir la seccion del label? despues de todo esto, en otra funcion, o en este mismo codigo?
-            return Hit.ImpactPoint;
-        }* /
-        //DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 1.5f, 6, FColor::Black, false, 0.0f, 0, 0.25f);
-        
-        return Hit.ImpactPoint;//si quito toto el if anterior debo activar esta linea, y liesto
-    }
-    //y si esta funcion es solo para esto, y luego ya verifico si es tal o cual cosa, en otra parte del codigo?
-
-    //DrawDebugLine(GetWorld(), SourceNodo->GetActorLocation(), TargetNodo->GetActorLocation(), FColor::Black, false, -1.0f, 0, Radio*Escala);
-    ParteEncontrada = nullptr;
-    return FVector::ZeroVector;// los casos manejarlos afuera
-}
-*/
 /*
 Ejemplo de uso
             if (i & 1) {

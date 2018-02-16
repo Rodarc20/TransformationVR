@@ -61,6 +61,7 @@ AVRPawn::AVRPawn()
 	ColisionControllerLeft->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
 	ColisionControllerLeft->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
     ColisionControllerLeft->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerLeft);
+    ColisionControllerLeft->OnComponentEndOverlap.AddDynamic(this, &AVRPawn::OnEndOverlapControllerLeft);
 
 	ColisionControllerRight = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerRightt"));
 	ColisionControllerRight->SetupAttachment(MotionControllerRight);
@@ -68,6 +69,7 @@ AVRPawn::AVRPawn()
 	ColisionControllerRight->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
 	ColisionControllerRight->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
     ColisionControllerRight->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerRight);
+    ColisionControllerRight->OnComponentEndOverlap.AddDynamic(this, &AVRPawn::OnEndOverlapControllerRight);
 
 
     Interaction = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Interaction"));
@@ -299,41 +301,20 @@ void AVRPawn::GrabRightPressed() {
 			if (OverlapedRightParte) {//encapsularlo en la funcion anterior para manter un orden
 				bBuscarParteRight = false;
 				bGrabRightParte = true;
-				if (OverlapedRightParte->bConectado) {
-					//este if podria provocar errores
-					if (bGrabLeftMuneco) {
-						//rotar la pieza
-					}
-					else {//si no tengo el muñeco en la otra mano
-						OffsetRightParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
-						bGrabRightMuneco = true;
-						//establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
-						PuntoReferenciaRight->SetWorldLocation(Jerarquia->Root->ParteAsociada->GetActorLocation());
-						PuntoReferenciaRight->SetWorldRotation(Jerarquia->Root->ParteAsociada->GetActorRotation());
-					}
-				}
-				else {//si no esta conectada
-					if (Jerarquia->Root) {
-						OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-						PuntoReferenciaRight->SetWorldLocation(OverlapedRightParte->GetActorLocation());
-						PuntoReferenciaRight->SetWorldRotation(OverlapedRightParte->GetActorRotation());
-						OverlapedRightParte->BuscarArticulacion();
-						bGrabRightMuneco = false;
-					}
-					else {
-						OffsetRightParte = OverlapedRightParte->GetActorLocation() - MotionControllerRight->GetComponentLocation();
-						PuntoReferenciaRight->SetWorldLocation(OverlapedRightParte->GetActorLocation());
-						PuntoReferenciaRight->SetWorldRotation(OverlapedRightParte->GetActorRotation());
-						Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedRightParte->Id]);
-						Jerarquia->CrearNodo(Jerarquia->Root->ParteAsociada);
-						Jerarquia->ActualizarNodos();
-						Jerarquia->Layout();
-						Jerarquia->AplicarLayout();
-						OverlapedRightParte->bConectado = true;
-						bRootEstablecida = true;
-						bGrabRightMuneco = true;
-					}
-				}
+				//if (OverlapedRightParte->Id != OverlapedLeftParte->IdParteRaiz) { //esta condicion no es necesaria
+					//si no es la raiz de su jerarquia debo 
+					//en relaidad no encesito este if, defrente tomar el IdParteRaiz y trabanr con esa parte
+					//como hago en los demas, y da igual si
+					OffsetRightParte = Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation() - MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
+					//establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
+					UE_LOG(LogClass, Log, TEXT("Calculando offset"));
+					PuntoReferenciaRight->SetWorldLocation(Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
+					PuntoReferenciaRight->SetWorldRotation(Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
+					UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
+
+					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
+					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
+				//}
 			}
         }
         break;
@@ -358,20 +339,12 @@ void AVRPawn::GrabRightTick() {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
 			//GrabRightArmarTick();
-			if (bGrabRightParte) {
-				if (OverlapedRightParte->bConectado) {
-					if (Jerarquia->Root) {//bRootEstablecida
-						Jerarquia->Root->SetWorldLocation(PuntoReferenciaRight->GetComponentLocation());
-						Jerarquia->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
-						Jerarquia->ActualizarNodos();
-						Jerarquia->ActualizarPila();
-					}
-				}
-				else {//si no esta conectada
-					OverlapedRightParte->SetActorLocation(PuntoReferenciaRight->GetComponentLocation());
-					OverlapedRightParte->SetActorRotation(PuntoReferenciaRight->GetComponentRotation());
-					//UE_LOG(LogClass, Log, TEXT("Trasladando Parte"));
-				}
+			if (bGrabRightParte && OverlapedRightParte) {
+				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaRight->GetComponentLocation());
+				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
+				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+				Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarNodos();
+				//Jerarquias[OverlapedRightParte->IdParteRaiz]->ActualizarPila();
 			}
         }
         break;
@@ -397,52 +370,46 @@ void AVRPawn::GrabRightReleased() {
 			//GrabRightArmarReleased();
 			if (OverlapedRightParte) {
 				bBuscarParteRight = true;
-				//guardar offset de la parte
-				if (OverlapedRightParte->bConectado) {
-					//no hago nada por ahora
-					if (bGrabLeftMuneco) {
-						//no se hace nada, jeje
-					}
-					else {
-						bGrabRightMuneco = false;
+
+				//debo ver si la jerarquia esta colisionando con lago, yy si es asi unir esas partes colisionas, por lo tanto ya no es a nivel de parte, si no de jerarauia de la parte que estoy sujetadno
+				//en realidad no importa, el que llama a la union son las partes, ya no vvrpawn o no
+				//llamo a la funcon unir, si es que hay solapmaniento que se auno, no es encesario llamar a la ufucion articulacion sobrepuest, oesa otra jfuncion tambien debe ecnargarse del control de nodos
+				Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
+				//como comprobar que la jerarqui ya esta completa??
+				//como evitar que amboas partes, es decir que las dos articulaciones corresponidetes, solo una ejecutes su fucnioalidad de unir, para evitar errores?
+				//quiza solo deberia agregarl el addynamic una de ellas y la otra no
+				//despues de realizar las uniones, pues no se la pregunta es, que jerarquia se deshiczo esta o la otra?
+				//cual esxiste,? debo cambiar?
+				int JerarquiaCompleta = -1;
+				for (int i = 0; i < Jerarquias.Num(); i++) {
+					if (Jerarquias[i]->CantidadPartes == 10) {
+						JerarquiaCompleta = i;
 					}
 				}
-				else {//si no esta conectada
-					if (OverlapedRightParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
-						//en teroai se supone que tengo un robot en mi mano izquierda por lo tanto deberia unirlo de frente sin embargo verifico
-						if (bGrabLeftMuneco) {//si tengo sujeto en el otro control algo, manejarlo con un bool, en lugar de tener una parte root ahi, ya que no lo necesito
-							//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
-							OverlapedRightParte->UnirConParteSobrepuesta();
-							Jerarquia->UnirPadreHijo(OverlapedRightParte->OverlapedParte->Id, OverlapedRightParte->Id);
-							Jerarquia->Layout();
-							Jerarquia->AplicarLayout();
-							Jerarquia->ActualizarPila();
-							if (Jerarquia->AllNodesCreated()) {
+				if (JerarquiaCompleta != -1) {//hay alguna jerarquia completa
+				//if (Jerarquia->AllNodesCreated()) {//estoes para cuando una de las jeraruias ya este complea, esta comrobacion la deberia hacer internamente la clase robot, ya no desde aquia, y solo pasar al modo rotacion
 
-								TArray<AActor *> RobotsEncontrados;
-								UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
-								//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
-								for (int i = 0; i < RobotsEncontrados.Num(); i++) {
-									//if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-										//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("PARTES ENCONTRADAS"));
-									//UE_LOG(LogClass, Log, TEXT("Partes Encontradas %d"), i);
-									ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[i]);
-									SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-									if (RobotEncontrado) {
-										RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-										SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-									}
-
-								}
-							}
-							//revisar la 
+					TArray<AActor *> RobotsEncontrados;
+					UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
+					//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+					for (int i = 0; i < RobotsEncontrados.Num(); i++) {
+						//if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+							//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("PARTES ENCONTRADAS"));
+						//UE_LOG(LogClass, Log, TEXT("Partes Encontradas %d"), i);
+						ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[i]);
+						Jerarquia = Jerarquias[JerarquiaCompleta];
+						SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+						if (RobotEncontrado) {
+							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+							SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
+							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
 						}
-						//pero si no lo hbuiera sobre puesto a otra parte no unida, no deberia uniralas
 					}
-					OverlapedRightParte->NoBuscarArticulacion();
 				}
 				bGrabRightParte = false;
 			}
+				//guardar offset de la parte
         }
         break;
         case EVRJerarquiaTask::ERotationTask: {
@@ -466,42 +433,22 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
 			//GrabLeftArmarPressed();
-			if (OverlapedLeftParte) {
+			if (OverlapedLeftParte) {//encapsularlo en la funcion anterior para manter un orden
 				bBuscarParteLeft = false;
 				bGrabLeftParte = true;
-				if (OverlapedLeftParte->bConectado) {//si la parte ya esta conectada eso quiere decir que la jerarrquia ya teiene raiz
-					if (bGrabRightMuneco) {
-						//rotar la pieza
-					}
-					else {
-						OffsetLeftParte = Jerarquia->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
-						bGrabLeftMuneco = true;
-						PuntoReferenciaLeft->SetWorldLocation(Jerarquia->Root->ParteAsociada->GetActorLocation());
-						PuntoReferenciaLeft->SetWorldRotation(Jerarquia->Root->ParteAsociada->GetActorRotation());
-					}
-				}
-				else {//si no esta conectada
-					if (Jerarquia->Root) {
-						OffsetLeftParte = OverlapedLeftParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
-						PuntoReferenciaLeft->SetWorldLocation(OverlapedLeftParte->GetActorLocation());
-						PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftParte->GetActorRotation());
-						OverlapedLeftParte->BuscarArticulacion();
-						bGrabLeftMuneco = false;
-					}
-					else {
-						OffsetLeftParte = OverlapedLeftParte->GetActorLocation() - MotionControllerLeft->GetComponentLocation();
-						PuntoReferenciaLeft->SetWorldLocation(OverlapedLeftParte->GetActorLocation());
-						PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftParte->GetActorRotation());
-						Jerarquia->Root = &(Jerarquia->TransformacionesPartes[OverlapedLeftParte->Id]);
-						Jerarquia->CrearNodo(Jerarquia->Root->ParteAsociada);
-						Jerarquia->ActualizarNodos();
-						Jerarquia->Layout();
-						Jerarquia->AplicarLayout();
-						OverlapedLeftParte->bConectado = true;
-						bRootEstablecida = true;
-						bGrabLeftMuneco = true;
-					}
-				}
+				//if (OverlapedRightParte->Id != OverlapedLeftParte->IdParteRaiz) { //esta condicion no es necesaria
+					//si no es la raiz de su jerarquia debo 
+					//en relaidad no encesito este if, defrente tomar el IdParteRaiz y trabanr con esa parte
+					//como hago en los demas, y da igual si
+					OffsetLeftParte = Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation() - MotionControllerLeft->GetComponentLocation();//creo que esto no sera necesario
+					//establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
+					PuntoReferenciaLeft->SetWorldLocation(Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
+					PuntoReferenciaLeft->SetWorldRotation(Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
+
+					//OverlapedLeftParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
+					//toda la jerarauiq que busque colisiones
+					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
+				//}
 			}
         }
         break;
@@ -540,19 +487,11 @@ void AVRPawn::GrabLeftTick() {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
 			//GrabLeftArmarTick();
-			if (bGrabLeftParte) {
-				if (OverlapedLeftParte->bConectado) {
-					if (Jerarquia->Root) {//bRootEstablecida
-						Jerarquia->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
-						Jerarquia->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
-						Jerarquia->ActualizarNodos();
-						Jerarquia->ActualizarPila();
-					}
-				}
-				else {//si no esta conectada
-					OverlapedLeftParte->SetActorLocation(PuntoReferenciaLeft->GetComponentLocation());
-					OverlapedLeftParte->SetActorRotation(PuntoReferenciaLeft->GetComponentRotation());
-				}
+			if (bGrabLeftParte && OverlapedLeftParte) {
+				Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
+				Jerarquias[OverlapedLeftParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
+				Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarNodos();
+				//Jerarquias[OverlapedLeftParte->IdParteRaiz]->ActualizarPila();
 			}
         }
         break;
@@ -588,50 +527,36 @@ void AVRPawn::GrabLeftReleased() {
 			//GrabLeftArmarReleased();
 			if (OverlapedLeftParte) {
 				bBuscarParteLeft = true;
-				//guardar offset de la parte
-				if (OverlapedLeftParte->bConectado) {
-					//no hago nada por ahora
-					if (bGrabRightMuneco) {
-						//no se hace nada, jeje
-					}
-					else {
-						bGrabLeftMuneco = false;
-					}
-				}
-				else {//si no esta conectada
-					if (OverlapedLeftParte->bArticulacionSobrepuesta) {//si hay una articualcion sobre puesta, debo unirla al munéco, cambiar un poco la posicion para juntar las articulaciones, y llamar a las funciones de las partes para inhabilitar las articulaciones unidas, e iniciar los calculos de las matrices de ser necesario
-						//en teroai se supone que tengo un robot en mi mano izquierda por lo tanto deberia unirlo de frente sin embargo verifico
-						if (bGrabRightMuneco) {//si tengo sujeto en el otro control algo, manejarlo con un bool, en lugar de tener una parte root ahi, ya que no lo necesito
-							//por ahor no hay jerarquia, y la union se debe hacer a la parte, por lo tanto la unicion la deberia hacer una funcion dentro de la parte que estoy uniendo, que se encargue de unirse a si misma al la jeraquia
-							OverlapedLeftParte->UnirConParteSobrepuesta();
-							Jerarquia->UnirPadreHijo(OverlapedLeftParte->OverlapedParte->Id, OverlapedLeftParte->Id);
-							Jerarquia->Layout();
-							Jerarquia->AplicarLayout();
-							Jerarquia->ActualizarPila();
-							if (Jerarquia->AllNodesCreated()) {
 
-								TArray<AActor *> RobotsEncontrados;
-								UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
-								//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
-								for (int i = 0; i < RobotsEncontrados.Num(); i++) {
-									//if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-										//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("PARTES ENCONTRADAS"));
-									//UE_LOG(LogClass, Log, TEXT("Partes Encontradas %d"), i);
-									ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[i]);
-									SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-									if (RobotEncontrado){
-										RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-									}
-								}
-							}
-							
-						}
-						//pero si no lo hbuiera sobre puesto a otra parte no unida, no deberia uniralas
+				Jerarquias[OverlapedLeftParte->IdParteRaiz]->RealizarUniones();
+				int JerarquiaCompleta = -1;
+				for (int i = 0; i < Jerarquias.Num(); i++) {
+					if (Jerarquias[i]->CantidadPartes == 10) {
+						JerarquiaCompleta = i;
 					}
-					OverlapedLeftParte->NoBuscarArticulacion();
 				}
-				bGrabLeftParte = false;//deberia usar este bool en lugar del puntero en el if al inicio??
+				if (JerarquiaCompleta != -1) {//hay alguna jerarquia completa
+					TArray<AActor *> RobotsEncontrados;
+					UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
+					//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+					for (int i = 0; i < RobotsEncontrados.Num(); i++) {
+						//if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+							//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("PARTES ENCONTRADAS"));
+						//UE_LOG(LogClass, Log, TEXT("Partes Encontradas %d"), i);
+						ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[i]);
+						Jerarquia = Jerarquias[JerarquiaCompleta];
+						SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+						if (RobotEncontrado) {
+							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+							SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
+							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
+						}
+					}
+				}
+				bGrabLeftParte = false;
 			}
+
         }
         break;
         case EVRJerarquiaTask::ERotationTask: {
@@ -699,3 +624,43 @@ void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedCompo
 		}
 	}
 }
+
+void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+	if(!bBuscarParteRight){//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
+		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("EndOverlap"));
+			AParte * const Parte = Cast<AParte>(OtherActor);
+			if (Parte && !Parte->IsPendingKill() && OverlapedRightParte == Parte) {
+				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+				if(MeshParte){
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+					OverlapedRightParte = nullptr;
+				}
+			}
+		}
+	}
+}
+
+void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+	if (bBuscarParteLeft) {
+		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("EndOverlap"));
+			AParte * const Parte = Cast<AParte>(OtherActor);
+			if (Parte && !Parte->IsPendingKill()) {
+				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+				if(MeshParte){
+					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+					OverlapedLeftParte = nullptr;
+				}
+			}
+		}
+	}
+}
+
+//debo mejorar el sistema de reconocimiento de partes, quiza manejaro en el tick en lugar de aqui, para quedarme con el mas cercano si hay varios
+
+//si decido deguir con el el modelo de being y end, debo agregar el end, para qpue ponga en null, el OverlapedParte
