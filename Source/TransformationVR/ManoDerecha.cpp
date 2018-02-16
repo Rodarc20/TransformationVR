@@ -6,11 +6,13 @@
 #include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 AManoDerecha::AManoDerecha() {
 
 	Id = 6;
+	IdParteRaiz = Id;
 	NombreParte = "Mano Derecha";
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -59,6 +61,8 @@ AManoDerecha::AManoDerecha() {
 
 	MeshesArticulaciones.Add(ArticulacionMunecaD);
 	ColisionesArticualciones.Add(ColisionMunecaD);
+	ColoresArticulaciones.Add(UKismetMathLibrary::HSVToRGB(58.0f, 1.0f, 1.0f, 1.0f));
+	HueArticulaciones.Add(58.0f);
 
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
@@ -68,6 +72,7 @@ AManoDerecha::AManoDerecha() {
 void AManoDerecha::BeginPlay() {
 	ArticulacionesMaterialDynamic.Add(UMaterialInstanceDynamic::Create(ArticulacionMunecaD->GetMaterial(0), this));
 	ArticulacionMunecaD->SetMaterial(0, ArticulacionesMaterialDynamic[ArticulacionesMaterialDynamic.Num()-1]);
+	ColorNormalArticulacion(0);
 
 }
 

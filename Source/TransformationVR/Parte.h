@@ -69,11 +69,20 @@ public:
 	bool bConectado;//verdadeor si la parte esta conectada al muñeco, se usa para saber si se esta sujetando una parte o al muñeco.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	int IdParteRaiz;//cual es la raiz a la que esta conectada esta parte, si es el mismo id que la parte, pues estoy sujetando la raiz del gurpo
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bBuscarArticulacion;//verdadeor si la parte esta conectada al muñeco, se usa para saber si se esta sujetando una parte o al muñeco.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bArticulacionSobrepuesta;//este se vuelve verdadero si cualquiera de las articulaciones se sobrepone, tener cuidado si se sobreponen varias por casualidad
 	//este booleano se usa cuando la parte esta sujetada por el control derecho, la cua busca una articulacion apra unir en el muñeco
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<FLinearColor> ColoresArticulaciones;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<float> HueArticulaciones;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	FLinearColor ColorArticulacionNoConectada;
@@ -134,6 +143,15 @@ public:
 
 	UFUNCTION()
 	virtual void DesactivarResaltado();
+
+	UFUNCTION()
+	void ColorResaltadoArticulacion(int IdArticulacion);
+
+	UFUNCTION()
+	void ColorNormalArticulacion(int IdArticulacion);
+
+	UFUNCTION()
+	void ColorConectadoArticulacion(int IdArticulacion);
 
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void CopiarTransform();
