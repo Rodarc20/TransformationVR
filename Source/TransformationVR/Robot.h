@@ -10,17 +10,9 @@
 #include "PilaOpenGL.h"
 #include "Transformacion.h"
 #include "VRPawn.h"
+#include "Components/BoxComponent.h"
 #include "Robot.generated.h"
 
-/*UENUM(BlueprintType)
-enum class EVRJerarquiaTask : uint8 {
-    ETraslationTask UMETA(DisplayName = "Trasladar"),
-    ERotationTask UMETA(DisplayName = "Rotar"),
-    EScaleTask UMETA(DisplayName = "Escalar"),
-    EArmarTask UMETA(DisplayName = "Armar"),
-    EPlayTask UMETA(DisplayName = "Play"),
-    ENoTask UMETA(DisplayName = "Ninguno")
-};*/
 
 UCLASS()
 class TRANSFORMATIONVR_API ARobot : public AActor
@@ -38,6 +30,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    UBoxComponent * Zona;
+
+    UFUNCTION()
+    void OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+    UFUNCTION()
+	void OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
 	AJerarquia * Jerarquia;

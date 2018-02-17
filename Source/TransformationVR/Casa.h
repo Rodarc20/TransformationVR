@@ -6,14 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "VRPawn.h"
 #include "Bloque.h"
+#include "Components/BoxComponent.h"
 #include "Casa.generated.h"
-
-/*UENUM(BlueprintType)
-enum class EVRCasaTask : uint8 {
-    EArmarTask UMETA(DisplayName = "Armar"),
-    EPlayTask UMETA(DisplayName = "Play"),
-    ENoTask UMETA(DisplayName = "Ninguno")
-};*/
 
 UCLASS()
 class TRANSFORMATIONVR_API ACasa : public AActor
@@ -32,6 +26,20 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    EVRCasaTask CurrentCasaTask;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    EVRCasaTask OldCasaTask;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    UBoxComponent * Zona;
+
+    UFUNCTION()
+    void OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+    UFUNCTION()
+	void OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
+
 	
 };

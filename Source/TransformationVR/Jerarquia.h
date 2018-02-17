@@ -12,16 +12,6 @@
 #include "Jerarquia.generated.h"
 
 
-UENUM(BlueprintType)
-enum class EVRJerarquiaTask : uint8 {
-    ETraslationTask UMETA(DisplayName = "Trasladar"),
-    ERotationTask UMETA(DisplayName = "Rotar"),
-    EScaleTask UMETA(DisplayName = "Escalar"),
-    EArmarTask UMETA(DisplayName = "Armar"),
-    EPlayTask UMETA(DisplayName = "Play"),
-    ENoTask UMETA(DisplayName = "Ninguno")
-};
-
 UCLASS()
 class TRANSFORMATIONVR_API AJerarquia : public AActor
 {
@@ -152,6 +142,16 @@ public:
 //
 //a diferencia de la conexxion entre las partes la jerarquia no necesita poner los hijos en orden,
 //solo poner padre e hijos, sin ditincion algunas:w
+
+UENUM(BlueprintType)
+enum class EVRJerarquiaTask : uint8 {
+    ETraslationTask UMETA(DisplayName = "Trasladar"),
+    ERotationTask UMETA(DisplayName = "Rotar"),
+    EScaleTask UMETA(DisplayName = "Escalar"),
+    EArmarTask UMETA(DisplayName = "Armar"),
+    EPlayTask UMETA(DisplayName = "Play"),
+    ENoTask UMETA(DisplayName = "Ninguno")
+};
 
 
 //la jeraarquia actuara como las visaulizacion es en el arbolito, detectando las cosas del puntero, y todo lo demas

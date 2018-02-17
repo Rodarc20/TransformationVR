@@ -6,13 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Bloque.generated.h"
 
-UENUM(BlueprintType)
-enum class EVRCasaTask : uint8 {
-    EArmarTask UMETA(DisplayName = "Armar"),
-    EPlayTask UMETA(DisplayName = "Play"),
-    ENoTask UMETA(DisplayName = "Ninguno")
-};
-
 UCLASS()
 class TRANSFORMATIONVR_API ABloque : public AActor
 {
@@ -52,5 +45,13 @@ public:
 	
 };
 
+
 //se spone que tendra un movimiento restringigo,
 //un enfoque es solucionar
+UENUM(BlueprintType)
+enum class EVRCasaTask : uint8 {
+    EArmarTask UMETA(DisplayName = "Armar"),
+    EPlayTask UMETA(DisplayName = "Play"),
+    ENoTask UMETA(DisplayName = "Ninguno")
+};
+

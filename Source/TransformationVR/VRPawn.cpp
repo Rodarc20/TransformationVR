@@ -4,6 +4,7 @@
 #include "MotionControllerComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
 #include "Parte.h"
@@ -27,6 +28,11 @@ AVRPawn::AVRPawn()
 
     VRCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("VRCamera"));
     VRCamera->SetupAttachment(RootComponent);
+
+    ColisionHead = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionHead"));
+    ColisionHead->SetupAttachment(VRCamera);
+    ColisionHead->SetRelativeLocation(FVector::ZeroVector);
+    ColisionHead->InitSphereRadius(20.0f);
 
     MotionControllerLeft = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionControllerLeft"));
     MotionControllerLeft->SetupAttachment(RootComponent);
@@ -147,7 +153,7 @@ AVRPawn::AVRPawn()
 	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
 	CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
 	//CurrentCasaTask = EVRCasaTask::ENoTask;
-	CurrentCasaTask = EVRCasaTask::EArmarTask;
+	CurrentCasaTask = EVRCasaTask::ENoTask;
     //deberia actualizarse a medida que cambien las tareas en el robot
 }
 
@@ -278,7 +284,7 @@ int AVRPawn::LaserActual() {
 
 void AVRPawn::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
 	CurrentJerarquiaTask = NewJerarquiaTask;
-	UE_LOG(LogClass, Log, TEXT("Cambiando Tarea VRPawn"));
+	//UE_LOG(LogClass, Log, TEXT("Cambiando Jerarquia Task VRPawn %d"), NewJerarquiaTask);
 }
 
 EVRJerarquiaTask AVRPawn::GetJerarquiaTask() {
@@ -287,6 +293,7 @@ EVRJerarquiaTask AVRPawn::GetJerarquiaTask() {
 
 void AVRPawn::SetCasaTask(EVRCasaTask NewCasaTask) {
     CurrentCasaTask = NewCasaTask;
+	//UE_LOG(LogClass, Log, TEXT("Cambiando Casa Task VRPawn %d"), NewCasaTask);
 }
 
 EVRCasaTask AVRPawn::GetCasaTask() {

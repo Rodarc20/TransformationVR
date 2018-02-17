@@ -10,12 +10,14 @@
 #include "WidgetInteractionComponent.h"
 #include "MotionControllerComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Parte.h"
 #include "Jerarquia.h"
 #include "Bloque.h"
 #include "VRPawn.generated.h"
+
 
 UCLASS()
 class TRANSFORMATIONVR_API AVRPawn : public APawn
@@ -43,6 +45,9 @@ public:
     //Camara del HMD
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
     UCameraComponent * VRCamera;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    USphereComponent * ColisionHead;
     
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
     class UMotionControllerComponent * MotionControllerLeft;

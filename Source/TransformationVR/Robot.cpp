@@ -10,6 +10,7 @@
 #include "Engine/Engine.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "TransformacionWidget.h"
+#include "Components/BoxComponent.h"
 
 
 // Sets default values
@@ -17,7 +18,12 @@ ARobot::ARobot()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+
+    Zona = CreateDefaultSubobject<UBoxComponent>(TEXT("Zona"));
+    RootComponent = Zona;
+    Zona->InitBoxExtent(FVector(100.0f));
+    Zona->OnComponentBeginOverlap.AddDynamic(this, &ARobot::OnBeginOverlapZona);
+    Zona->OnComponentEndOverlap.AddDynamic(this, &ARobot::OnEndOverlapZona);
 
     static ConstructorHelpers::FClassFinder<APilaOpenGL> PilaClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/PilaOpenGL_BP.PilaOpenGL_BP_C'"));
     if (PilaClass.Succeeded()) {
@@ -36,7 +42,7 @@ ARobot::ARobot()
 	DistanciaLaserMaxima = 200.0f;
 
 	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
-	CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
+	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
 	//CurrentJerarquiaTask = EVRJerarquiaTask::ERotationTask;
 	HitEje = ETransformacionEje::ENone;
 	EjeSeleccionado = ETransformacionEje::ENone;
@@ -827,6 +833,42 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	//cuando haga desuniones debo recontablilizar a mano, las partes en la jerarquias
 	//y quiza sea mejor usar esa funcion aqui, esa funcon contara desde la razi todas las partes
 	
+}
+
+void ARobot::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+    if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+        if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Zona"));
+        //en realidad deberia haber un if afuera de cada uno de estos, verifcando que este en alguna tarea de casa o robot, si esttoy en no task de alguno de ellos no deberia estar conviriendo
+        //ni comprobando
+        AVRPawn * const VRPawn = Cast<AVRPawn>(OtherActor);
+        if (VRPawn && !VRPawn->IsPendingKill()) {
+            if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("VRPawn"));
+            USphereComponent * const ColisionHead = Cast<USphereComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
+            if (ColisionHead) {
+                VRPawn->SetJerarquiaTask(CurrentJerarquiaTask);
+            }
+        }
+    }
+}
+
+void ARobot::OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+    if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+        if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Zona"));
+        //en realidad deberia haber un if afuera de cada uno de estos, verifcando que este en alguna tarea de casa o robot, si esttoy en no task de alguno de ellos no deberia estar conviriendo
+        //ni comprobando
+        AVRPawn * const VRPawn = Cast<AVRPawn>(OtherActor);
+        if (VRPawn && !VRPawn->IsPendingKill()) {
+            if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("VRPawn"));
+            USphereComponent * const ColisionHead = Cast<USphereComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
+            if (ColisionHead) {
+                VRPawn->SetJerarquiaTask(EVRJerarquiaTask::ENoTask);
+            }
+        }
+    }
 }
 
 //todo estara organizado en las funciones grab en las 3 funciones grab!
