@@ -23,4 +23,5 @@ void ACasita::BeginPlay() {
 }
 
 void ACasita::Tick(float DeltaTime) {
+    Super::Tick(DeltaTime);
 }

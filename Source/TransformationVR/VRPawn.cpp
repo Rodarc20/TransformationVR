@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Robot.h"
 #include "Jerarquia.h"
+#include "Bloque.h"
 
 
 
@@ -63,7 +64,7 @@ AVRPawn::AVRPawn()
     ColisionControllerLeft->OnComponentBeginOverlap.AddDynamic(this, &AVRPawn::OnBeginOverlapControllerLeft);
     ColisionControllerLeft->OnComponentEndOverlap.AddDynamic(this, &AVRPawn::OnEndOverlapControllerLeft);
 
-	ColisionControllerRight = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerRightt"));
+	ColisionControllerRight = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ColisionControllerRight"));
 	ColisionControllerRight->SetupAttachment(MotionControllerRight);
 	ColisionControllerRight->InitCapsuleSize(5.0f, 5.0f);
 	ColisionControllerRight->SetRelativeLocation(FVector(0.0f, 0.0f, -4.0f));
@@ -140,7 +141,14 @@ AVRPawn::AVRPawn()
 	bBuscarParteLeft = true;
 	bBuscarParteRight = true;
 
-	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+	bBuscarBloqueLeft = true;
+	bBuscarBloqueRight = true;
+
+	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+	CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
+	//CurrentCasaTask = EVRCasaTask::ENoTask;
+	CurrentCasaTask = EVRCasaTask::EArmarTask;
+    //deberia actualizarse a medida que cambien las tareas en el robot
 }
 
 // Called when the game starts or when spawned
@@ -277,6 +285,14 @@ EVRJerarquiaTask AVRPawn::GetJerarquiaTask() {
 	return CurrentJerarquiaTask;
 }
 
+void AVRPawn::SetCasaTask(EVRCasaTask NewCasaTask) {
+    CurrentCasaTask = NewCasaTask;
+}
+
+EVRCasaTask AVRPawn::GetCasaTask() {
+    return CurrentCasaTask;
+}
+
 void AVRPawn::PadDerechoPressed() {
     bPadDerecho = true;
 }
@@ -333,6 +349,33 @@ void AVRPawn::GrabRightPressed() {
         }
         break;
     }
+
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+            UE_LOG(LogClass, Log, TEXT("Armar"));
+			//GrabRightArmarPressed();
+			if (OverlapedRightBloque) {//encapsularlo en la funcion anterior para manter un orden
+				bBuscarBloqueRight = false;
+				bGrabRightBloque = true;
+                UE_LOG(LogClass, Log, TEXT("Calculando offset"));
+                PuntoReferenciaRight->SetWorldLocation(OverlapedRightBloque->GetActorLocation());
+                PuntoReferenciaRight->SetWorldRotation(OverlapedRightBloque->GetActorRotation());
+                UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
+                OverlapedRightBloque->SeguirObjeto(PuntoReferenciaRight);
+			}
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+			//GrabRightRotarPressed();
+			//Interaction->PressPointerKey(EKeys::LeftMouseButton);
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+			//GrabRightNingunoPressed();
+        }
+        break;
+    }
 }
 
 void AVRPawn::GrabRightTick() {
@@ -359,6 +402,27 @@ void AVRPawn::GrabRightTick() {
         default:
         case EVRJerarquiaTask::ENoTask: {
 			//GrabRightNingunoTick();
+        }
+        break;
+    }
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+			//GrabRightArmarPressed();
+			//if (bGrabRightBloque && OverlapedRightBloque) {
+				//OverlapedRightBloque->SetActorLocation(PuntoReferenciaRight->GetComponentLocation());
+				//OverlapedRightBloque->SetActorRotation(PuntoReferenciaRight->GetComponentRotation());
+				//UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+			//}
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+			//GrabRightRotarPressed();
+			//Interaction->PressPointerKey(EKeys::LeftMouseButton);
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+			//GrabRightNingunoPressed();
         }
         break;
     }
@@ -427,6 +491,26 @@ void AVRPawn::GrabRightReleased() {
         }
         break;
     }
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+            if (OverlapedRightBloque) {
+                bBuscarBloqueRight = true;
+                bGrabRightBloque = false;
+                OverlapedRightBloque->NoSeguir();
+            }
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+			//GrabRightRotarPressed();
+			//Interaction->PressPointerKey(EKeys::LeftMouseButton);
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+			//GrabRightNingunoPressed();
+        }
+        break;
+    }
 }
 
 void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con los nombres invertidos
@@ -481,6 +565,32 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
         }
         break;
     }
+
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+			//GrabRightArmarPressed();
+			if (OverlapedLeftBloque) {//encapsularlo en la funcion anterior para manter un orden
+				bBuscarBloqueLeft = false;
+				bGrabLeftBloque = true;
+                UE_LOG(LogClass, Log, TEXT("Calculando offset"));
+                PuntoReferenciaLeft->SetWorldLocation(OverlapedLeftBloque->GetActorLocation());
+                PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftBloque->GetActorRotation());
+                UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
+                OverlapedLeftBloque->SeguirObjeto(PuntoReferenciaLeft);
+			}
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+			//GrabRightRotarPressed();
+			//Interaction->PressPointerKey(EKeys::LeftMouseButton);
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+			//GrabRightNingunoPressed();
+        }
+        break;
+    }
 }
 
 void AVRPawn::GrabLeftTick() {
@@ -516,6 +626,28 @@ void AVRPawn::GrabLeftTick() {
         default:
         case EVRJerarquiaTask::ENoTask: {
 			//GrabLeftNingunoTick();
+        }
+        break;
+    }
+
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+			//GrabRightArmarPressed();
+			//if (bGrabLeftBloque && OverlapedLeftBloque) {
+				//OverlapedLeftBloque->SetActorLocation(PuntoReferenciaLeft->GetComponentLocation());
+				//OverlapedLeftBloque->SetActorRotation(PuntoReferenciaLeft->GetComponentRotation());
+				//UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+			//}
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+			//GrabRightRotarPressed();
+			//Interaction->PressPointerKey(EKeys::LeftMouseButton);
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+			//GrabRightNingunoPressed();
         }
         break;
     }
@@ -587,13 +719,34 @@ void AVRPawn::GrabLeftReleased() {
         }
         break;
     }
+
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+            if (OverlapedLeftBloque) {
+                bBuscarBloqueLeft = true;
+                bGrabLeftBloque = false;
+                OverlapedLeftBloque->NoSeguir();
+            }
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+			//GrabRightRotarPressed();
+			//Interaction->PressPointerKey(EKeys::LeftMouseButton);
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+			//GrabRightNingunoPressed();
+        }
+        break;
+    }
 }
 
 void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
 	if(bBuscarParteRight){//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
 		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
 			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Parte"));
 			AParte * const Parte = Cast<AParte>(OtherActor);
 			if (Parte && !Parte->IsPendingKill()) {
 				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
@@ -603,15 +756,35 @@ void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComp
 					OverlapedRightParte = Parte;
 				}
 			}
+
 		}
 	}
+    if (CurrentCasaTask != EVRCasaTask::ENoTask) {
+        if (bBuscarBloqueRight) {
+            if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+                if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Bloque"));
+                //en realidad deberia haber un if afuera de cada uno de estos, verifcando que este en alguna tarea de casa o robot, si esttoy en no task de alguno de ellos no deberia estar conviriendo
+                //ni comprobando
+                ABloque * const Bloque = Cast<ABloque>(OtherActor);
+                if (Bloque && !Bloque->IsPendingKill()) {
+                    if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
+                    UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
+                    if (MeshBloque) {
+                        OverlapedRightBloque = Bloque;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
 	if (bBuscarParteLeft) {
 		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
 			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap"));
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Parte"));
 			AParte * const Parte = Cast<AParte>(OtherActor);
 			if (Parte && !Parte->IsPendingKill()) {
 				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
@@ -621,8 +794,28 @@ void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedCompo
 					OverlapedLeftParte = Parte;
 				}
 			}
+
 		}
 	}
+    if (CurrentCasaTask != EVRCasaTask::ENoTask) {
+        if (bBuscarBloqueLeft) {
+            if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+                if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Bloque"));
+                //en realidad deberia haber un if afuera de cada uno de estos, verifcando que este en alguna tarea de casa o robot, si esttoy en no task de alguno de ellos no deberia estar conviriendo
+                //ni comprobando
+                ABloque * const Bloque = Cast<ABloque>(OtherActor);
+                if (Bloque && !Bloque->IsPendingKill()) {
+                    if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
+                    UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
+                    if (MeshBloque) {
+                        OverlapedLeftBloque = Bloque;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
@@ -639,8 +832,23 @@ void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedCompon
 					OverlapedRightParte = nullptr;
 				}
 			}
+
 		}
 	}
+
+    if (!bBuscarBloqueRight) {
+        if (CurrentCasaTask != EVRCasaTask::ENoTask) {
+            ABloque * const Bloque = Cast<ABloque>(OtherActor);
+            if (Bloque && !Bloque->IsPendingKill()) {
+                UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);
+                if(MeshBloque){
+                    if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
+                    OverlapedRightBloque= nullptr;
+                }
+            }
+        }
+    }
 }
 
 void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
@@ -657,8 +865,21 @@ void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedCompone
 					OverlapedLeftParte = nullptr;
 				}
 			}
+
 		}
 	}
+
+    if (CurrentCasaTask != EVRCasaTask::ENoTask) {
+        ABloque * const Bloque = Cast<ABloque>(OtherActor);
+        if (Bloque && !Bloque->IsPendingKill()) {
+            UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);
+            if(MeshBloque){
+                if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
+                OverlapedLeftBloque= nullptr;
+            }
+        }
+    }
 }
 
 //debo mejorar el sistema de reconocimiento de partes, quiza manejaro en el tick en lugar de aqui, para quedarme con el mas cercano si hay varios

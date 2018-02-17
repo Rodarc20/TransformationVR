@@ -14,6 +14,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Parte.h"
 #include "Jerarquia.h"
+#include "Bloque.h"
 #include "VRPawn.generated.h"
 
 UCLASS()
@@ -157,8 +158,10 @@ public:
     UFUNCTION()
     void OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+    UFUNCTION()
 	void OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 
+    UFUNCTION()
 	void OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 
 	//parte sobrepuesta mas cercana al centro del control derecho
@@ -194,6 +197,34 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     EVRJerarquiaTask GetJerarquiaTask();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    EVRCasaTask CurrentCasaTask;
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void SetCasaTask(EVRCasaTask NewCasaTask);
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    EVRCasaTask GetCasaTask();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	ABloque * OverlapedRightBloque;
+
+	//parte sobrepuesta mas cercana al centro del control derecho
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	ABloque * OverlapedLeftBloque;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	bool bBuscarBloqueLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+	bool bBuscarBloqueRight;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    bool bGrabRightBloque;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    bool bGrabLeftBloque;
 
 };
 

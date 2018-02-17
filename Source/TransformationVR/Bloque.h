@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "Bloque.generated.h"
 
+UENUM(BlueprintType)
+enum class EVRCasaTask : uint8 {
+    EArmarTask UMETA(DisplayName = "Armar"),
+    EPlayTask UMETA(DisplayName = "Play"),
+    ENoTask UMETA(DisplayName = "Ninguno")
+};
+
 UCLASS()
 class TRANSFORMATIONVR_API ABloque : public AActor
 {
@@ -26,6 +33,24 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * BloqueMesh;
 
-	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    USceneComponent * ObjetoSeguir;
+
+    bool bSeguir;
+
+    bool bSobrepasoUmbral;
+
+    float Umbral;
+
+    FVector DireccionMovimiento;//para poder restringir el movimiento
+    //restringido a este eje de movimiento
+    // si sobrepaso el umbral ya no respetara este eje de moviemiento
+
+    void SeguirObjeto(USceneComponent * Objeto);
+
+    void NoSeguir();
 	
 };
+
+//se spone que tendra un movimiento restringigo,
+//un enfoque es solucionar

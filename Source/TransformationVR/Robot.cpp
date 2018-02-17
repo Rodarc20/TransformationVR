@@ -35,7 +35,8 @@ ARobot::ARobot()
 
 	DistanciaLaserMaxima = 200.0f;
 
-	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+	CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
 	//CurrentJerarquiaTask = EVRJerarquiaTask::ERotationTask;
 	HitEje = ETransformacionEje::ENone;
 	EjeSeleccionado = ETransformacionEje::ENone;

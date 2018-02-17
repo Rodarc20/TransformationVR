@@ -6,6 +6,8 @@
 #include "Materials/Material.h"
 
 ATechito::ATechito() {
+	//PrimaryActorTick.bCanEverTick = true;
+
     BloqueMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Techito"));
     RootComponent = BloqueMesh;
     static ConstructorHelpers::FObjectFinder<UStaticMesh> TechitoMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Casita/Techito.Techito'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -22,5 +24,3 @@ ATechito::ATechito() {
 void ATechito::BeginPlay() {
 }
 
-void ATechito::Tick(float DeltaTime) {
-}
