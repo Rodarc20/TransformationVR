@@ -29,6 +29,10 @@ void ABloque::SeguirObjeto(USceneComponent * Objeto) {
     ObjetoSeguir = Objeto;
     bSeguir = true;
     UE_LOG(LogClass, Log, TEXT("Cambiando a seguir"));
+    RotacionInicial = GetActorTransform().GetRotation().Rotator();
+    TArray<USceneComponent *> parents;
+    Objeto->GetParentComponents(parents);
+    RotacionInicialObjeto = parents[0]->GetRelativeTransform().GetRotation().Rotator();
 
 }
 

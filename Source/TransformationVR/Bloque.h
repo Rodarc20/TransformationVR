@@ -33,6 +33,7 @@ public:
 
     bool bSobrepasoUmbral;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     float Umbral;
 
     FVector DireccionMovimiento;//para poder restringir el movimiento
@@ -43,6 +44,8 @@ public:
 
     void NoSeguir();
 	
+    FRotator RotacionInicial;
+    FRotator RotacionInicialObjeto;
 };
 
 
