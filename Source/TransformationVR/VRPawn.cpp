@@ -150,8 +150,8 @@ AVRPawn::AVRPawn()
 	bBuscarBloqueLeft = true;
 	bBuscarBloqueRight = true;
 
-	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
-	CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
+	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+	//CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
 	//CurrentCasaTask = EVRCasaTask::ENoTask;
 	CurrentCasaTask = EVRCasaTask::ENoTask;
     //deberia actualizarse a medida que cambien las tareas en el robot
@@ -439,6 +439,7 @@ void AVRPawn::GrabRightReleased() {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
 			//GrabRightArmarReleased();
+			//if (bGrabRightParte) {
 			if (OverlapedRightParte) {
 				bBuscarParteRight = true;
 
@@ -750,22 +751,24 @@ void AVRPawn::GrabLeftReleased() {
 }
 
 void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-	if(bBuscarParteRight){//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
-		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
-			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Parte"));
-			AParte * const Parte = Cast<AParte>(OtherActor);
-			if (Parte && !Parte->IsPendingKill()) {
-				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
-				if(MeshParte){
-					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
-					OverlapedRightParte = Parte;
-				}
-			}
+    if (CurrentJerarquiaTask != EVRJerarquiaTask::ENoTask) {
+        if (bBuscarParteRight) {//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
+            if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+                if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Parte"));
+                AParte * const Parte = Cast<AParte>(OtherActor);
+                if (Parte && !Parte->IsPendingKill()) {
+                    UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+                    if (MeshParte) {
+                        if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+                        OverlapedRightParte = Parte;
+                    }
+                }
 
-		}
-	}
+            }
+        }
+    }
     if (CurrentCasaTask != EVRCasaTask::ENoTask) {
         if (bBuscarBloqueRight) {
             if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
@@ -826,25 +829,26 @@ void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedCompo
 }
 
 void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
-	if(!bBuscarParteRight){//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
-		if ( (OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
-			if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("EndOverlap"));
-			AParte * const Parte = Cast<AParte>(OtherActor);
-			if (Parte && !Parte->IsPendingKill() && OverlapedRightParte == Parte) {
-				UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
-				if(MeshParte){
-					if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
-					OverlapedRightParte = nullptr;
-				}
-			}
+    if (CurrentJerarquiaTask != EVRJerarquiaTask::ENoTask) {
+        if (!bBuscarParteRight && !bGrabRightParte) {//esto es para que mientras evitar el error de que cuando se esta trasladando el control y la parte, siempre detecta como si estuviera entrando en overlap en cada frame
+            if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+                if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("EndOverlap"));
+                AParte * const Parte = Cast<AParte>(OtherActor);
+                if (Parte && !Parte->IsPendingKill() && OverlapedRightParte == Parte) {
+                    UStaticMeshComponent * const MeshParte = Cast<UStaticMeshComponent>(OtherComp);
+                    if (MeshParte) {
+                        if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Parte"));
+                        OverlapedRightParte = nullptr;
+                    }
+                }
+            }
+        }
+    }
 
-		}
-	}
-
-    if (!bBuscarBloqueRight) {
-        if (CurrentCasaTask != EVRCasaTask::ENoTask) {
+    if (CurrentCasaTask != EVRCasaTask::ENoTask) {
+        if (!bBuscarBloqueRight) {
             ABloque * const Bloque = Cast<ABloque>(OtherActor);
             if (Bloque && !Bloque->IsPendingKill()) {
                 UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);

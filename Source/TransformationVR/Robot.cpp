@@ -634,7 +634,7 @@ void ARobot::GrabRightPressed() {
 					AnguloAcum = 0.0f;
 
 				}
-			else {
+                else {
 					if (HitParte && HitParte == ParteSeleccionada) {
 						ParteSeleccionada->DesactivarResaltado();
 						ParteSeleccionada->TWidget->OcultarWidgetRotacion();
