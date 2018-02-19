@@ -4,6 +4,7 @@
 #include "VRPawn.h"
 #include "Parte.h"
 #include "Jerarquia.h"
+#include <stack>
 #include "Transformacion.h"
 #include "PilaOpenGL.h"
 #include "Kismet/GameplayStatics.h"
@@ -821,16 +822,42 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	Transformaciones[IdHijo]->ParteAsociada->AttachToActor(Transformaciones[IdPadre]->ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
 
 	//listo hora a solo lajerar
-	Jerarquias[IdRaizPadre]->Layout();
-	Jerarquias[IdRaizPadre]->AplicarLayout();
-	Jerarquias[IdRaizPadre]->ActualizarNodos();
 	Jerarquias[IdRaizPadre]->CantidadPartes += Jerarquias[IdRaizHijo]->CantidadPartes;
 	//debo dejar sin raiz a la otra jerarquia
 	Jerarquias[IdRaizHijo]->Root = nullptr;
 	Jerarquias[IdRaizHijo]->CantidadPartes = 0;
 
+
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+	UE_LOG(LogClass, Log, TEXT("Actualizando Attach Nodos"));
+	pila.push(Jerarquias[IdRaizHijo]->Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+        if (V) {
+            Nodos[V->ParteAsociada->Id]->AttachToActor(Jerarquias[IdRaizPadre], FAttachmentTransformRules::KeepRelativeTransform);
+			if (V->Hijos.Num()) {
+				for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+					pila.push(V->Hijos[i]);
+				}
+			}
+		}
+    }
+    /*
+    *
+    *debo unir los nodos, attt los nodos de la jerarquia hijo a la jerarquia padre
+    *
+    */
+
 	Jerarquias[IdRaizPadre]->Imprimir();
 	Jerarquias[IdRaizHijo]->Imprimir();
+
+	Jerarquias[IdRaizPadre]->Layout();
+	Jerarquias[IdRaizPadre]->AplicarLayout();
+	Jerarquias[IdRaizPadre]->ActualizarNodos();
+
 	//cuando haga desuniones debo recontablilizar a mano, las partes en la jerarquias
 	//y quiza sea mejor usar esa funcion aqui, esa funcon contara desde la razi todas las partes
 	

@@ -347,7 +347,7 @@ void AJerarquia::Calc() {//para hallar niveles
         pila.pop();
         if (V->Hijos.Num()) {
             for (int i = V->Hijos.Num()-1; i >= 0; i--) {
-                V->Hijos[i]->Nivel = V->Nivel + 1;
+                V->Hijos[i]->Nivel = V->Nivel;+ 1;
                 pila.push(V->Hijos[i]);
             }
         }
@@ -355,6 +355,9 @@ void AJerarquia::Calc() {//para hallar niveles
 }
 
 void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
+	UE_LOG(LogClass, Log, TEXT("Layout!!"));
+    Imprimir();
+	UE_LOG(LogClass, Log, TEXT("Fin layout."));
     TQueue<Transformacion * > Cola;
     //la raiz es el ultimo nodo
     //Transformacion * Root = &TransformacionesPartes[Trasn.Num() - 1];
@@ -516,7 +519,7 @@ bool AJerarquia::ArticulacionSobrepuesta() {
 	bool res = false;
     std::stack<Transformacion *> pila;
     //la raiz es el ultimo nodo
-	UE_LOG(LogClass, Log, TEXT("COmprobando si hay parte sobrepuesta"));
+	UE_LOG(LogClass, Log, TEXT("Comprobando si hay parte sobrepuesta"));
 	pila.push(Root);
     while (!pila.empty()) {
         Transformacion * V = pila.top();
@@ -539,7 +542,7 @@ bool AJerarquia::RealizarUniones() {
 	bool res = false;
     std::stack<Transformacion *> pila;
     //la raiz es el ultimo nodo
-	UE_LOG(LogClass, Log, TEXT("COmprobando si hay parte sobrepuesta"));
+	UE_LOG(LogClass, Log, TEXT("Comprobando si hay parte sobrepuesta"));
 	pila.push(Root);
     while (!pila.empty()) {
         Transformacion * V = pila.top();
@@ -562,6 +565,7 @@ void AJerarquia::AplicarLayout() {
 	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
 	for (int i = 0; i < Nodos.Num(); i++) {
 		if (Nodos[i]) {
+            UE_LOG(LogClass, Log, TEXT("Nodo (%d) : (%.4f, %.4f, %.4f)"), i, TransformacionesPartesPunteros[i]->PosicionNodo.X, TransformacionesPartesPunteros[i]->PosicionNodo.Y, TransformacionesPartesPunteros[i]->PosicionNodo.Z);
 			Nodos[i]->SetActorRelativeLocation(TransformacionesPartesPunteros[i]->PosicionNodo + Correccion);
 		}
 	}
