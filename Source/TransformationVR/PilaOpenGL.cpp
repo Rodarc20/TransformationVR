@@ -41,6 +41,6 @@ void APilaOpenGL::Tick(float DeltaTime)
 
 void APilaOpenGL::CambiarCodigo(FString NuevoCodigo) {
 	Codigo = NuevoCodigo;
-	bActualizado = false;
+	bActualizado = false;//el erro se marca en esta linea
 }
 

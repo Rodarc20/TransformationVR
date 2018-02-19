@@ -24,7 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	bool bActualizado;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")

@@ -475,6 +475,7 @@ void AVRPawn::GrabRightReleased() {
 							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
 							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
+                            Jerarquia->PilaCodigo = RobotEncontrado->PilaCodigo;
 						}
 					}
                     bBuscarParteLeft = true;
@@ -692,6 +693,7 @@ void AVRPawn::GrabLeftReleased() {
 							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
 							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
+                            Jerarquia->PilaCodigo = RobotEncontrado->PilaCodigo;
 						}
 					}
                     bBuscarParteLeft = true;//para evitar errores por que aun se sujeta algo en el otro mando

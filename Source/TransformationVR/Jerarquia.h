@@ -107,6 +107,7 @@ public:
 
 	FString Identacion(int Tam);
 
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void ActualizarPila();
 
 	float DistanciaLaserMaxima;
