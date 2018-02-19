@@ -347,7 +347,7 @@ void AJerarquia::Calc() {//para hallar niveles
         pila.pop();
         if (V->Hijos.Num()) {
             for (int i = V->Hijos.Num()-1; i >= 0; i--) {
-                V->Hijos[i]->Nivel = V->Nivel;+ 1;
+                V->Hijos[i]->Nivel = V->Nivel + 1;
                 pila.push(V->Hijos[i]);
             }
         }
@@ -357,7 +357,6 @@ void AJerarquia::Calc() {//para hallar niveles
 void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
 	UE_LOG(LogClass, Log, TEXT("Layout!!"));
     Imprimir();
-	UE_LOG(LogClass, Log, TEXT("Fin layout."));
     TQueue<Transformacion * > Cola;
     //la raiz es el ultimo nodo
     //Transformacion * Root = &TransformacionesPartes[Trasn.Num() - 1];
@@ -376,6 +375,7 @@ void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
         Transformacion * V;
         Cola.Dequeue(V);
         WTemp = V->WInicio;
+        UE_LOG(LogClass, Log, TEXT("Nodo (%d) Nivel = %d: (%.4f, %.4f, %.4f)"), V->ParteAsociada->Id, V->Nivel, V->PosicionNodo.X, V->PosicionNodo.Y, V->PosicionNodo.Z);
         for (int i = 0; i < V->Hijos.Num(); i++) {
             V->Hijos[i]->WTam = V->WTam * (float(V->Hijos[i]->Hojas) / V->Hojas);
             V->Hijos[i]->WInicio = WTemp;
@@ -384,6 +384,7 @@ void AJerarquia::Layout() {//en este algoritmo puedo asignar el nivel
             Cola.Enqueue(V->Hijos[i]);
         }
     }
+	UE_LOG(LogClass, Log, TEXT("Fin layout."));
 }
 
 FString AJerarquia::Texto(Transformacion * T) {
@@ -563,12 +564,31 @@ bool AJerarquia::RealizarUniones() {
 
 void AJerarquia::AplicarLayout() {
 	FVector Correccion (0.0f, -Root->Hojas * DeltaHermanos / 2, Root->Altura * DeltaNiveles);
-	for (int i = 0; i < Nodos.Num(); i++) {
-		if (Nodos[i]) {
-            UE_LOG(LogClass, Log, TEXT("Nodo (%d) : (%.4f, %.4f, %.4f)"), i, TransformacionesPartesPunteros[i]->PosicionNodo.X, TransformacionesPartesPunteros[i]->PosicionNodo.Y, TransformacionesPartesPunteros[i]->PosicionNodo.Z);
-			Nodos[i]->SetActorRelativeLocation(TransformacionesPartesPunteros[i]->PosicionNodo + Correccion);
+
+    std::stack<Transformacion *> pila;
+	UE_LOG(LogClass, Log, TEXT("Aplicando layout"));
+	pila.push(Root);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+		//ejecutar animacion
+        if (V) {
+            Nodos[V->ParteAsociada->Id]->SetActorRelativeLocation(TransformacionesPartesPunteros[V->ParteAsociada->Id]->PosicionNodo + Correccion);
+            //UE_LOG(LogClass, Log, TEXT("Nodo (%d) : (%.4f, %.4f, %.4f)"), i, TransformacionesPartesPunteros[i]->PosicionNodo.X, TransformacionesPartesPunteros[i]->PosicionNodo.Y, TransformacionesPartesPunteros[i]->PosicionNodo.Z);
+			if (V->Hijos.Num()) {
+				for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+					pila.push(V->Hijos[i]);
+				}
+			}
 		}
-	}
+    }
+
+	/*for (int i = 0; i < Nodos.Num(); i++) {//debeir aser solo si le les he hecho algo
+		if (Nodos[i]) {
+			Nodos[i]->SetActorRelativeLocation(TransformacionesPartesPunteros[i]->PosicionNodo + Correccion);
+			//Nodos[i]->SetActorRelativeLocation(TransformacionesPartesPunteros[i]->PosicionNodo);
+		}
+	}*/
 }
 
 void AJerarquia::EjecutarAnimacion(int IdParte) {//para hallar niveles

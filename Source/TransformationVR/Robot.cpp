@@ -106,13 +106,15 @@ void ARobot::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-50.0f, 90.0f, 30.0f);
+		FVector SpawnLocation(-50.0f, 180.0f, 30.0f);
 
-		Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation - FVector(-30.0f, 0.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+		//Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation - FVector(-30.0f, 0.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+        //esta jerarquia no uso
 		//creadas las jerarquias para cada parte
 		for (int i = 0; i < Jerarquias.Num(); i++) {
-			Jerarquias[i] = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation + (i+1)*FVector(0.0f, -20.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+			Jerarquias[i] = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation + (i+1)*FVector(0.0f, -30.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
 		}
+        Jerarquia = Jerarquias[0];
 	}
 
 	UE_LOG(LogClass, Log, TEXT("Instanciadas las jerarquias"));
@@ -127,6 +129,7 @@ void ARobot::BeginPlay()
 			Jerarquias[i]->Nodos[j] = Nodos[j];
 		}
 		Nodos[i]->AttachToActor(Jerarquias[i], FAttachmentTransformRules::KeepRelativeTransform);
+        Nodos[i]->SetActorRelativeLocation(FVector::ZeroVector);
 	}
 	UE_LOG(LogClass, Log, TEXT("Datos copiados a las jerarquias"));
 
@@ -821,15 +824,12 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	
 	Transformaciones[IdHijo]->ParteAsociada->AttachToActor(Transformaciones[IdPadre]->ParteAsociada, FAttachmentTransformRules::KeepWorldTransform);
 
-	//listo hora a solo lajerar
-	Jerarquias[IdRaizPadre]->CantidadPartes += Jerarquias[IdRaizHijo]->CantidadPartes;
-	//debo dejar sin raiz a la otra jerarquia
-	Jerarquias[IdRaizHijo]->Root = nullptr;
-	Jerarquias[IdRaizHijo]->CantidadPartes = 0;
-
-
-    std::stack<Transformacion *> pila;
     //la raiz es el ultimo nodo
+
+    /*
+    *debo unir los nodos, attt los nodos de la jerarquia hijo a la jerarquia padre
+    */
+    std::stack<Transformacion *> pila;
 	UE_LOG(LogClass, Log, TEXT("Actualizando Attach Nodos"));
 	pila.push(Jerarquias[IdRaizHijo]->Root);
     while (!pila.empty()) {
@@ -845,11 +845,14 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 			}
 		}
     }
-    /*
-    *
-    *debo unir los nodos, attt los nodos de la jerarquia hijo a la jerarquia padre
-    *
-    */
+
+	//listo hora a solo lajerar
+	Jerarquias[IdRaizPadre]->CantidadPartes += Jerarquias[IdRaizHijo]->CantidadPartes;
+	//debo dejar sin raiz a la otra jerarquia
+	Jerarquias[IdRaizHijo]->Root = nullptr;
+	Jerarquias[IdRaizHijo]->CantidadPartes = 0;
+
+
 
 	Jerarquias[IdRaizPadre]->Imprimir();
 	Jerarquias[IdRaizHijo]->Imprimir();
