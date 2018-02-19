@@ -54,7 +54,7 @@ void ATechito::Tick(float DeltaTime) {
                 //a travez de esto puedo solucionar el problema de fisicas
             }
             else {
-                SetActorRelativeLocation(FVector(0.0f, PuntoSeguido.Y, PosicionObjetivo.Z));
+                SetActorRelativeLocation(FVector(PosicionObjetivo.X, PuntoSeguido.Y, PosicionObjetivo.Z));
             }
             //UE_LOG(LogClass, Log, TEXT("siguiendo"));
         }

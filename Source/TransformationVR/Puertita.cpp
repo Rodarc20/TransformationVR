@@ -63,7 +63,7 @@ void APuertita::Tick(float DeltaTime) {
             //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
             DiferenciaRotacion.Pitch = 0.0f;
             DiferenciaRotacion.Yaw = 0.0f;
-            DiferenciaRotacion *= -1;
+            DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
             SetActorRelativeRotation(RotacionInicial + DiferenciaRotacion);
         }
     //}

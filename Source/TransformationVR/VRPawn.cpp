@@ -850,13 +850,13 @@ void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedCompon
     }
 
     if (CurrentCasaTask != EVRCasaTask::ENoTask) {
-        if (!bBuscarBloqueRight) {
+        if (bBuscarBloqueRight && !bGrabRightBloque) {
             ABloque * const Bloque = Cast<ABloque>(OtherActor);
             if (Bloque && !Bloque->IsPendingKill()) {
                 UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);
                 if(MeshBloque){
                     if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
+                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("End Bloque"));
                     OverlapedRightBloque= nullptr;
                 }
             }
@@ -885,13 +885,15 @@ void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedCompone
     }
 
     if (CurrentCasaTask != EVRCasaTask::ENoTask) {
-        ABloque * const Bloque = Cast<ABloque>(OtherActor);
-        if (Bloque && !Bloque->IsPendingKill()) {
-            UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);
-            if(MeshBloque){
-                if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
-                OverlapedLeftBloque= nullptr;
+        if (bBuscarBloqueLeft && !bGrabLeftBloque) {
+            ABloque * const Bloque = Cast<ABloque>(OtherActor);
+            if (Bloque && !Bloque->IsPendingKill()) {
+                UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);
+                if (MeshBloque) {
+                    if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("End Bloque"));
+                    OverlapedLeftBloque = nullptr;
+                }
             }
         }
     }
