@@ -42,8 +42,9 @@ ARobot::ARobot()
 
 	DistanciaLaserMaxima = 200.0f;
 
-	//CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
 	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
+    //SetJerarquiaTask(EVRJerarquiaTask::ENoTask);
+    //CurrentJerarquiaTask = EVRJerarquiaTask::ENoTask;
 	//CurrentJerarquiaTask = EVRJerarquiaTask::ERotationTask;
 	HitEje = ETransformacionEje::ENone;
 	EjeSeleccionado = ETransformacionEje::ENone;
@@ -142,6 +143,9 @@ void ARobot::BeginPlay()
 		FVector SpawnLocation(-50.0f, -110.0f, 40.0f);
 
 		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+        if (PilaCodigo) {
+            PilaCodigo->Ocultar();
+        }
 		//if (Jerarquia)
 			//Jerarquia->PilaCodigo = PilaCodigo;
 	}
@@ -376,6 +380,24 @@ bool ARobot::ColisionRotacion(FVector Inicio, FVector Fin, ETransformacionEje & 
 void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
 	CurrentJerarquiaTask = NewJerarquiaTask;
 	UE_LOG(LogClass, Log, TEXT("Cambiando Tarea"));
+
+    //para manejar la aparicion y desaparicion de elementos visuales
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {//si el juego esta en Playing
+            PilaCodigo->Ocultar();
+        }
+        break;//no se como funciona esto
+        case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
+            PilaCodigo->Mostrar();
+        }
+        break;//no se como funciona esto
+        default:
+        case EVRJerarquiaTask::ENoTask: {//unknown/ default state
+            //no hacer nada
+            PilaCodigo->Ocultar();
+        }
+        break;//no se como funciona esto
+    }
 }
 
 EVRJerarquiaTask ARobot::GetJerarquiaTask() {

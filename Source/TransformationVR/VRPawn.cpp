@@ -263,6 +263,26 @@ void AVRPawn::CambiarLaser(int Indice) {
     }
 }
 
+void AVRPawn::MostrarLaser() {
+    Laser->SetVisibility(true);
+    Laser->ActivateSystem();
+}
+
+void AVRPawn::OcultarLaser() {
+    Laser->SetVisibility(false);
+    Laser->DeactivateSystem();
+}
+
+void AVRPawn::MostrarImpactoLaser() {
+    EfectoImpacto->SetVisibility(true);
+    EfectoImpacto->ActivateSystem();
+}
+
+void AVRPawn::OcultarImpactoLaser() {
+    EfectoImpacto->SetVisibility(false);
+    EfectoImpacto->DeactivateSystem();
+}
+
 void AVRPawn::CambiarPuntoFinal(FVector PuntoFinal) {
 	//Laser->SetBeamTargetPoint(0, PuntoFinal, 0);//o target
     if (Interaction->IsOverHitTestVisibleWidget()) {
@@ -285,6 +305,29 @@ int AVRPawn::LaserActual() {
 void AVRPawn::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
 	CurrentJerarquiaTask = NewJerarquiaTask;
 	//UE_LOG(LogClass, Log, TEXT("Cambiando Jerarquia Task VRPawn %d"), NewJerarquiaTask);
+
+    switch (CurrentJerarquiaTask) {
+        case EVRJerarquiaTask::EArmarTask: {
+            OcultarLaser();
+            OcultarImpactoLaser();
+        }
+        break;
+        case EVRJerarquiaTask::ERotationTask: {
+            MostrarLaser();
+            MostrarImpactoLaser();
+        }
+        break;
+        case EVRJerarquiaTask::ETraslationTask: {
+        }
+        break;
+        default:
+        case EVRJerarquiaTask::ENoTask: {
+            OcultarLaser();
+            OcultarImpactoLaser();
+        }
+        break;
+    }
+
 }
 
 EVRJerarquiaTask AVRPawn::GetJerarquiaTask() {
@@ -294,6 +337,22 @@ EVRJerarquiaTask AVRPawn::GetJerarquiaTask() {
 void AVRPawn::SetCasaTask(EVRCasaTask NewCasaTask) {
     CurrentCasaTask = NewCasaTask;
 	//UE_LOG(LogClass, Log, TEXT("Cambiando Casa Task VRPawn %d"), NewCasaTask);
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+            OcultarLaser();
+            OcultarImpactoLaser();
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+            OcultarLaser();
+            OcultarImpactoLaser();
+        }
+        break;
+    }
 }
 
 EVRCasaTask AVRPawn::GetCasaTask() {

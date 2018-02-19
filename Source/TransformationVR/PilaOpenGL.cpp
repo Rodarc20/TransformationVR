@@ -44,3 +44,11 @@ void APilaOpenGL::CambiarCodigo(FString NuevoCodigo) {
 	bActualizado = false;//el erro se marca en esta linea
 }
 
+void APilaOpenGL::Mostrar() {
+    Widget->SetVisibility(true);
+}
+
+void APilaOpenGL::Ocultar() {
+    Widget->SetVisibility(false);
+}
+

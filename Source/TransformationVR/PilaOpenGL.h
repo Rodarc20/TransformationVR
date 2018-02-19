@@ -35,4 +35,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Jerarquia")
 	void CambiarCodigo(FString NuevoCodigo);
+
+    UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+    void Mostrar();
+
+    UFUNCTION(BlueprintCallable, Category = "Jerarquia")
+    void Ocultar();
 };

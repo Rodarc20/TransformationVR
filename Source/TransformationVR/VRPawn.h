@@ -116,6 +116,18 @@ public:
     void CambiarLaser(int Indice);
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void MostrarLaser();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void OcultarLaser();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void MostrarImpactoLaser();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void OcultarImpactoLaser();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
     int LaserActual();
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
