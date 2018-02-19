@@ -478,6 +478,8 @@ void AVRPawn::GrabRightReleased() {
 							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
 						}
 					}
+                    bBuscarParteLeft = true;
+                    bGrabLeftParte = false;
 				}
 				bGrabRightParte = false;
 			}
@@ -617,6 +619,7 @@ void AVRPawn::GrabLeftTick() {
 			//GrabLeftRotarTick();
 			if (bGrabLeftParte) {
 				//if (OverlapedLeftParte->bConectado) {
+                //deberia tener la jerarquia final en la variable Jerarquia?
 					if (Jerarquia->Root) {//bRootEstablecida
 						Jerarquia->Root->SetWorldLocation(PuntoReferenciaLeft->GetComponentLocation());
 						Jerarquia->Root->SetWorldRotation(PuntoReferenciaLeft->GetComponentRotation());
@@ -688,11 +691,12 @@ void AVRPawn::GrabLeftReleased() {
 						SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 						if (RobotEncontrado) {
 							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-							SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
 							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
 						}
 					}
+                    bBuscarParteLeft = true;//para evitar errores por que aun se sujeta algo en el otro mando
+                    bGrabLeftParte = false;
 				}
 				bGrabLeftParte = false;
 			}
