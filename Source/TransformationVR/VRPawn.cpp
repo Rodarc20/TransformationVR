@@ -473,7 +473,6 @@ void AVRPawn::GrabRightReleased() {
 						SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 						if (RobotEncontrado) {
 							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
-							SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
 							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
 						}

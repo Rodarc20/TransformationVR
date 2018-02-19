@@ -419,7 +419,7 @@ FString AJerarquia::Identacion(int Tam) {
 }
 
 void AJerarquia::ActualizarPila() {
-    PilaCodigo->CambiarCodigo(Texto(Root));
+    PilaCodigo->CambiarCodigo(Texto(Root));//esto me esta dando error
 }
 
 void AJerarquia::EstablecerRotacionEjeX(int IdParte, float angle) {
