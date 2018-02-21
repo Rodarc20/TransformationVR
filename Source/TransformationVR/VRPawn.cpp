@@ -966,3 +966,11 @@ void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedCompone
 //debo mejorar el sistema de reconocimiento de partes, quiza manejaro en el tick en lugar de aqui, para quedarme con el mas cercano si hay varios
 
 //si decido deguir con el el modelo de being y end, debo agregar el end, para qpue ponga en null, el OverlapedParte
+
+//dos ideas para lo de la seleccion mas cercana
+//la prrimera es usando las funcionde actules overlap, solo que en lugar de rremplazar el puntero, se introducen a un array, y se determina cual es el mas cercano entre ellos en todos los tick.
+//hasta que presione seleccionar, ahi asigno recien al puntero y dejo de comprobar el mas cercano
+//cuando una parte sale del la colision, se le saca del array
+
+//la otra forma es llamar a la funicon geto overlaed actors en el tick todo el tiempo y obtener el array con los actores solpados, creo que esta seria innecesariamente lento
+//al tener que llenar arryas todo el tiempo
