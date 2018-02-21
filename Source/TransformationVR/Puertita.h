@@ -32,3 +32,5 @@ public:
 	
 	
 };
+
+//quitar la traslacion de este elemento, solo se debe rotar
