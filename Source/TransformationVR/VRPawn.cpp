@@ -13,6 +13,7 @@
 #include "Robot.h"
 #include "Jerarquia.h"
 #include "Bloque.h"
+#include <limits>
 
 
 
@@ -428,6 +429,10 @@ void AVRPawn::GrabRightPressed() {
                 PuntoReferenciaRight->SetWorldRotation(OverlapedRightBloque->GetActorRotation());
                 UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
                 OverlapedRightBloque->SeguirObjeto(PuntoReferenciaRight);
+                if (bGrabLeftParte && OverlapedRightBloque == OverlapedLeftBloque) {
+                    OverlapedLeftBloque->SeguirObjetos(PuntoReferenciaLeft, PuntoReferenciaRight);
+                    UE_LOG(LogClass, Log, TEXT("Enviado informacion de escalada"));
+                }
 			}
         }
         break;
@@ -473,12 +478,20 @@ void AVRPawn::GrabRightTick() {
     }
     switch (CurrentCasaTask) {
         case EVRCasaTask::EArmarTask: {
-			//GrabRightArmarPressed();
-			//if (bGrabRightBloque && OverlapedRightBloque) {
-				//OverlapedRightBloque->SetActorLocation(PuntoReferenciaRight->GetComponentLocation());
-				//OverlapedRightBloque->SetActorRotation(PuntoReferenciaRight->GetComponentRotation());
-				//UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
-			//}
+            //si estoy en la tarea de armar
+            //esto solo si estoy buscando parte o no tengo parte agregada
+            if (bBuscarBloqueRight) {
+                float Distancia;
+                float DistanciaMin = std::numeric_limits<float>::max();
+                OverlapedRightBloque = nullptr;
+                for (int i = 0; i < OverlapedRightBloques.Num(); i++) {
+                    Distancia = (OverlapedRightBloques[i]->GetActorLocation() - ColisionControllerRight->GetComponentLocation()).Size();
+                    if (Distancia < DistanciaMin) {
+                        OverlapedRightBloque = OverlapedRightBloques[i];
+                        DistanciaMin = Distancia;
+                    }
+                }
+            }
         }
         break;
         case EVRCasaTask::EPlayTask: {
@@ -646,6 +659,10 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
                 PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftBloque->GetActorRotation());
                 UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
                 OverlapedLeftBloque->SeguirObjeto(PuntoReferenciaLeft);
+                if (bGrabRightParte && OverlapedLeftBloque == OverlapedRightBloque) {//he sujetado el mismo bloque que mi mano derecha
+                    OverlapedRightBloque->SeguirObjetos(PuntoReferenciaRight, PuntoReferenciaLeft);
+                    UE_LOG(LogClass, Log, TEXT("Enviado informacion de escalada"));
+                }
 			}
         }
         break;
@@ -702,12 +719,18 @@ void AVRPawn::GrabLeftTick() {
 
     switch (CurrentCasaTask) {
         case EVRCasaTask::EArmarTask: {
-			//GrabRightArmarPressed();
-			//if (bGrabLeftBloque && OverlapedLeftBloque) {
-				//OverlapedLeftBloque->SetActorLocation(PuntoReferenciaLeft->GetComponentLocation());
-				//OverlapedLeftBloque->SetActorRotation(PuntoReferenciaLeft->GetComponentRotation());
-				//UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
-			//}
+            if (bBuscarBloqueLeft) {
+                float Distancia;
+                float DistanciaMin = std::numeric_limits<float>::max();
+                OverlapedLeftBloque = nullptr;//de pronto no es necesario ponerlo null
+                for (int i = 0; i < OverlapedLeftBloques.Num(); i++) {
+                    Distancia = (OverlapedLeftBloques[i]->GetActorLocation() - ColisionControllerLeft->GetComponentLocation()).Size();
+                    if (Distancia < DistanciaMin) {
+                        OverlapedLeftBloque = OverlapedLeftBloques[i];
+                        DistanciaMin = Distancia;
+                    }
+                }
+            }
         }
         break;
         case EVRCasaTask::EPlayTask: {
@@ -846,7 +869,8 @@ void AVRPawn::OnBeginOverlapControllerRight(UPrimitiveComponent * OverlappedComp
                         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
                     UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
                     if (MeshBloque) {
-                        OverlapedRightBloque = Bloque;
+                        //OverlapedRightBloque = Bloque;
+                        OverlapedRightBloques.AddUnique(Bloque);
                     }
                 }
             }
@@ -886,7 +910,8 @@ void AVRPawn::OnBeginOverlapControllerLeft(UPrimitiveComponent * OverlappedCompo
                         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Bloque"));
                     UStaticMeshComponent * const MeshBloque = Cast<UStaticMeshComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
                     if (MeshBloque) {
-                        OverlapedLeftBloque = Bloque;
+                        //OverlapedLeftBloque = Bloque;
+                        OverlapedLeftBloques.AddUnique(Bloque);
                     }
                 }
             }
@@ -921,7 +946,8 @@ void AVRPawn::OnEndOverlapControllerRight(UPrimitiveComponent * OverlappedCompon
                 if(MeshBloque){
                     if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
                         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("End Bloque"));
-                    OverlapedRightBloque= nullptr;
+                    //OverlapedRightBloque = nullptr;
+                    OverlapedRightBloques.Remove(Bloque);
                 }
             }
         }
@@ -956,7 +982,8 @@ void AVRPawn::OnEndOverlapControllerLeft(UPrimitiveComponent * OverlappedCompone
                 if (MeshBloque) {
                     if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
                         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("End Bloque"));
-                    OverlapedLeftBloque = nullptr;
+                    //OverlapedLeftBloque = nullptr;
+                    OverlapedLeftBloques.Remove(Bloque);
                 }
             }
         }

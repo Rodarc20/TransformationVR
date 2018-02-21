@@ -243,6 +243,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
     bool bGrabLeftBloque;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    TArray<ABloque *> OverlapedLeftBloques;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    TArray<ABloque *> OverlapedRightBloques;
+
 };
 
 //tener cuidado con el puntero overlaped parte para derecha o izquierda, por si llego a aprentar el triger sin que haya alguna parte osbrepuesta.
