@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Components/WidgetComponent.h"
 
 ATechito::ATechito() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,6 +24,18 @@ ATechito::ATechito() {
     Umbral = 15.0f;
     PosicionObjetivo = FVector(0.0f, 0.0f, 15.0f);
 
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetTraslacion.WidgetTraslacion_C'"));
+    Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetTraslacion"));
+    Widget->SetupAttachment(RootComponent);
+    Widget->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    Widget->SetDrawSize(FVector2D(1000.0f, 500.0f));
+    Widget->SetPivot(FVector2D(0.5f, 0.5f));
+    Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    Widget->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+    if (WidgetClass.Succeeded()) {
+        Widget->SetWidgetClass(WidgetClass.Class);
+    }
 }
 
 void ATechito::BeginPlay() {
@@ -55,6 +68,8 @@ void ATechito::Tick(float DeltaTime) {
             }
             else {
                 SetActorRelativeLocation(FVector(PosicionObjetivo.X, PuntoSeguido.Y, PosicionObjetivo.Z));
+                TraslacionTemp = PuntoSeguido.Y - PosicionInicial.Y;
+                Widget->SetWorldLocation(PosicionInicialWorld);
             }
             //UE_LOG(LogClass, Log, TEXT("siguiendo"));
         }

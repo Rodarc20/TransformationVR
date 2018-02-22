@@ -33,6 +33,8 @@ void ABloque::SeguirObjeto(USceneComponent * Objeto) {
     TArray<USceneComponent *> parents;
     Objeto->GetParentComponents(parents);
     RotacionInicialObjeto = parents[0]->GetRelativeTransform().GetRotation().Rotator();//esto es por que necesitoi rotacion del control, no del componente punto referencia
+    PosicionInicial = GetRootComponent()->GetRelativeTransform().GetLocation();
+    PosicionInicialWorld = GetActorLocation();
 
 }
 
@@ -48,6 +50,7 @@ void ABloque::SeguirObjetos(USceneComponent * ObjetoInicial, USceneComponent * O
     ObjetoFinal->GetParentComponents(parentsFinal);
     RotacionInicialObjeto = parentsInicial[0]->GetRelativeTransform().GetRotation().Rotator();//esto es por que necesitoi rotacion del control, no del componente punto referencia
     DistanciaInicialObjetos = (parentsFinal[0]->GetComponentLocation() - parentsInicial[0]->GetComponentLocation()).Size();
+    PosicionInicialWorld = GetActorLocation();
     //deberia ser usando la posicion de los controles no de los componetes referencia
     UE_LOG(LogClass, Log, TEXT("DistanciaInicialObjetos: %f"), DistanciaInicialObjetos);
 }

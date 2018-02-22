@@ -205,23 +205,9 @@ void AVRPawn::Tick(float DeltaTime)
         MotionControllerRight->AddRelativeRotation(Rotacion);
     }
 
-	/*if (bGrabRightParte) {
-		OverlapedRightParte->SetActorLocation(MotionControllerRight->GetComponentLocation() + OffsetRightParte);
-	}*/
-	GrabRightTick();
+	//GrabRightTick();//esta funcion , funciona mal
 	GrabLeftTick();
 
-	/*if (bGrabLeftParte && RootParte) {
-		FVector OffsetEliminar;
-		if (RootParte->Hijos.Num()) {
-			OffsetEliminar = RootParte->Hijos[0]->GetActorLocation() - RootParte->GetActorLocation();
-		}
-		RootParte->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte);
-		//esta traslacion se deberia aplicar a los hijos, por las trasnfomarciones y la jerarquia, por ahora hare una funcion sencilla para lo del hijo asumiendo que una dos cabezas
-		if (RootParte->Hijos.Num()) {
-			RootParte->Hijos[0]->SetActorLocation(MotionControllerLeft->GetComponentLocation() + OffsetLeftParte + OffsetEliminar);
-		}
-	}*/
 }
 
 // Called to bind functionality to input

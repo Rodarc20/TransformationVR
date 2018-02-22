@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/WidgetComponent.h"
 #include "Bloque.generated.h"
 
 UCLASS()
@@ -32,9 +33,20 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     USceneComponent * ObjetoSeguirFinal;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     bool bSeguir;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     bool bSobrepasoUmbral;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float TraslacionTemp;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float RotacionTemp;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float EscalaTemp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     float Umbral;
@@ -49,12 +61,20 @@ public:
 
     void NoSeguir();
 	
+    FVector PosicionInicial;
+
+    FVector PosicionInicialWorld;
+
     FRotator RotacionInicial;
 
     FRotator RotacionInicialObjeto;
 
     float DistanciaInicialObjetos;
+
     float DistanciaObjetos;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * Widget;
 };
 
 
