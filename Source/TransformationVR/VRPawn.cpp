@@ -419,7 +419,6 @@ void AVRPawn::GrabRightPressed() {
 
     switch (CurrentCasaTask) {
         case EVRCasaTask::EArmarTask: {
-            UE_LOG(LogClass, Log, TEXT("Armar"));
 			//GrabRightArmarPressed();
 			if (OverlapedRightBloque) {//encapsularlo en la funcion anterior para manter un orden
 				bBuscarBloqueRight = false;
@@ -429,7 +428,7 @@ void AVRPawn::GrabRightPressed() {
                 PuntoReferenciaRight->SetWorldRotation(OverlapedRightBloque->GetActorRotation());
                 UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
                 OverlapedRightBloque->SeguirObjeto(PuntoReferenciaRight);
-                if (bGrabLeftParte && OverlapedRightBloque == OverlapedLeftBloque) {
+                if (bGrabLeftBloque && OverlapedRightBloque == OverlapedLeftBloque) {
                     OverlapedLeftBloque->SeguirObjetos(PuntoReferenciaLeft, PuntoReferenciaRight);
                     UE_LOG(LogClass, Log, TEXT("Enviado informacion de escalada"));
                 }
@@ -489,6 +488,7 @@ void AVRPawn::GrabRightTick() {
                     if (Distancia < DistanciaMin) {
                         OverlapedRightBloque = OverlapedRightBloques[i];
                         DistanciaMin = Distancia;
+                        //UE_LOG(LogClass, Log, TEXT("Nuevo cercano right"));
                     }
                 }
             }
@@ -659,7 +659,7 @@ void AVRPawn::GrabLeftPressed() {//copia del derecho pero sin comentarios, y con
                 PuntoReferenciaLeft->SetWorldRotation(OverlapedLeftBloque->GetActorRotation());
                 UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
                 OverlapedLeftBloque->SeguirObjeto(PuntoReferenciaLeft);
-                if (bGrabRightParte && OverlapedLeftBloque == OverlapedRightBloque) {//he sujetado el mismo bloque que mi mano derecha
+                if (bGrabRightBloque && OverlapedLeftBloque == OverlapedRightBloque) {//he sujetado el mismo bloque que mi mano derecha
                     OverlapedRightBloque->SeguirObjetos(PuntoReferenciaRight, PuntoReferenciaLeft);
                     UE_LOG(LogClass, Log, TEXT("Enviado informacion de escalada"));
                 }
@@ -728,6 +728,7 @@ void AVRPawn::GrabLeftTick() {
                     if (Distancia < DistanciaMin) {
                         OverlapedLeftBloque = OverlapedLeftBloques[i];
                         DistanciaMin = Distancia;
+                        //UE_LOG(LogClass, Log, TEXT("Nuevo cercano left"));
                     }
                 }
             }

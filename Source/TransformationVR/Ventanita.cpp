@@ -30,7 +30,16 @@ void AVentanita::BeginPlay() {
 
 void AVentanita::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
-
+    if (bSeguir && ObjetoSeguirFinal) {
+        DistanciaObjetos = (ObjetoSeguirFinal->GetComponentLocation() - ObjetoSeguir->GetComponentLocation()).Size();
+        float EscalaTemp = (DistanciaObjetos - DistanciaInicialObjetos) / DistanciaInicialObjetos;
+        UE_LOG(LogClass, Log, TEXT("Escala Temp: %f"), EscalaTemp);
+        //calcular la escala temporal y aplicar
+        //aplicarlao, conservar el valor de escala actual para saber cual es la escala que tiene en este momenot,
+        //problemas con la escala relativa
+        //la escala se aplcara solo a uno de los ejes, en este caso el eje y tal vez o eje x
+        SetActorRelativeScale3D(FVector(EscalaTemp, 1.0f, 1.0f));
+    }
 }
 
 

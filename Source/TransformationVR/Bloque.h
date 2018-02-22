@@ -29,6 +29,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     USceneComponent * ObjetoSeguir;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    USceneComponent * ObjetoSeguirFinal;
+
     bool bSeguir;
 
     bool bSobrepasoUmbral;
@@ -42,10 +45,16 @@ public:
 
     void SeguirObjeto(USceneComponent * Objeto);
 
+    void SeguirObjetos(USceneComponent * ObjetoInicial, USceneComponent * ObjetoFinal);
+
     void NoSeguir();
 	
     FRotator RotacionInicial;
+
     FRotator RotacionInicialObjeto;
+
+    float DistanciaInicialObjetos;
+    float DistanciaObjetos;
 };
 
 

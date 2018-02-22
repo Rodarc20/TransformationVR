@@ -32,12 +32,31 @@ void ABloque::SeguirObjeto(USceneComponent * Objeto) {
     RotacionInicial = GetActorTransform().GetRotation().Rotator();
     TArray<USceneComponent *> parents;
     Objeto->GetParentComponents(parents);
-    RotacionInicialObjeto = parents[0]->GetRelativeTransform().GetRotation().Rotator();
+    RotacionInicialObjeto = parents[0]->GetRelativeTransform().GetRotation().Rotator();//esto es por que necesitoi rotacion del control, no del componente punto referencia
 
+}
+
+void ABloque::SeguirObjetos(USceneComponent * ObjetoInicial, USceneComponent * ObjetoFinal) {//el segundo seria el segundo control, que debeir estar sugentando tambien al objeto
+    ObjetoSeguir = ObjetoInicial;
+    ObjetoSeguirFinal = ObjetoFinal;
+    UE_LOG(LogClass, Log, TEXT("Cambiando a seguiendo"));
+    bSeguir = true;
+    RotacionInicial = GetActorTransform().GetRotation().Rotator();
+    TArray<USceneComponent *> parentsInicial;
+    ObjetoInicial->GetParentComponents(parentsInicial);
+    TArray<USceneComponent *> parentsFinal;
+    ObjetoFinal->GetParentComponents(parentsFinal);
+    RotacionInicialObjeto = parentsInicial[0]->GetRelativeTransform().GetRotation().Rotator();//esto es por que necesitoi rotacion del control, no del componente punto referencia
+    DistanciaInicialObjetos = (parentsFinal[0]->GetComponentLocation() - parentsInicial[0]->GetComponentLocation()).Size();
+    //deberia ser usando la posicion de los controles no de los componetes referencia
+    UE_LOG(LogClass, Log, TEXT("DistanciaInicialObjetos: %f"), DistanciaInicialObjetos);
 }
 
 void ABloque::NoSeguir() {
     bSeguir = false;
     ObjetoSeguir = nullptr;
+    ObjetoSeguirFinal = nullptr;
 }
 
+
+//voya necesitar puntos centrales, puntos inciales escalas iniciales, para que sean usados por el hud de cada tarea
