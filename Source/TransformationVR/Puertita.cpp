@@ -70,12 +70,12 @@ void APuertita::Tick(float DeltaTime) {
                 bSobrepasoUmbral = false;
             }
             if (bSobrepasoUmbral) {
-                SetActorLocation(ObjetoSeguir->GetComponentLocation());
+                //SetActorLocation(ObjetoSeguir->GetComponentLocation());
                 //debo verificar que este otra vz dentro del rango para regresar elsobrepaso el umbra a falso
                 //a travez de esto puedo solucionar el problema de fisicas
             }
             else {
-                SetActorRelativeLocation(FVector(PosicionObjetivo.X, PuntoSeguido.Y, PosicionObjetivo.Z));
+                //SetActorRelativeLocation(FVector(PosicionObjetivo.X, PuntoSeguido.Y, PosicionObjetivo.Z));
             }
             //UE_LOG(LogClass, Log, TEXT("siguiendo"));
             TArray<USceneComponent *> parents;
