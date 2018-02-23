@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/WidgetComponent.h"
+#include "TransformacionWidget.h"
 #include "Bloque.generated.h"
 
 UCLASS()
@@ -32,6 +33,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     USceneComponent * ObjetoSeguirFinal;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UTransformacionWidget * TWidget;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     bool bSeguir;

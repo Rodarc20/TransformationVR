@@ -5,6 +5,7 @@
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Components/WidgetComponent.h"
+#include "TransformacionWidget.h"
 
 ATechito::ATechito() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -36,6 +37,13 @@ ATechito::ATechito() {
     if (WidgetClass.Succeeded()) {
         Widget->SetWidgetClass(WidgetClass.Class);
     }
+    Widget->SetVisibility(false);
+
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
+    //TWidget->MostrarWidgetOrigen();
+    //TWidget->MostrarWidgetTraslacion();
 }
 
 void ATechito::BeginPlay() {

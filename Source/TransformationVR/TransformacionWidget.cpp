@@ -139,8 +139,8 @@ UTransformacionWidget::UTransformacionWidget()
 	ArcoY->SetCustomDepthStencilValue(252);
 	ArcoZ->SetCustomDepthStencilValue(253);
 
-	OcultarWidgetOrigen();
-	OcultarWidgetTraslacion();
+	//OcultarWidgetOrigen();
+	//OcultarWidgetTraslacion();
 	OcultarWidgetRotacion();
 	
 }

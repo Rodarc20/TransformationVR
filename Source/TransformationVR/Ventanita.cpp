@@ -27,7 +27,7 @@ AVentanita::AVentanita() {
     Widget->SetupAttachment(RootComponent);
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(500.0f, 150.0f));
+    Widget->SetDrawSize(FVector2D(1000.0f, 400.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
@@ -35,7 +35,14 @@ AVentanita::AVentanita() {
     if (WidgetClass.Succeeded()) {
         Widget->SetWidgetClass(WidgetClass.Class);
     }
+    Widget->SetVisibility(false);
     RotacionTemp = 0.0f;
+
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
+    //TWidget->MostrarWidgetOrigen();
+    //TWidget->MostrarWidgetTraslacion();
 }
 
 void AVentanita::BeginPlay() {
@@ -46,7 +53,7 @@ void AVentanita::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
     if (bSeguir && ObjetoSeguirFinal) {
         DistanciaObjetos = (ObjetoSeguirFinal->GetComponentLocation() - ObjetoSeguir->GetComponentLocation()).Size();
-        float EscalaTemp = (DistanciaObjetos - DistanciaInicialObjetos) / DistanciaInicialObjetos;
+        EscalaTemp = (DistanciaObjetos - DistanciaInicialObjetos) / DistanciaInicialObjetos;
         UE_LOG(LogClass, Log, TEXT("Escala Temp: %f"), EscalaTemp);
         //calcular la escala temporal y aplicar
         //aplicarlao, conservar el valor de escala actual para saber cual es la escala que tiene en este momenot,

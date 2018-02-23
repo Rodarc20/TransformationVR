@@ -34,9 +34,10 @@ void ABloque::SeguirObjeto(USceneComponent * Objeto) {
     Objeto->GetParentComponents(parents);
     RotacionInicialObjeto = parents[0]->GetRelativeTransform().GetRotation().Rotator();//esto es por que necesitoi rotacion del control, no del componente punto referencia
     PosicionInicial = GetRootComponent()->GetRelativeTransform().GetLocation();
-    RotacionInicialWidget = Widget->GetComponentRotation();
+    RotacionInicialWidget = GetRootComponent()->GetComponentRotation();
+    //RotacionInicialWidget = Widget->GetComponentRotation();
     PosicionInicialWorld = GetActorLocation();
-
+    Widget->SetVisibility(true);
 }
 
 void ABloque::SeguirObjetos(USceneComponent * ObjetoInicial, USceneComponent * ObjetoFinal) {//el segundo seria el segundo control, que debeir estar sugentando tambien al objeto
@@ -61,6 +62,7 @@ void ABloque::NoSeguir() {
     bSeguir = false;
     ObjetoSeguir = nullptr;
     ObjetoSeguirFinal = nullptr;
+    Widget->SetVisibility(false);
 }
 
 

@@ -17,6 +17,9 @@ ACasita::ACasita() {
         }
     }
     BloqueMesh->SetCollisionProfileName(FName(TEXT("Bloque")));
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void ACasita::BeginPlay() {

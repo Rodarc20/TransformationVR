@@ -15,6 +15,7 @@ enum class ETransformacionEje : uint8 {
     ENone UMETA(DisplayName = "Ninguno")
 };
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TRANSFORMATIONVR_API UTransformacionWidget : public USceneComponent
 {
@@ -120,3 +121,5 @@ public:
 	FVector InterseccionLineaPlanoXY(FVector PuntoRecta, FVector VectorRecta);
 	FVector InterseccionLineaPlanoYZ(FVector PuntoRecta, FVector VectorRecta);
 };
+
+

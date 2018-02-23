@@ -36,7 +36,14 @@ APuertita::APuertita() {
     if (WidgetClass.Succeeded()) {
         Widget->SetWidgetClass(WidgetClass.Class);
     }
+    Widget->SetVisibility(false);
     RotacionTemp = 0.0f;
+
+	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
+	TWidget->SetupAttachment(RootComponent);
+	TWidget->SetRelativeLocation(FVector::ZeroVector);
+    //TWidget->MostrarWidgetOrigen();
+    //TWidget->MostrarWidgetTraslacion();
 }
 
 void APuertita::BeginPlay() {
