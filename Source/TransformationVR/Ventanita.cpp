@@ -22,6 +22,20 @@ AVentanita::AVentanita() {
     BloqueMesh->SetCollisionProfileName(FName(TEXT("Bloque")));
     Umbral = 15.0f;
 
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetEscala.WidgetEscala_C'"));
+    Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetEscala"));
+    Widget->SetupAttachment(RootComponent);
+    Widget->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    Widget->SetDrawSize(FVector2D(500.0f, 150.0f));
+    Widget->SetPivot(FVector2D(0.5f, 0.5f));
+    Widget->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+    Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    Widget->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+    if (WidgetClass.Succeeded()) {
+        Widget->SetWidgetClass(WidgetClass.Class);
+    }
+    RotacionTemp = 0.0f;
 }
 
 void AVentanita::BeginPlay() {
@@ -39,6 +53,8 @@ void AVentanita::Tick(float DeltaTime) {
         //problemas con la escala relativa
         //la escala se aplcara solo a uno de los ejes, en este caso el eje y tal vez o eje x
         SetActorRelativeScale3D(FVector(EscalaTemp, 1.0f, 1.0f));
+        Widget->SetWorldScale3D(EscalaInicialWidget);
+
     }
 }
 

@@ -67,6 +67,10 @@ public:
 
     FRotator RotacionInicial;
 
+    FRotator RotacionInicialWidget;
+
+    FVector EscalaInicialWidget;
+
     FRotator RotacionInicialObjeto;
 
     float DistanciaInicialObjetos;

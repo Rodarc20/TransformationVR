@@ -205,7 +205,7 @@ void AVRPawn::Tick(float DeltaTime)
         MotionControllerRight->AddRelativeRotation(Rotacion);
     }
 
-	//GrabRightTick();//esta funcion , funciona mal
+	GrabRightTick();//esta funcion , funciona mal
 	GrabLeftTick();
 
 }
@@ -466,7 +466,7 @@ void AVRPawn::GrabRightTick() {
             //si estoy en la tarea de armar
             //esto solo si estoy buscando parte o no tengo parte agregada
             if (bBuscarBloqueRight) {
-                float Distancia;
+                float Distancia = 0.0f;
                 float DistanciaMin = std::numeric_limits<float>::max();
                 OverlapedRightBloque = nullptr;
                 for (int i = 0; i < OverlapedRightBloques.Num(); i++) {

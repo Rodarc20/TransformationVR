@@ -23,6 +23,20 @@ APuertita::APuertita() {
     Umbral = 15.0f;
     PosicionObjetivo = FVector(9.0f, 0.0f, 5.0f);
 
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetRotacion.WidgetRotacion_C'"));
+    Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetRotacion"));
+    Widget->SetupAttachment(RootComponent);
+    Widget->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    Widget->SetDrawSize(FVector2D(500.0f, 500.0f));
+    Widget->SetPivot(FVector2D(0.5f, 0.5f));
+    Widget->SetRelativeLocation(FVector(1.0f, 0.0f, 0.0f));
+    Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    Widget->SetRelativeRotation(FRotator(00.0f, 0.0f, 0.0f));
+    if (WidgetClass.Succeeded()) {
+        Widget->SetWidgetClass(WidgetClass.Class);
+    }
+    RotacionTemp = 0.0f;
 }
 
 void APuertita::BeginPlay() {
@@ -63,8 +77,10 @@ void APuertita::Tick(float DeltaTime) {
             //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
             DiferenciaRotacion.Pitch = 0.0f;
             DiferenciaRotacion.Yaw = 0.0f;
+            RotacionTemp = DiferenciaRotacion.Roll;
             DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
             SetActorRelativeRotation(RotacionInicial + DiferenciaRotacion);
+            Widget->SetWorldRotation(RotacionInicialWidget);
         }
     //}
 }
