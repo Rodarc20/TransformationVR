@@ -42,7 +42,7 @@ AVentanita::AVentanita() {
 	TWidget->SetupAttachment(RootComponent);
 	TWidget->SetRelativeLocation(FVector::ZeroVector);
     //TWidget->MostrarWidgetOrigen();
-    //TWidget->MostrarWidgetTraslacion();
+    TWidget->OcultarWidgetTraslacion();
 }
 
 void AVentanita::BeginPlay() {
@@ -65,5 +65,14 @@ void AVentanita::Tick(float DeltaTime) {
     }
 }
 
+void AVentanita::WidgetSeguir() {
+    TWidget->HabilitarEje(ETransformacionEje::EEjeY);
+    TWidget->HabilitarEje(ETransformacionEje::EEjeZ);
+}
+
+void AVentanita::WidgetNoSeguir() {
+    TWidget->DeshabilitarEje(ETransformacionEje::EEjeY);
+    TWidget->DeshabilitarEje(ETransformacionEje::EEjeZ);
+}
 
 

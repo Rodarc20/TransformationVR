@@ -20,7 +20,8 @@ ACasa::ACasa()
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ACasa::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ACasa::OnEndOverlapZona);
 
-    CurrentCasaTask = EVRCasaTask::EArmarTask;
+    CurrentCasaTask = EVRCasaTask::ENoTask;
+    LastCasaTask = EVRCasaTask::EArmarTask;
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +29,7 @@ void ACasa::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*TArray<AActor *> BloquesEncontrados;
+	TArray<AActor *> BloquesEncontrados;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABloque::StaticClass(), BloquesEncontrados);
 	//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
 	for (int i = 0; i < BloquesEncontrados.Num(); i++) {
@@ -37,17 +38,64 @@ void ACasa::BeginPlay()
 		//UE_LOG(LogClass, Log, TEXT("Partes Encontradas %d"), i);
 		ABloque * const BloqueEncontrado = Cast<ABloque>(BloquesEncontrados[i]);
         if (BloqueEncontrado) {
-            BloqueEncontrado->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+            //BloqueEncontrado->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+            //supongamos que ya estan dentro de la jerarquia
+            Bloques.Add(BloqueEncontrado);
         }
-	}*/
+	}
 	
+    AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+    if (MyVRPawn) {
+        Usuario = MyVRPawn;
+    }
 }
 
 // Called every frame
-void ACasa::Tick(float DeltaTime)
-{
+void ACasa::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+    //no deberia comprobar todo el tiempo si esta armado o no, solo deberia ser cuando he soltado una parte, o que esta clase se comunique con sus partes
+    if (CasaArmada()) {
+        SetCasaTask(EVRCasaTask::EPlayTask);
+        //tambien deberia darle al usuario esto, como en la clase robot
+    }
 
+
+}
+
+bool ACasa::CasaArmada() {
+    bool res = true;
+    for (int i = 0; i < Bloques.Num() && res; i++) {
+        res = res & Bloques[i]->bArmado;
+    }
+    return res;
+}
+
+void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
+    CurrentCasaTask = NewCasaTask;
+    //debo incaiar ciertas operaciones cuando inicie la ptarea play, como flotar la casa
+
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+            //activar efectos visuales necesarios
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+            //activar efectos visaules necesarios
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+            //Descender, si el usuario no esta que se desciendan, y se cambie a esta tarea, 
+            //necesito un last current scene, para recordar en la que estaba si armando, o estaba en rotando, para que cuando salada la pase a none, y cuando me acerque de nuevo sepa en cual estaba y cambia a esa
+            //descativar efectos visuales
+            //hacer aterrizar la casa de ser necesario, al punto 0, de pronto no
+        }
+        break;
+    }
+}
+
+EVRCasaTask ACasa::GetCasaTask() {
+    return CurrentCasaTask;
 }
 
 void ACasa::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
@@ -62,7 +110,9 @@ void ACasa::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor
                 GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("VRPawn"));
             USphereComponent * const ColisionHead = Cast<USphereComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
             if (ColisionHead) {
-                VRPawn->SetCasaTask(CurrentCasaTask);
+                SetCasaTask(LastCasaTask);
+                VRPawn->SetCasaTask(LastCasaTask);
+                //VRPawn->SetCasaTask(CurrentCasaTask);
             }
         }
     }
@@ -80,7 +130,10 @@ void ACasa::OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor *
                 GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("VRPawn"));
             USphereComponent * const ColisionHead = Cast<USphereComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
             if (ColisionHead) {
+                LastCasaTask = CurrentCasaTask;
+                SetCasaTask(EVRCasaTask::ENoTask);
                 VRPawn->SetCasaTask(EVRCasaTask::ENoTask);
+                //VRPawn->SetCasaTask(EVRCasaTask::ENoTask);
             }
         }
     }

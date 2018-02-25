@@ -43,7 +43,7 @@ ATechito::ATechito() {
 	TWidget->SetupAttachment(RootComponent);
 	TWidget->SetRelativeLocation(FVector::ZeroVector);
     //TWidget->MostrarWidgetOrigen();
-    //TWidget->MostrarWidgetTraslacion();
+    TWidget->OcultarWidgetTraslacion();
 }
 
 void ATechito::BeginPlay() {
@@ -58,7 +58,7 @@ void ATechito::Tick(float DeltaTime) {
         //SetActorLocation(ObjetoSeguir->GetComponentLocation());
     //}
     //else {
-        if (bSeguir) {
+        if (bSeguir) {//si estoy siguiente, debo de habilitar o deshabilitar los widgets, esto va en funcion de cada parte, encapsular esta parte en funciones
             FVector PuntoSeguido = GetAttachParentActor()->GetActorTransform().InverseTransformPosition(ObjetoSeguir->GetComponentLocation());//de world a local
             FVector PuntoSeguidoSinY = PuntoSeguido;
             PuntoSeguidoSinY.Y = 0.0f;
@@ -82,4 +82,12 @@ void ATechito::Tick(float DeltaTime) {
             //UE_LOG(LogClass, Log, TEXT("siguiendo"));
         }
     //}
+}
+
+void ATechito::WidgetSeguir() {
+    TWidget->HabilitarEje(ETransformacionEje::EEjeY);
+}
+
+void ATechito::WidgetNoSeguir() {
+    TWidget->DeshabilitarEje(ETransformacionEje::EEjeY);
 }

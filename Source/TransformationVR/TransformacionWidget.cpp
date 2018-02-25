@@ -273,6 +273,7 @@ void UTransformacionWidget::SeleccionarEjeRotacion(ETransformacionEje Eje) {
         break;//no se como funciona esto
     }
 }
+
 void UTransformacionWidget::DeseleccionarEjeRotacion(ETransformacionEje Eje) {
     switch (Eje) {
         case ETransformacionEje::EEjeX: {
@@ -294,6 +295,59 @@ void UTransformacionWidget::DeseleccionarEjeRotacion(ETransformacionEje Eje) {
         break;//no se como funciona esto
     }
 }
+
+void UTransformacionWidget::HabilitarEje(ETransformacionEje Eje) {
+    switch (Eje) {
+        case ETransformacionEje::EEjeX: {
+            FlechaX->SetVisibility(true);//de pronto uso los pmateriales resaltados
+			//FlechaX->SetMaterial(0, EjeYNormal);
+            //o con materiales
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeY: {
+            FlechaY->SetVisibility(true);
+			//ArcoY->SetMaterial(0, EjeYNormal);
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeZ: {
+            FlechaZ->SetVisibility(true);
+			//ArcoZ->SetMaterial(0, EjeZNormal);
+        }
+        break;//no se como funciona esto
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;//no se como funciona esto
+    }
+}
+
+void UTransformacionWidget::DeshabilitarEje(ETransformacionEje Eje) {
+    switch (Eje) {
+        case ETransformacionEje::EEjeX: {
+            FlechaX->SetVisibility(false);//de pronto uso los pmateriales resaltados
+			//FlechaX->SetMaterial(0, EjeYNormal);
+            //o con materiales
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeY: {
+            FlechaY->SetVisibility(false);
+			//ArcoY->SetMaterial(0, EjeYNormal);
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeZ: {
+            FlechaZ->SetVisibility(false);
+			//ArcoZ->SetMaterial(0, EjeZNormal);
+        }
+        break;//no se como funciona esto
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;//no se como funciona esto
+    }
+}
+
 void UTransformacionWidget::CopiarTransform() {
 	TransformTemporal = GetComponentTransform();
 }

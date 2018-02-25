@@ -38,6 +38,7 @@ void ABloque::SeguirObjeto(USceneComponent * Objeto) {
     //RotacionInicialWidget = Widget->GetComponentRotation();
     PosicionInicialWorld = GetActorLocation();
     Widget->SetVisibility(true);
+    WidgetSeguir();
 }
 
 void ABloque::SeguirObjetos(USceneComponent * ObjetoInicial, USceneComponent * ObjetoFinal) {//el segundo seria el segundo control, que debeir estar sugentando tambien al objeto
@@ -63,6 +64,13 @@ void ABloque::NoSeguir() {
     ObjetoSeguir = nullptr;
     ObjetoSeguirFinal = nullptr;
     Widget->SetVisibility(false);
+    WidgetNoSeguir();
+}
+
+void ABloque::WidgetSeguir() {
+}
+
+void ABloque::WidgetNoSeguir() {
 }
 
 

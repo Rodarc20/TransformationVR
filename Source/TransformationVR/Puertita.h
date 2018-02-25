@@ -28,6 +28,11 @@ public:
 
     FVector PosicionObjetivo;
 	
+	UFUNCTION(Category = "Transformation")
+	virtual void WidgetSeguir() override;
+
+	UFUNCTION(Category = "Transformation")
+	virtual void WidgetNoSeguir() override;
 
 	
 	

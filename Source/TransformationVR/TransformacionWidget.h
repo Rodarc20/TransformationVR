@@ -109,6 +109,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void DeseleccionarEjeRotacion(ETransformacionEje Eje);
 
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void HabilitarEje(ETransformacionEje Eje);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void DeshabilitarEje(ETransformacionEje Eje);
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	FTransform TransformTemporal;//este trasnfor ahora es compia del de este component, spero deberia ser copia del trasnform del actor, sobre el se debe hacer los calculos, habra porbleams ya que ambos tiene padres disitintos
 	//si uso la copia del transfor del componen, cuando palique rotaciones a la parte, los calculos usaran es rotacion del padre tambien, cuanod no deberia ser asi, esto por que en el proceo le pare es la parte

@@ -43,7 +43,7 @@ APuertita::APuertita() {
 	TWidget->SetupAttachment(RootComponent);
 	TWidget->SetRelativeLocation(FVector::ZeroVector);
     //TWidget->MostrarWidgetOrigen();
-    //TWidget->MostrarWidgetTraslacion();
+    TWidget->OcultarWidgetTraslacion();
 }
 
 void APuertita::BeginPlay() {
@@ -92,6 +92,13 @@ void APuertita::Tick(float DeltaTime) {
     //}
 }
 
+void APuertita::WidgetSeguir() {
+    TWidget->HabilitarEje(ETransformacionEje::EEjeX);
+}
+
+void APuertita::WidgetNoSeguir() {
+    TWidget->DeshabilitarEje(ETransformacionEje::EEjeX);
+}
 
 
 

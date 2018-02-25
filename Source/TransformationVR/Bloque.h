@@ -38,6 +38,9 @@ public:
 	UTransformacionWidget * TWidget;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    bool bArmado;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     bool bSeguir;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
@@ -83,6 +86,12 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
     UWidgetComponent * Widget;
+
+	UFUNCTION(Category = "Transformation")
+	virtual void WidgetSeguir();
+
+	UFUNCTION(Category = "Transformation")
+	virtual void WidgetNoSeguir();
 };
 
 

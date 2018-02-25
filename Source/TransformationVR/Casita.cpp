@@ -20,6 +20,8 @@ ACasita::ACasita() {
 	TWidget = CreateDefaultSubobject<UTransformacionWidget>(TEXT("TWidget"));
 	TWidget->SetupAttachment(RootComponent);
 	TWidget->SetRelativeLocation(FVector::ZeroVector);
+    TWidget->OcultarWidgetTraslacion();
+    TWidget->OcultarWidgetOrigen();
 }
 
 void ACasita::BeginPlay() {
