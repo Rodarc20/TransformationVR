@@ -38,10 +38,12 @@ AVRPawn::AVRPawn()
     MotionControllerLeft = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionControllerLeft"));
     MotionControllerLeft->SetupAttachment(RootComponent);
     MotionControllerLeft->SetRelativeLocation(FVector(50.0f, -40.0f, -20.0f));
+    MotionControllerLeft->Hand = EControllerHand::Left;
 
     MotionControllerRight = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionControllerRight"));
     MotionControllerRight->SetupAttachment(RootComponent);
     MotionControllerRight->SetRelativeLocation(FVector(50.0f, 40.0f, 0.0f));
+    MotionControllerRight->Hand = EControllerHand::Right;
 
     ViveControllerLeft = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ViveControllerLeft"));
     ViveControllerLeft->SetupAttachment(MotionControllerLeft);
