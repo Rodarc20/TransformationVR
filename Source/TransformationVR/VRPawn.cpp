@@ -377,6 +377,7 @@ void AVRPawn::AumentarValor(float AxisValue) {
         if (CasasEncontradas.Num()) {
             ACasa * const CasaEncontrada = Cast<ACasa>(CasasEncontradas[0]);
             if (CasaEncontrada) {
+                UE_LOG(LogClass, Log, TEXT("Aumentando valor %f"), AxisValue);
                 CasaEncontrada->ValorAplicar += AxisValue;//debiera estar delimitidao de alguna forma o con alguna velocidad
             }
         }

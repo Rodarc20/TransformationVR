@@ -243,15 +243,21 @@ void ACasa::PlayTaskTick() {
         case ETransformacionTarea::EEscalar: {
             switch (CurrentTransformacionEje) {
                 case ETransformacionEje::EEjeX: {
-                    SetActorScale3D(EscalaInicial + FVector(ValorAplicar, 0.0f, 0.0f));
+                    if (EscalaInicial.X + ValorAplicar > 0) {
+                        SetActorScale3D(EscalaInicial + FVector(ValorAplicar, 0.0f, 0.0f));
+                    }
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
-                    SetActorScale3D(EscalaInicial + FVector(0.0f, ValorAplicar, 0.0f));
+                    if (EscalaInicial.Y + ValorAplicar > 0) {
+                        SetActorScale3D(EscalaInicial + FVector(0.0f, ValorAplicar, 0.0f));
+                    }
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
-                    SetActorScale3D(EscalaInicial + FVector(0.0f, 0.0f, ValorAplicar));
+                    if (EscalaInicial.Z + ValorAplicar > 0) {
+                        SetActorScale3D(EscalaInicial + FVector(0.0f, 0.0f, ValorAplicar));
+                    }
                 }
                 break;
                 default:
