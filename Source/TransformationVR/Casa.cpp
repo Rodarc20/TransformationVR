@@ -25,6 +25,11 @@ ACasa::ACasa()
     PosicionFlotando = FVector(0.0f, -380.0f, 40.0f);
     PosicionDescanso = FVector(0.0f, -380.0f, 0.0f);
 
+    PosicionInicial = PosicionFlotando;
+    RotacionInicial = FRotator::ZeroRotator;
+    EscalaInicial = FVector::OneVector;
+
+
     CurrentCasaTask = EVRCasaTask::ENoTask;
     LastCasaTask = EVRCasaTask::EArmarTask;
 
@@ -193,12 +198,16 @@ void ACasa::PlayTaskTick() {
         case ETransformacionTarea::ETrasladar: {
             switch (CurrentTransformacionEje) {
                 case ETransformacionEje::EEjeX: {
+                    //esto deberia ser aplicado a los bloques no al actar, pero bueno ya lo cambio despues
+                    SetActorLocation(PosicionInicial + FVector(ValorAplicar, 0.0f, 0.0f));
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
+                    SetActorLocation(PosicionInicial + FVector(0.0f, ValorAplicar, 0.0f));
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
+                    SetActorLocation(PosicionInicial + FVector(0.0f, 0.0f, ValorAplicar));
                 }
                 break;
                 default:
@@ -211,12 +220,17 @@ void ACasa::PlayTaskTick() {
         case ETransformacionTarea::ERotar: {
             switch (CurrentTransformacionEje) {
                 case ETransformacionEje::EEjeX: {
+                    //aplicar la rotacion a los bloques seria un poco mas complicado pero se podria hacer, sin embargo una forma de solucionar esto es solo dejar eque los ejes grandes que tendra este objeto esten siempre en la misma posicion global
+                    //independiente de si se traslada o rota, o escala
+                    SetActorRotation(RotacionInicial + FRotator(0.0f, 0.0f, ValorAplicar));//este valor a aplicar deberia tener alguna relacion, deberia ser mas facil seleccionar sei estoy en tarea rotar, verlo dentro de vrpawn, que verifique en que tarea esta la casa
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
+                    SetActorRotation(RotacionInicial + FRotator(ValorAplicar, 0.0f, 0.0f));
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
+                    SetActorRotation(RotacionInicial + FRotator(0.0f, ValorAplicar, 0.0f));
                 }
                 break;
                 default:
@@ -229,12 +243,15 @@ void ACasa::PlayTaskTick() {
         case ETransformacionTarea::EEscalar: {
             switch (CurrentTransformacionEje) {
                 case ETransformacionEje::EEjeX: {
+                    SetActorScale3D(EscalaInicial + FVector(ValorAplicar, 0.0f, 0.0f));
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
+                    SetActorScale3D(EscalaInicial + FVector(0.0f, ValorAplicar, 0.0f));
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
+                    SetActorScale3D(EscalaInicial + FVector(0.0f, 0.0f, ValorAplicar));
                 }
                 break;
                 default:
