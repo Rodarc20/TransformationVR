@@ -81,5 +81,40 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     FVector PosicionFlotando;
     //debo cambiar esto si redistribuyo la habitacion
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void PlayTaskTick();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    ETransformacionTarea CurrentTransformacionTarea;
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea);
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    ETransformacionTarea GetTransformacionTarea();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    ETransformacionEje CurrentTransformacionEje;
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void SetTransformacionEje(ETransformacionEje NewTransformacionEje);
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    ETransformacionEje GetTransformacionEje();
 	
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    float ValorAplicar;//sera usado para aplicar traslacion rotacion, esclala, este es el valor modificado por el pad;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector PosicionInicial;//este sera el mismo que el de posicion flotar
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FRotator RotacionInicial;//la rotacion inical siempre sera 0, 0, 0
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector EscalaInicial;// la escala inical siempre sera 1, 1, 1
+    
+    //de pronto no tiene mucho sentido conseravar esos valores, pero dejemoslo asi
+
 };

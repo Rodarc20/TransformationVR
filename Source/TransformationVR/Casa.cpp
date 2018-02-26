@@ -27,6 +27,9 @@ ACasa::ACasa()
 
     CurrentCasaTask = EVRCasaTask::ENoTask;
     LastCasaTask = EVRCasaTask::EArmarTask;
+
+    CurrentTransformacionTarea = ETransformacionTarea::ENone;
+    CurrentTransformacionEje = ETransformacionEje::ENone;
 }
 
 // Called when the game starts or when spawned
@@ -69,6 +72,7 @@ void ACasa::Tick(float DeltaTime) {
         }
         break;
         case EVRCasaTask::EPlayTask: {
+            PlayTaskTick();
         }
         break;
         default:
@@ -182,5 +186,85 @@ void ACasa::OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor *
             }
         }
     }
+}
+
+void ACasa::PlayTaskTick() {
+    switch (CurrentTransformacionTarea) {
+        case ETransformacionTarea::ETrasladar: {
+            switch (CurrentTransformacionEje) {
+                case ETransformacionEje::EEjeX: {
+                }
+                break;
+                case ETransformacionEje::EEjeY: {
+                }
+                break;
+                case ETransformacionEje::EEjeZ: {
+                }
+                break;
+                default:
+                case ETransformacionEje::ENone: {
+                }
+                break;
+            }
+        }
+        break;
+        case ETransformacionTarea::ERotar: {
+            switch (CurrentTransformacionEje) {
+                case ETransformacionEje::EEjeX: {
+                }
+                break;
+                case ETransformacionEje::EEjeY: {
+                }
+                break;
+                case ETransformacionEje::EEjeZ: {
+                }
+                break;
+                default:
+                case ETransformacionEje::ENone: {
+                }
+                break;
+            }
+        }
+        break;
+        case ETransformacionTarea::EEscalar: {
+            switch (CurrentTransformacionEje) {
+                case ETransformacionEje::EEjeX: {
+                }
+                break;
+                case ETransformacionEje::EEjeY: {
+                }
+                break;
+                case ETransformacionEje::EEjeZ: {
+                }
+                break;
+                default:
+                case ETransformacionEje::ENone: {
+                }
+                break;
+            }
+        }
+        break;
+        default:
+        case ETransformacionTarea::ENone: {
+        }
+        break;
+    }
+}
+
+void ACasa::SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea) {
+    CurrentTransformacionTarea = NewTransformacionTarea;
+    //debo hacer ciertas cosas, como reestablecer valores tal vez, o botones fisicos
+}
+
+ETransformacionTarea ACasa::GetTransformacionTarea() {
+    return CurrentTransformacionTarea;
+}
+
+void ACasa::SetTransformacionEje(ETransformacionEje NewTransformacionEje) {
+    CurrentTransformacionEje = NewTransformacionEje;
+}
+
+ETransformacionEje ACasa::GetTransformacionEje() {
+    return CurrentTransformacionEje;
 }
 
