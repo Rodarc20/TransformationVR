@@ -22,7 +22,7 @@ ATechito::ATechito() {
         }
     }
     BloqueMesh->SetCollisionProfileName(FName(TEXT("Bloque")));
-    Umbral = 15.0f;
+    Umbral = 2.0f;
     PosicionObjetivo = FVector(0.0f, 0.0f, 15.0f);
 
     static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetTraslacion.WidgetTraslacion_C'"));
@@ -62,6 +62,32 @@ void ATechito::Tick(float DeltaTime) {
             FVector PuntoSeguido = GetAttachParentActor()->GetActorTransform().InverseTransformPosition(ObjetoSeguir->GetComponentLocation());//de world a local
             FVector PuntoSeguidoSinY = PuntoSeguido;
             PuntoSeguidoSinY.Y = 0.0f;
+            float Diferencia = FMath::Abs(PuntoSeguido.Y - PosicionObjetivo.Y);
+            if (Diferencia > Umbral){
+                bSobrepasoUmbral = true;
+            }
+            else {
+                bSobrepasoUmbral = false;
+            }
+            if (bSobrepasoUmbral) {//debo moverlo en el eje
+                SetActorLocation(ObjetoSeguir->GetComponentLocation());
+                SetActorRelativeLocation(FVector(PosicionObjetivo.X, PuntoSeguido.Y, PosicionObjetivo.Z));
+                TraslacionTemp = PuntoSeguido.Y - PosicionInicial.Y;
+                Widget->SetWorldLocation(PosicionInicialWorld);
+                //debo verificar que este otra vz dentro del rango para regresar elsobrepaso el umbra a falso
+                //a travez de esto puedo solucionar el problema de fisicas
+            }
+            else {//debo ponerlo en la posicion objetivo
+                SetActorRelativeLocation(PosicionObjetivo);
+                TraslacionTemp = PosicionObjetivo.Y - PosicionInicial.Y;
+                Widget->SetWorldLocation(PosicionInicialWorld);
+            }
+            //UE_LOG(LogClass, Log, TEXT("siguiendo"));
+        }
+        /*if (bSeguir) {//si estoy siguiente, debo de habilitar o deshabilitar los widgets, esto va en funcion de cada parte, encapsular esta parte en funciones
+            FVector PuntoSeguido = GetAttachParentActor()->GetActorTransform().InverseTransformPosition(ObjetoSeguir->GetComponentLocation());//de world a local
+            FVector PuntoSeguidoSinY = PuntoSeguido;
+            PuntoSeguidoSinY.Y = 0.0f;
             float Diferencia = (PuntoSeguidoSinY - PosicionObjetivo).Size();
             if (Diferencia > Umbral){
                 bSobrepasoUmbral = true;
@@ -80,7 +106,7 @@ void ATechito::Tick(float DeltaTime) {
                 Widget->SetWorldLocation(PosicionInicialWorld);
             }
             //UE_LOG(LogClass, Log, TEXT("siguiendo"));
-        }
+        }*/
     //}
 }
 
