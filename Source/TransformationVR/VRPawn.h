@@ -88,8 +88,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
     TArray<UParticleSystem *> Lasers;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visualization")
+    UWidgetComponent * PadValores;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
     bool bPadDerecho;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    bool bPadIzquierdo;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VRPawn")
     float Velocidad;
@@ -138,6 +144,12 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void PadDerechoReleased();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void PadIzquierdoPressed();
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void PadIzquierdoReleased();
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void SelectPressed();
@@ -248,6 +260,8 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
     TArray<ABloque *> OverlapedRightBloques;
+
+    void AumentarValor(float AxisValue);
 
 };
 

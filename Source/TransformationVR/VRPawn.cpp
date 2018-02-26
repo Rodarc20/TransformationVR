@@ -13,6 +13,7 @@
 #include "Robot.h"
 #include "Jerarquia.h"
 #include "Bloque.h"
+#include "Casa.h"
 #include <limits>
 
 
@@ -139,8 +140,23 @@ AVRPawn::AVRPawn()
 	PuntoReferenciaLeft->SetupAttachment(MotionControllerLeft);
 	PuntoReferenciaLeft->SetRelativeLocation(FVector::ZeroVector);
 
+    static ConstructorHelpers::FClassFinder<UUserWidget> PadValoresClass(TEXT("WidgetBlueprint'/Game/Trasnformation/UMG/PadValor.PadValor_C'"));
+    PadValores = CreateDefaultSubobject<UWidgetComponent>(TEXT("PadValores"));
+    PadValores->SetWidgetSpace(EWidgetSpace::World);
+    PadValores->SetupAttachment(MotionControllerRight);
+    PadValores->SetRelativeLocation(FVector(-5.0f, -6.0f, 0.0f));
+    PadValores->SetRelativeRotation(FRotator(90.0f, 180.0f, 0.0f));
+    PadValores->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (PadValoresClass.Succeeded()) {
+        PadValores->SetWidgetClass(PadValoresClass.Class);
+    }
+    PadValores->SetDrawSize(FVector2D(160.0f, 80.0f));
+    PadValores->SetPivot(FVector2D(0.5f, 0.5f));
+    //PadValores->SetVisibility(false);
+
     Velocidad = 200.0f;
     bPadDerecho = false;
+    bPadIzquierdo = false;
     LaserIndice = 0;
 
 	bGrabRightParte = false;
@@ -175,7 +191,7 @@ void AVRPawn::Tick(float DeltaTime)
     float MX = GetInputAxisValue("MoveForward");
     float MY = GetInputAxisValue("MoveRight");
     float MZ = GetInputAxisValue("MoveUp");
-    if (bPadDerecho && (MX != 0.0f || MY != 0.0f || MZ != 0.0f)) {
+    if (bPadIzquierdo && (MX != 0.0f || MY != 0.0f || MZ != 0.0f)) {
         //FVector Desplazamiento = GetActorForwardVector() * MX + GetActorRightVector() * MY + GetActorUpVector() * MZ;
         //FVector Desplazamiento = VRCamera->GetForwardVector() * MX + VRCamera->GetRightVector() * MY + VRCamera->GetUpVector() * MZ;
         FVector Adelante = VRCamera->GetForwardVector();
@@ -217,8 +233,11 @@ void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    InputComponent->BindAction("Moverse", IE_Pressed, this, &AVRPawn::PadDerechoPressed);
-    InputComponent->BindAction("Moverse", IE_Released, this, &AVRPawn::PadDerechoReleased);
+    InputComponent->BindAction("Moverse", IE_Pressed, this, &AVRPawn::PadIzquierdoPressed);
+    InputComponent->BindAction("Moverse", IE_Released, this, &AVRPawn::PadIzquierdoReleased);
+
+    InputComponent->BindAction("IngresarValor", IE_Pressed, this, &AVRPawn::PadDerechoPressed);
+    InputComponent->BindAction("IngresarValor", IE_Released, this, &AVRPawn::PadDerechoReleased);
     //InputComponent->BindAction("Seleccionar", IE_Pressed, this, &AVRPawn::SelectPressed);
     //InputComponent->BindAction("Seleccionar", IE_Released, this, &AVRPawn::SelectReleased);
     InputComponent->BindAction("GrabRight", IE_Pressed, this, &AVRPawn::GrabRightPressed);
@@ -240,6 +259,8 @@ void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
     InputComponent->BindAxis("CameraUp");
     InputComponent->BindAxis("CameraRight");
+
+    InputComponent->BindAxis("AumentarValor", this, &AVRPawn::AumentarValor);
 
     //es probable que no use el puntero laser, por lo tanto no existira select, con esa funcionalidad
     //pero si usare el triger para sostener objetos
@@ -348,12 +369,34 @@ EVRCasaTask AVRPawn::GetCasaTask() {
     return CurrentCasaTask;
 }
 
+void AVRPawn::AumentarValor(float AxisValue) {
+    if (bPadDerecho) {
+        TArray<AActor *> CasasEncontradas;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACasa::StaticClass(), CasasEncontradas);
+        //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+        if (CasasEncontradas.Num()) {
+            ACasa * const CasaEncontrada = Cast<ACasa>(CasasEncontradas[0]);
+            if (CasaEncontrada) {
+                CasaEncontrada->ValorAplicar += AxisValue;//debiera estar delimitidao de alguna forma o con alguna velocidad
+            }
+        }
+    }
+}
+
 void AVRPawn::PadDerechoPressed() {
     bPadDerecho = true;
 }
 
 void AVRPawn::PadDerechoReleased() {
     bPadDerecho = false;
+}
+
+void AVRPawn::PadIzquierdoPressed() {
+    bPadIzquierdo = true;
+}
+
+void AVRPawn::PadIzquierdoReleased() {
+    bPadIzquierdo = false;
 }
 
 void AVRPawn::SelectPressed() {
