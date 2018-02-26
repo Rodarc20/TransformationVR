@@ -26,7 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-    FVector PosicionObjetivo;
+    FRotator RotacionObjetivo;
 	
 	UFUNCTION(Category = "Transformation")
 	virtual void WidgetSeguir() override;

@@ -60,8 +60,6 @@ void ATechito::Tick(float DeltaTime) {
     //else {
         if (bSeguir) {//si estoy siguiente, debo de habilitar o deshabilitar los widgets, esto va en funcion de cada parte, encapsular esta parte en funciones
             FVector PuntoSeguido = GetAttachParentActor()->GetActorTransform().InverseTransformPosition(ObjetoSeguir->GetComponentLocation());//de world a local
-            FVector PuntoSeguidoSinY = PuntoSeguido;
-            PuntoSeguidoSinY.Y = 0.0f;
             float Diferencia = FMath::Abs(PuntoSeguido.Y - PosicionObjetivo.Y);
             if (Diferencia > Umbral){
                 bSobrepasoUmbral = true;

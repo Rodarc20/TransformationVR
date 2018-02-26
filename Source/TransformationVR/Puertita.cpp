@@ -20,8 +20,8 @@ APuertita::APuertita() {
         }
     }
     BloqueMesh->SetCollisionProfileName(FName(TEXT("Bloque")));
-    Umbral = 15.0f;
-    PosicionObjetivo = FVector(9.0f, 0.0f, 5.0f);
+    Umbral = 5.0f;//cuantos frados de umbral
+    RotacionObjetivo = FRotator(0.0f, 0.0f, 0.0f);
 
     static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetRotacion.WidgetRotacion_C'"));
     Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetRotacion"));
@@ -59,6 +59,33 @@ void APuertita::Tick(float DeltaTime) {
     //}
     //else {
         if (bSeguir) {
+            //no tengo una rotacion objetivo
+            TArray<USceneComponent *> parents;
+            ObjetoSeguir->GetParentComponents(parents);
+            FRotator DiferenciaRotacion = parents[0]->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
+            DiferenciaRotacion.Pitch = 0.0f;
+            DiferenciaRotacion.Yaw = 0.0f;
+            RotacionTemp = DiferenciaRotacion.Roll;
+            DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
+            FRotator NuevaRotacion = RotacionInicial + DiferenciaRotacion;
+            float Diferencia = FMath::Abs(NuevaRotacion.Roll - RotacionObjetivo.Roll);
+            if (Diferencia > Umbral){
+                bSobrepasoUmbral = true;
+            }
+            else {
+                bSobrepasoUmbral = false;
+            }
+            if (bSobrepasoUmbral) {
+                //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
+                SetActorRelativeRotation(NuevaRotacion);
+                Widget->SetWorldRotation(RotacionInicialWidget);
+            }
+            else {
+                SetActorRelativeRotation(RotacionObjetivo);
+                Widget->SetWorldRotation(RotacionInicialWidget);
+            }
+        }
+        /*if (bSeguir) {
             FVector PuntoSeguido = GetAttachParentActor()->GetActorTransform().InverseTransformPosition(ObjetoSeguir->GetComponentLocation());//de world a local
             FVector PuntoSeguidoSinY = PuntoSeguido;
             PuntoSeguidoSinY.Y = 0.0f;
@@ -88,7 +115,7 @@ void APuertita::Tick(float DeltaTime) {
             DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
             SetActorRelativeRotation(RotacionInicial + DiferenciaRotacion);
             Widget->SetWorldRotation(RotacionInicialWidget);
-        }
+        }*/
     //}
 }
 
