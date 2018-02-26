@@ -15,6 +15,14 @@ enum class ETransformacionEje : uint8 {
     ENone UMETA(DisplayName = "Ninguno")
 };
 
+UENUM(BlueprintType)
+enum class ETransformacionTarea : uint8 {
+    ETrasladar UMETA(DisplayName = "Trasladar"),
+    ERotar UMETA(DisplayName = "Rotar"),
+    EEscalar UMETA(DisplayName = "Escalar"),
+    ENone UMETA(DisplayName = "Ninguno")
+};
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TRANSFORMATIONVR_API UTransformacionWidget : public USceneComponent

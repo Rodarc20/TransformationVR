@@ -7,6 +7,7 @@
 #include "VRPawn.h"
 #include "Bloque.h"
 #include "Components/BoxComponent.h"
+#include "TransformacionWidget.h"
 #include "Casa.generated.h"
 
 UCLASS()
