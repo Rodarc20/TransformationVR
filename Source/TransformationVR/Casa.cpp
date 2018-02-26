@@ -98,6 +98,12 @@ EVRCasaTask ACasa::GetCasaTask() {
     return CurrentCasaTask;
 }
 
+void ACasa::Flotar() {
+}
+
+void ACasa::Aterrizar() {
+}
+
 void ACasa::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
     if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
         if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor

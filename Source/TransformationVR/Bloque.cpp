@@ -66,6 +66,7 @@ void ABloque::NoSeguir() {
     Widget->SetVisibility(false);
     WidgetNoSeguir();
     DimensionInicial = DimensionActual;
+    bArmado = !bSobrepasoUmbral;
 }
 
 void ABloque::WidgetSeguir() {

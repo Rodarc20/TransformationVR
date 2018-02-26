@@ -53,6 +53,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
     AVRPawn * Usuario;
 
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void Flotar();
+
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void Aterrizar();
+
     UFUNCTION()
     void OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 

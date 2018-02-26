@@ -47,6 +47,9 @@ AVentanita::AVentanita() {
     DimensionReal = 10.0f;
     DimensionActual = 5.0f;
     DimensionInicial = 5.0f;
+
+    Umbral = 2.0f;
+    //el objetio es que la  dimension actual llegue a su dimension real
 }
 
 void AVentanita::BeginPlay() {
@@ -72,10 +75,30 @@ void AVentanita::Tick(float DeltaTime) {
         //aplicarlao, conservar el valor de escala actual para saber cual es la escala que tiene en este momenot,
         //problemas con la escala relativa
         //la escala se aplcara solo a uno de los ejes, en este caso el eje y tal vez o eje x
-        EscalaReal = DimensionActual / DimensionReal;
-        SetActorRelativeScale3D(FVector(EscalaReal, 1.0f, 1.0f));
-        //SetActorRelativeScale3D(FVector(EscalaTemp, 1.0f, 1.0f));
-        Widget->SetWorldScale3D(EscalaInicialWidget);
+
+        //EscalaReal = DimensionActual / DimensionReal;
+        //SetActorRelativeScale3D(FVector(EscalaReal, 1.0f, 1.0f));
+        //Widget->SetWorldScale3D(EscalaInicialWidget);
+
+        float Diferencia = FMath::Abs(DimensionActual - DimensionReal);
+        if (Diferencia > Umbral){
+            bSobrepasoUmbral = true;
+        }
+        else {
+            bSobrepasoUmbral = false;
+        }
+        if (bSobrepasoUmbral) {//debo moverlo en el eje
+            EscalaReal = DimensionActual / DimensionReal;
+            SetActorRelativeScale3D(FVector(EscalaReal, 1.0f, 1.0f));
+            //SetActorRelativeScale3D(FVector(EscalaTemp, 1.0f, 1.0f));
+            Widget->SetWorldScale3D(EscalaInicialWidget);
+        }
+        else {//debo ponerlo en la posicion objetivo
+            //falta calcular el valor de la escala temp
+            SetActorRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+            //SetActorRelativeScale3D(FVector(EscalaTemp, 1.0f, 1.0f));
+            Widget->SetWorldScale3D(EscalaInicialWidget);
+        }
     }
 }
 
