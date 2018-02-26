@@ -84,6 +84,10 @@ public:
 
     float DistanciaObjetos;
 
+    float DimensionInicial;//para la escala
+
+    float DimensionActual;//para la escala
+
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
     UWidgetComponent * Widget;
 
@@ -103,4 +107,3 @@ enum class EVRCasaTask : uint8 {
     EPlayTask UMETA(DisplayName = "Play"),
     ENoTask UMETA(DisplayName = "Ninguno")
 };
-

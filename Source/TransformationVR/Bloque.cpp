@@ -65,6 +65,7 @@ void ABloque::NoSeguir() {
     ObjetoSeguirFinal = nullptr;
     Widget->SetVisibility(false);
     WidgetNoSeguir();
+    DimensionInicial = DimensionActual;
 }
 
 void ABloque::WidgetSeguir() {

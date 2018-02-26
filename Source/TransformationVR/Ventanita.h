@@ -31,6 +31,11 @@ public:
 
 	UFUNCTION(Category = "Transformation")
 	virtual void WidgetNoSeguir() override;
+
+
+    float DimensionReal;
+
+    float EscalaReal;
 	
 	
 };
