@@ -66,5 +66,20 @@ public:
     UFUNCTION()
 	void OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    bool bMoviendo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    float Velocidad;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector PosicionObjetivo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector PosicionDescanso;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector PosicionFlotando;
+    //debo cambiar esto si redistribuyo la habitacion
 	
 };

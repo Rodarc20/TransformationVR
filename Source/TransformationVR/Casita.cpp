@@ -22,6 +22,7 @@ ACasita::ACasita() {
 	TWidget->SetRelativeLocation(FVector::ZeroVector);
     TWidget->OcultarWidgetTraslacion();
     TWidget->OcultarWidgetOrigen();
+    bArmado = true;
 }
 
 void ACasita::BeginPlay() {

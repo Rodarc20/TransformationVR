@@ -20,6 +20,11 @@ ACasa::ACasa()
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ACasa::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ACasa::OnEndOverlapZona);
 
+    bMoviendo = false;
+    Velocidad = 20.0f;
+    PosicionFlotando = FVector(0.0f, -380.0f, 40.0f);
+    PosicionDescanso = FVector(0.0f, -380.0f, 0.0f);
+
     CurrentCasaTask = EVRCasaTask::ENoTask;
     LastCasaTask = EVRCasaTask::EArmarTask;
 }
@@ -54,9 +59,35 @@ void ACasa::BeginPlay()
 void ACasa::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
     //no deberia comprobar todo el tiempo si esta armado o no, solo deberia ser cuando he soltado una parte, o que esta clase se comunique con sus partes
-    if (CasaArmada()) {
-        SetCasaTask(EVRCasaTask::EPlayTask);
-        //tambien deberia darle al usuario esto, como en la clase robot
+
+    switch (CurrentCasaTask) {
+        case EVRCasaTask::EArmarTask: {
+            if (CasaArmada()) {
+                SetCasaTask(EVRCasaTask::EPlayTask);
+                //tambien deberia darle al usuario esto, como en la clase robot
+            }
+        }
+        break;
+        case EVRCasaTask::EPlayTask: {
+        }
+        break;
+        default:
+        case EVRCasaTask::ENoTask: {
+        }
+        break;
+    }
+
+    if (bMoviendo) {
+        //esto solo deberia poner el booleano a mobiendo
+        FVector direccion = PosicionObjetivo - GetActorLocation();
+        if (direccion.IsNearlyZero(0.05f)) {//mejorar esa presicion
+            bMoviendo = false;
+            SetActorLocation(PosicionObjetivo);
+            UE_LOG(LogClass, Log, TEXT("Termino el trasladao"));
+        }
+        else {
+            SetActorLocation(GetActorLocation() + (direccion.GetSafeNormal() * Velocidad * DeltaTime));
+        }
     }
 
 
@@ -80,6 +111,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
         }
         break;
         case EVRCasaTask::EPlayTask: {
+            Flotar();
             //activar efectos visaules necesarios
         }
         break;
@@ -89,6 +121,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
             //necesito un last current scene, para recordar en la que estaba si armando, o estaba en rotando, para que cuando salada la pase a none, y cuando me acerque de nuevo sepa en cual estaba y cambia a esa
             //descativar efectos visuales
             //hacer aterrizar la casa de ser necesario, al punto 0, de pronto no
+            Aterrizar();
         }
         break;
     }
@@ -99,9 +132,15 @@ EVRCasaTask ACasa::GetCasaTask() {
 }
 
 void ACasa::Flotar() {
+    UE_LOG(LogClass, Log, TEXT("Flotando"));
+    PosicionObjetivo = PosicionFlotando;
+    bMoviendo = true;
 }
 
 void ACasa::Aterrizar() {
+    UE_LOG(LogClass, Log, TEXT("Aterrizando"));
+    PosicionObjetivo = PosicionDescanso;
+    bMoviendo = true;
 }
 
 void ACasa::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
