@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Bloque.h"
+#include "Casita.h"
 
 
 // Sets default values
@@ -72,6 +73,7 @@ void ACasa::Tick(float DeltaTime) {
         case EVRCasaTask::EArmarTask: {
             if (CasaArmada()) {
                 SetCasaTask(EVRCasaTask::EPlayTask);
+                Usuario->SetCasaTask(EVRCasaTask::EPlayTask);
                 //tambien deberia darle al usuario esto, como en la clase robot
             }
         }
@@ -117,10 +119,28 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
     switch (CurrentCasaTask) {
         case EVRCasaTask::EArmarTask: {
             //activar efectos visuales necesarios
+            /*for (int i = 0; i < Bloques.Num(); i++) {
+                ACasita * Casa = Cast<ACasita>(Bloques[i]);
+                if (Casa) {
+                    Casa->TWidget->OcultarWidget();//produce errore
+                }
+                else {
+                    Bloques[i]->TWidget->MostrarWidgetOrigen();
+                }
+            }*/
         }
         break;
         case EVRCasaTask::EPlayTask: {
             Flotar();
+            /*for (int i = 0; i < Bloques.Num(); i++) {
+                ACasita * Casa = Cast<ACasita>(Bloques[i]);
+                if (Casa) {
+                    Casa->TWidget->MostrarWidget();
+                }
+                else {
+                    Bloques[i]->TWidget->OcultarWidget();
+                }
+            }*/
             //activar efectos visaules necesarios
         }
         break;
@@ -130,6 +150,9 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
             //necesito un last current scene, para recordar en la que estaba si armando, o estaba en rotando, para que cuando salada la pase a none, y cuando me acerque de nuevo sepa en cual estaba y cambia a esa
             //descativar efectos visuales
             //hacer aterrizar la casa de ser necesario, al punto 0, de pronto no
+            /*for (int i = 0; i < Bloques.Num(); i++) {
+                Bloques[i]->TWidget->OcultarWidget();
+            }*/
             Aterrizar();
         }
         break;
@@ -276,6 +299,10 @@ void ACasa::PlayTaskTick() {
 
 void ACasa::SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea) {
     CurrentTransformacionTarea = NewTransformacionTarea;
+    ValorAplicar = 0;
+    SetActorLocation(PosicionInicial);
+    SetActorRotation(RotacionInicial);
+    SetActorScale3D(EscalaInicial);
     //debo hacer ciertas cosas, como reestablecer valores tal vez, o botones fisicos
 }
 
@@ -285,6 +312,10 @@ ETransformacionTarea ACasa::GetTransformacionTarea() {
 
 void ACasa::SetTransformacionEje(ETransformacionEje NewTransformacionEje) {
     CurrentTransformacionEje = NewTransformacionEje;
+    ValorAplicar = 0;
+    SetActorLocation(PosicionInicial);
+    SetActorRotation(RotacionInicial);
+    SetActorScale3D(EscalaInicial);
 }
 
 ETransformacionEje ACasa::GetTransformacionEje() {
