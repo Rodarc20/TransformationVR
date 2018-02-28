@@ -24,6 +24,40 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BotonTraslacion;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BotonRotacion;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BotonEscala;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BotonX;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BotonY;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BotonZ;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BordeTraslacion;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BordeRotacion;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BordeEscala;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BordeX;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BordeY;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * BordeZ;
 	
 };
