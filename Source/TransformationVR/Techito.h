@@ -26,6 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     FVector PosicionObjetivo;
 	
 	UFUNCTION(Category = "Transformation")

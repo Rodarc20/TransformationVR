@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Engine/StaticMesh.h"
 
 APuertita::APuertita() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,7 +29,7 @@ APuertita::APuertita() {
     Widget->SetupAttachment(RootComponent);
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(500.0f, 500.0f));
+    Widget->SetDrawSize(FVector2D(920.0f, 920.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeLocation(FVector(1.0f, 0.0f, 0.0f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
@@ -121,10 +122,12 @@ void APuertita::Tick(float DeltaTime) {
 
 void APuertita::WidgetSeguir() {
     TWidget->HabilitarEje(ETransformacionEje::EEjeX);
+    TWidget->HabilitarEje(ETransformacionEje::EEjeZ);
 }
 
 void APuertita::WidgetNoSeguir() {
     TWidget->DeshabilitarEje(ETransformacionEje::EEjeX);
+    TWidget->DeshabilitarEje(ETransformacionEje::EEjeZ);
 }
 
 

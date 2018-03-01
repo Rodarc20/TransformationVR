@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
+#include "Engine/StaticMesh.h"
 
 AVentanita::AVentanita() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,7 +28,7 @@ AVentanita::AVentanita() {
     Widget->SetupAttachment(RootComponent);
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(1000.0f, 400.0f));
+    Widget->SetDrawSize(FVector2D(1080.0f, 400.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));

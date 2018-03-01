@@ -6,6 +6,7 @@
 #include "Materials/Material.h"
 #include "Components/WidgetComponent.h"
 #include "TransformacionWidget.h"
+#include "Engine/StaticMesh.h"
 
 ATechito::ATechito() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,14 +24,14 @@ ATechito::ATechito() {
     }
     BloqueMesh->SetCollisionProfileName(FName(TEXT("Bloque")));
     Umbral = 2.0f;
-    PosicionObjetivo = FVector(0.0f, 0.0f, 15.0f);
+    PosicionObjetivo = FVector(0.0f, 0.0f, 30.0f);
 
     static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetTraslacion.WidgetTraslacion_C'"));
     Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetTraslacion"));
     Widget->SetupAttachment(RootComponent);
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(1000.0f, 700.0f));
+    Widget->SetDrawSize(FVector2D(1080.0f, 400.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     Widget->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
