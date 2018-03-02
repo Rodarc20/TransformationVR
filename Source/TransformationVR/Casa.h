@@ -8,6 +8,7 @@
 #include "Bloque.h"
 #include "Components/BoxComponent.h"
 #include "TransformacionWidget.h"
+#include "PilaOpenGL.h"
 #include "Casa.generated.h"
 
 UCLASS()
@@ -26,6 +27,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    TSubclassOf<class APilaOpenGL> TipoPila;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	APilaOpenGL * PilaCodigo;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     TArray<ABloque *> Bloques;

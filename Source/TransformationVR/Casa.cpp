@@ -6,8 +6,10 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Public/UObject/ConstructorHelpers.h"
 #include "Bloque.h"
 #include "Casita.h"
+#include "PilaOpenGL.h"
 
 
 // Sets default values
@@ -20,6 +22,13 @@ ACasa::ACasa()
     Zona->InitBoxExtent(FVector(100.0f));
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ACasa::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ACasa::OnEndOverlapZona);
+
+    static ConstructorHelpers::FClassFinder<APilaOpenGL> PilaClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/PilaOpenGL_BP.PilaOpenGL_BP_C'"));
+    if (PilaClass.Succeeded()) {
+        //if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+            //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pila encontrado."));
+        TipoPila = PilaClass.Class;
+    }
 
     bMoviendo = false;
     Velocidad = 20.0f;
@@ -43,6 +52,8 @@ void ACasa::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UWorld * const World = GetWorld();
+
 	TArray<AActor *> BloquesEncontrados;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABloque::StaticClass(), BloquesEncontrados);
 	//UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
@@ -57,6 +68,21 @@ void ACasa::BeginPlay()
             Bloques.Add(BloqueEncontrado);
         }
 	}
+
+	if (World) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
+		FVector SpawnLocation(-50.0f, -400.0f, 40.0f);
+
+		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+        if (PilaCodigo) {
+            PilaCodigo->Ocultar();
+        }
+		//if (Jerarquia)
+			//Jerarquia->PilaCodigo = PilaCodigo;
+	}
+
 	
     AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
     if (MyVRPawn) {
@@ -128,6 +154,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                     Bloques[i]->TWidget->MostrarWidgetOrigen();
                 }
             }*/
+            PilaCodigo->Mostrar();
         }
         break;
         case EVRCasaTask::EPlayTask: {
@@ -142,6 +169,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                 }
             }*/
             //activar efectos visaules necesarios
+            PilaCodigo->Mostrar();
         }
         break;
         default:
@@ -154,6 +182,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                 Bloques[i]->TWidget->OcultarWidget();
             }*/
             Aterrizar();
+            PilaCodigo->Ocultar();
         }
         break;
     }
