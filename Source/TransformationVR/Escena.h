@@ -9,6 +9,7 @@
 #include "TransformacionWidget.h"
 #include "Casa.h"
 #include "Components/WidgetComponent.h"
+#include "Camera/CameraComponent.h"
 #include "Escena.generated.h"
 
 UCLASS()
@@ -33,6 +34,9 @@ public:
     //usar felchas mas grandes
     /*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UTransformacionWidget * TWidget;*/
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UCameraComponent * CamaraSeguir;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * FlechaX;

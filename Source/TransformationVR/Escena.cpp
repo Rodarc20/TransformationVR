@@ -10,6 +10,7 @@
 #include "Engine/StaticMesh.h"
 #include "Casa.h"
 #include "Components/WidgetComponent.h"
+#include "Camera/CameraComponent.h"
 
 
 // Sets default values
@@ -246,7 +247,7 @@ AEscena::AEscena() {
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraZN->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraZN->SetPivot(FVector2D(0.5f, 0.5f));
-    LetraZN->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
+    LetraZN->SetRelativeLocation(FVector(0.0f, 0.0f, -70.0f));
     LetraZN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraZN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraZNClass.Succeeded()) {
@@ -283,6 +284,11 @@ void AEscena::BeginPlay() {
             Casa = CasaEncontrada;
         }
     }
+
+    AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+    if (MyVRPawn) {
+        CamaraSeguir = MyVRPawn->VRCamera;
+    }
 }
 
 // Called every frame
@@ -292,6 +298,32 @@ void AEscena::Tick(float DeltaTime) {
 
     //verificar si alguno de los ejes esta siendo tocado por algun control
     //debo buscar coincidencia, es decir debo asegurarme de estar si algun eje se toca, si es con el control derecho debe ser seleccionado solo cuando se presione grabRight
+    if (CamaraSeguir) {
+        if (LetraX->IsVisible()) {
+            FRotator NewRotation = FRotationMatrix::MakeFromX(CamaraSeguir->GetComponentLocation() - LetraX->GetComponentLocation()).Rotator();
+            LetraX->SetWorldRotation(NewRotation);
+        }
+        if (LetraY->IsVisible()) {
+            FRotator NewRotation = FRotationMatrix::MakeFromX(CamaraSeguir->GetComponentLocation() - LetraY->GetComponentLocation()).Rotator();
+            LetraY->SetWorldRotation(NewRotation);
+        }
+        if (LetraZ->IsVisible()) {
+            FRotator NewRotation = FRotationMatrix::MakeFromX(CamaraSeguir->GetComponentLocation() - LetraZ->GetComponentLocation()).Rotator();
+            LetraZ->SetWorldRotation(NewRotation);
+        }
+        if (LetraXN->IsVisible()) {
+            FRotator NewRotation = FRotationMatrix::MakeFromX(CamaraSeguir->GetComponentLocation() - LetraXN->GetComponentLocation()).Rotator();
+            LetraXN->SetWorldRotation(NewRotation);
+        }
+        if (LetraYN->IsVisible()) {
+            FRotator NewRotation = FRotationMatrix::MakeFromX(CamaraSeguir->GetComponentLocation() - LetraYN->GetComponentLocation()).Rotator();
+            LetraYN->SetWorldRotation(NewRotation);
+        }
+        if (LetraZN->IsVisible()) {
+            FRotator NewRotation = FRotationMatrix::MakeFromX(CamaraSeguir->GetComponentLocation() - LetraZN->GetComponentLocation()).Rotator();
+            LetraZN->SetWorldRotation(NewRotation);
+        }
+    }
 }
 
 void AEscena::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent) {
