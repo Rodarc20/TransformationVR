@@ -45,6 +45,51 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * Origen;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeXNormal;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeXSelected;//sera el resaltado
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeXTitilando;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeXPresionado;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeXInhabilitado;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeYNormal;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeYSelected;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeYTitilando;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeYPresionado;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeYInhabilitado;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeZNormal;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeZSelected;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeZTitilando;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeZPresionado;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * EjeZInhabilitado;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     ACasa * Casa;
 
