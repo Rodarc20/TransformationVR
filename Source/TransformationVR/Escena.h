@@ -43,6 +43,15 @@ public:
     UStaticMeshComponent * FlechaZ;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * FlechaXNegative;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * FlechaYNegative;
+		
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UStaticMeshComponent * FlechaZNegative;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * Origen;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
@@ -99,6 +108,12 @@ public:
     void TitilarEje(ETransformacionEje EjeTitilado);
 
     void InhabilitarEje(ETransformacionEje EjeInhabilitado);
+
+    void SeleccionEje(ETransformacionEje EjeSeleccionar);//funcion que realizar toda las operaciones necesarias al seleccionar un eje
+
+    void MostrarEjeNegativo(ETransformacionEje EjeNegativo);//funcion que realizar toda las operaciones necesarias al seleccionar un eje
+
+    void OcultarEjeNegativo(ETransformacionEje EjeNegativo);//funcion que realizar toda las operaciones necesarias al seleccionar un eje
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     ACasa * Casa;

@@ -49,25 +49,46 @@ AEscena::AEscena() {
 	FlechaZ->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
 	FlechaZ->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
+	FlechaXNegative = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaXNegative"));
+    FlechaXNegative->SetupAttachment(RootComponent);
+	FlechaXNegative->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
+	FlechaXNegative->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+
+	FlechaYNegative = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaYNegative"));
+    FlechaYNegative->SetupAttachment(RootComponent);
+	FlechaYNegative->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
+	FlechaYNegative->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+
+	FlechaZNegative = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaZNegative"));
+    FlechaZNegative->SetupAttachment(RootComponent);
+	FlechaZNegative->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
+	FlechaZNegative->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+
     static ConstructorHelpers::FObjectFinder<UStaticMesh> FlechaAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/FlechaGrande.FlechaGrande'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (FlechaAsset.Succeeded()) {
         FlechaX->SetStaticMesh(FlechaAsset.Object);
         FlechaY->SetStaticMesh(FlechaAsset.Object);
         FlechaZ->SetStaticMesh(FlechaAsset.Object);
+        FlechaXNegative->SetStaticMesh(FlechaAsset.Object);
+        FlechaYNegative->SetStaticMesh(FlechaAsset.Object);
+        FlechaZNegative->SetStaticMesh(FlechaAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> FlechaXMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaX.FlechaX'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaXMaterialAsset.Succeeded()) {
 			EjeXNormal = FlechaXMaterialAsset.Object;
             FlechaX->SetMaterial(0, FlechaXMaterialAsset.Object);
+            FlechaXNegative->SetMaterial(0, FlechaXMaterialAsset.Object);
         }
         static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaYMaterialAsset.Succeeded()) {
 			EjeYNormal = FlechaYMaterialAsset.Object;
             FlechaY->SetMaterial(0, FlechaYMaterialAsset.Object);
+            FlechaYNegative->SetMaterial(0, FlechaYMaterialAsset.Object);
         }
         static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaZMaterialAsset.Succeeded()) {
 			EjeZNormal = FlechaZMaterialAsset.Object;
             FlechaZ->SetMaterial(0, FlechaZMaterialAsset.Object);
+            FlechaZNegative->SetMaterial(0, FlechaZMaterialAsset.Object);
         }
     }
 
@@ -142,6 +163,7 @@ AEscena::AEscena() {
 		EjeZInhabilitado = FlechaZIMaterialAsset.Object;
 	}
 
+    OcultarWidget();
 }
 
 // Called when the game starts or when spawned
@@ -301,6 +323,87 @@ void AEscena::InhabilitarEje(ETransformacionEje EjeInhabilitado) {
     }
 }
 
+void AEscena::SeleccionEje(ETransformacionEje EjeSeleccionar) {
+    switch (EjeSeleccionar) {
+        case ETransformacionEje::EEjeX: {
+            SeleccionarEje(ETransformacionEje::EEjeX);
+            MostrarEjeNegativo(ETransformacionEje::EEjeX);
+            InhabilitarEje(ETransformacionEje::EEjeY);
+            InhabilitarEje(ETransformacionEje::EEjeZ);
+            OcultarEjeNegativo(ETransformacionEje::EEjeY);
+            OcultarEjeNegativo(ETransformacionEje::EEjeZ);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+            SeleccionarEje(ETransformacionEje::EEjeY);
+            MostrarEjeNegativo(ETransformacionEje::EEjeY);
+            InhabilitarEje(ETransformacionEje::EEjeX);
+            InhabilitarEje(ETransformacionEje::EEjeZ);
+            OcultarEjeNegativo(ETransformacionEje::EEjeX);
+            OcultarEjeNegativo(ETransformacionEje::EEjeZ);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+            SeleccionarEje(ETransformacionEje::EEjeZ);
+            MostrarEjeNegativo(ETransformacionEje::EEjeZ);
+            InhabilitarEje(ETransformacionEje::EEjeX);
+            InhabilitarEje(ETransformacionEje::EEjeY);
+            OcultarEjeNegativo(ETransformacionEje::EEjeX);
+            OcultarEjeNegativo(ETransformacionEje::EEjeY);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
+void AEscena::MostrarEjeNegativo(ETransformacionEje EjeNegativo) {
+    switch (EjeNegativo) {
+        case ETransformacionEje::EEjeX: {
+            FlechaXNegative->SetVisibility(true);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+            FlechaYNegative->SetVisibility(true);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+            FlechaZNegative->SetVisibility(true);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
+void AEscena::OcultarEjeNegativo(ETransformacionEje EjeNegativo) {
+    switch (EjeNegativo) {
+        case ETransformacionEje::EEjeX: {
+            FlechaXNegative->SetVisibility(false);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+            FlechaYNegative->SetVisibility(false);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+            FlechaZNegative->SetVisibility(false);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
 void AEscena::GrabRightPressed() {
     if (OverlapedRightEjes.Num()) {
         PresionarEje(OverlapedRightEjes[0]);
@@ -313,7 +416,8 @@ void AEscena::GrabRightTick() {
 void AEscena::GrabRightReleased() {
     if (OverlapedRightEjes.Num() && Casa) {
         Casa->SetTransformacionEje(OverlapedRightEjes[0]);
-        SeleccionarEje(OverlapedRightEjes[0]);
+
+        SeleccionEje(OverlapedRightEjes[0]);
         //deberia refresar a estado normal o inhabilitado los otros ejes
     }
 }
@@ -339,6 +443,9 @@ void AEscena::MostrarWidget() {
 	FlechaX->SetVisibility(true);
 	FlechaY->SetVisibility(true);
 	FlechaZ->SetVisibility(true);
+    TitilarEje(ETransformacionEje::EEjeX);
+    TitilarEje(ETransformacionEje::EEjeY);
+    TitilarEje(ETransformacionEje::EEjeZ);
 }
 
 void AEscena::OcultarWidget() {
@@ -346,6 +453,12 @@ void AEscena::OcultarWidget() {
 	FlechaX->SetVisibility(false);
 	FlechaY->SetVisibility(false);
 	FlechaZ->SetVisibility(false);
+	FlechaXNegative->SetVisibility(false);
+	FlechaYNegative->SetVisibility(false);
+	FlechaZNegative->SetVisibility(false);
+    NormalizarEje(ETransformacionEje::EEjeX);
+    NormalizarEje(ETransformacionEje::EEjeY);
+    NormalizarEje(ETransformacionEje::EEjeZ);
 }
 
 void AEscena::OnBeginOverlapEjeX(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {

@@ -10,6 +10,7 @@
 #include "Bloque.h"
 #include "Casita.h"
 #include "PilaOpenGL.h"
+#include "Escena.h"
 
 
 // Sets default values
@@ -169,7 +170,18 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                 }
             }*/
             //activar efectos visaules necesarios
-            PilaCodigo->Mostrar();
+            PilaCodigo->Mostrar();//no habra pila de codigo, seran solo las linesas en los indicadores o en algun lado
+            TArray<AActor *> EscenasEncontradas;
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEscena::StaticClass(), EscenasEncontradas);
+            //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+            if (EscenasEncontradas.Num()) {
+                AEscena * const EscenaEncontrada = Cast<AEscena>(EscenasEncontradas[0]);
+                if (EscenaEncontrada) {
+                    UE_LOG(LogClass, Log, TEXT("escena encontrada"));
+                    EscenaEncontrada->MostrarWidget();//este mostrar mostrara los ejes titilando, apra que el usuario intente seleccionarlos
+                }
+            }
+
         }
         break;
         default:
@@ -183,6 +195,16 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
             }*/
             Aterrizar();
             PilaCodigo->Ocultar();
+            TArray<AActor *> EscenasEncontradas;
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEscena::StaticClass(), EscenasEncontradas);
+            //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+            if (EscenasEncontradas.Num()) {
+                AEscena * const EscenaEncontrada = Cast<AEscena>(EscenasEncontradas[0]);
+                if (EscenaEncontrada) {
+                    UE_LOG(LogClass, Log, TEXT("escena encontrada"));
+                    EscenaEncontrada->OcultarWidget();//este mostrar mostrara los ejes titilando, apra que el usuario intente seleccionarlos
+                }
+            }
         }
         break;
     }
