@@ -191,7 +191,120 @@ void AEscena::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent) 
 }
 //debo tenerlos efectos de eje presseda, eje birando, eje seleccionado, y cuando se selecciona al soltar el grab, debo mndar la señal de seleccionar eje en la casa
 
+void AEscena::NormalizarEje(ETransformacionEje EjeNormalizado) {
+    switch (EjeNormalizado) {
+        case ETransformacionEje::EEjeX: {
+			FlechaX->SetMaterial(0, EjeXNormal);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+			FlechaY->SetMaterial(0, EjeYNormal);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+			FlechaZ->SetMaterial(0, EjeZNormal);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
+void AEscena::SeleccionarEje(ETransformacionEje EjeSeleccionado) {
+    switch (EjeSeleccionado) {
+        case ETransformacionEje::EEjeX: {
+			FlechaX->SetMaterial(0, EjeXSelected);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+			FlechaY->SetMaterial(0, EjeYSelected);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+			FlechaZ->SetMaterial(0, EjeZSelected);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
+void AEscena::PresionarEje(ETransformacionEje EjePresionado) {
+    switch (EjePresionado) {
+        case ETransformacionEje::EEjeX: {
+			FlechaX->SetMaterial(0, EjeXPresionado);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+			FlechaY->SetMaterial(0, EjeYPresionado);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+			FlechaZ->SetMaterial(0, EjeZPresionado);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
+void AEscena::TitilarEje(ETransformacionEje EjeTitilado) {
+    switch (EjeTitilado) {
+        case ETransformacionEje::EEjeX: {
+			FlechaX->SetMaterial(0, EjeXTitilando);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+			FlechaY->SetMaterial(0, EjeYTitilando);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+			FlechaZ->SetMaterial(0, EjeZTitilando);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
+void AEscena::InhabilitarEje(ETransformacionEje EjeInhabilitado) {
+    switch (EjeInhabilitado) {
+        case ETransformacionEje::EEjeX: {
+			FlechaX->SetMaterial(0, EjeXInhabilitado);
+        }
+        break;
+        case ETransformacionEje::EEjeY: {
+			FlechaY->SetMaterial(0, EjeYInhabilitado);
+        }
+        break;
+        case ETransformacionEje::EEjeZ: {
+			FlechaZ->SetMaterial(0, EjeZInhabilitado);
+        }
+        break;
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;
+    }
+}
+
 void AEscena::GrabRightPressed() {
+    if (OverlapedRightEjes.Num()) {
+        PresionarEje(OverlapedRightEjes[0]);
+    }
 }
 
 void AEscena::GrabRightTick() {
@@ -200,10 +313,15 @@ void AEscena::GrabRightTick() {
 void AEscena::GrabRightReleased() {
     if (OverlapedRightEjes.Num() && Casa) {
         Casa->SetTransformacionEje(OverlapedRightEjes[0]);
+        SeleccionarEje(OverlapedRightEjes[0]);
+        //deberia refresar a estado normal o inhabilitado los otros ejes
     }
 }
 
 void AEscena::GrabLeftPressed() {
+    if (OverlapedLeftEjes.Num()) {
+        PresionarEje(OverlapedLeftEjes[0]);
+    }
 }
 
 void AEscena::GrabLeftTick() {
@@ -212,6 +330,7 @@ void AEscena::GrabLeftTick() {
 void AEscena::GrabLeftReleased() {
     if (OverlapedLeftEjes.Num() && Casa) {
         Casa->SetTransformacionEje(OverlapedLeftEjes[0]);
+        SeleccionarEje(OverlapedLeftEjes[0]);
     }
 }
 

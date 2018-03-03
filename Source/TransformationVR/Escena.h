@@ -90,6 +90,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UMaterial * EjeZInhabilitado;
 
+    void NormalizarEje(ETransformacionEje EjeNormalizado);
+
+    void SeleccionarEje(ETransformacionEje EjeSeleccionado);
+
+    void PresionarEje(ETransformacionEje EjePresionado);
+
+    void TitilarEje(ETransformacionEje EjeTitilado);
+
+    void InhabilitarEje(ETransformacionEje EjeInhabilitado);
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     ACasa * Casa;
 
@@ -98,7 +108,6 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     TArray<ETransformacionEje> OverlapedRightEjes;
-
 
     UFUNCTION(BlueprintCallable, Category = "Transformation")
     void GrabRightPressed();
