@@ -9,6 +9,7 @@
 #include "TransformacionWidget.h"
 #include "Engine/StaticMesh.h"
 #include "Casa.h"
+#include "Components/WidgetComponent.h"
 
 
 // Sets default values
@@ -162,6 +163,96 @@ AEscena::AEscena() {
 	if (FlechaZIMaterialAsset.Succeeded()) {
 		EjeZInhabilitado = FlechaZIMaterialAsset.Object;
 	}
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraXClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraX.LetraX_C'"));
+    LetraX = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraX"));
+    LetraX->SetupAttachment(RootComponent);
+    LetraX->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    LetraX->SetDrawSize(FVector2D(200.0f, 200.0f));
+    LetraX->SetPivot(FVector2D(0.5f, 0.5f));
+    LetraX->SetRelativeLocation(FVector(70.0f, 0.0f, 0.0f));
+    LetraX->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+    LetraX->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (LetraXClass.Succeeded()) {
+        LetraX->SetWidgetClass(LetraXClass.Class);
+    }
+    LetraX->SetVisibility(false);
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraYClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraY.LetraY_C'"));
+    LetraY = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraY"));
+    LetraY->SetupAttachment(RootComponent);
+    LetraY->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    LetraY->SetDrawSize(FVector2D(200.0f, 200.0f));
+    LetraY->SetPivot(FVector2D(0.5f, 0.5f));
+    LetraY->SetRelativeLocation(FVector(0.0f, 70.0f, 0.0f));
+    LetraY->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+    LetraY->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (LetraYClass.Succeeded()) {
+        LetraY->SetWidgetClass(LetraYClass.Class);
+    }
+    LetraY->SetVisibility(false);
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraZClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraZ.LetraZ_C'"));
+    LetraZ = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraZ"));
+    LetraZ->SetupAttachment(RootComponent);
+    LetraZ->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    LetraZ->SetDrawSize(FVector2D(200.0f, 200.0f));
+    LetraZ->SetPivot(FVector2D(0.5f, 0.5f));
+    LetraZ->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
+    LetraZ->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+    LetraZ->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (LetraZClass.Succeeded()) {
+        LetraZ->SetWidgetClass(LetraZClass.Class);
+    }
+    LetraZ->SetVisibility(false);
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraXNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraXN.LetraXN_C'"));
+    LetraXN = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraXN"));
+    LetraXN->SetupAttachment(RootComponent);
+    LetraXN->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    LetraXN->SetDrawSize(FVector2D(200.0f, 200.0f));
+    LetraXN->SetPivot(FVector2D(0.5f, 0.5f));
+    LetraXN->SetRelativeLocation(FVector(-70.0f, 0.0f, 0.0f));
+    LetraXN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+    LetraXN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (LetraXNClass.Succeeded()) {
+        LetraXN->SetWidgetClass(LetraXNClass.Class);
+    }
+    LetraXN->SetVisibility(false);
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraYNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraYN.LetraYN_C'"));
+    LetraYN = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraYN"));
+    LetraYN->SetupAttachment(RootComponent);
+    LetraYN->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    LetraYN->SetDrawSize(FVector2D(200.0f, 200.0f));
+    LetraYN->SetPivot(FVector2D(0.5f, 0.5f));
+    LetraYN->SetRelativeLocation(FVector(0.0f, -70.0f, 0.0f));
+    LetraYN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+    LetraYN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (LetraYNClass.Succeeded()) {
+        LetraYN->SetWidgetClass(LetraYNClass.Class);
+    }
+    LetraYN->SetVisibility(false);
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraZNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraZN.LetraZN_C'"));
+    LetraZN = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraZN"));
+    LetraZN->SetupAttachment(RootComponent);
+    LetraZN->SetWidgetSpace(EWidgetSpace::World);
+    //Widget->SetupAttachment(MotionControllerLeft);
+    LetraZN->SetDrawSize(FVector2D(200.0f, 200.0f));
+    LetraZN->SetPivot(FVector2D(0.5f, 0.5f));
+    LetraZN->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
+    LetraZN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+    LetraZN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+    if (LetraZNClass.Succeeded()) {
+        LetraZN->SetWidgetClass(LetraZNClass.Class);
+    }
+    LetraZN->SetVisibility(false);
 
     OcultarWidget();
 }
@@ -364,14 +455,17 @@ void AEscena::MostrarEjeNegativo(ETransformacionEje EjeNegativo) {
     switch (EjeNegativo) {
         case ETransformacionEje::EEjeX: {
             FlechaXNegative->SetVisibility(true);
+            LetraXN->SetVisibility(true);
         }
         break;
         case ETransformacionEje::EEjeY: {
             FlechaYNegative->SetVisibility(true);
+            LetraYN->SetVisibility(true);
         }
         break;
         case ETransformacionEje::EEjeZ: {
             FlechaZNegative->SetVisibility(true);
+            LetraZN->SetVisibility(true);
         }
         break;
         default:
@@ -386,14 +480,17 @@ void AEscena::OcultarEjeNegativo(ETransformacionEje EjeNegativo) {
     switch (EjeNegativo) {
         case ETransformacionEje::EEjeX: {
             FlechaXNegative->SetVisibility(false);
+            LetraXN->SetVisibility(false);
         }
         break;
         case ETransformacionEje::EEjeY: {
             FlechaYNegative->SetVisibility(false);
+            LetraYN->SetVisibility(false);
         }
         break;
         case ETransformacionEje::EEjeZ: {
             FlechaZNegative->SetVisibility(false);
+            LetraZN->SetVisibility(false);
         }
         break;
         default:
@@ -443,6 +540,15 @@ void AEscena::MostrarWidget() {
 	FlechaX->SetVisibility(true);
 	FlechaY->SetVisibility(true);
 	FlechaZ->SetVisibility(true);
+	FlechaXNegative->SetVisibility(false);
+	FlechaYNegative->SetVisibility(false);
+	FlechaZNegative->SetVisibility(false);
+	LetraX->SetVisibility(true);
+	LetraY->SetVisibility(true);
+	LetraZ->SetVisibility(true);
+	LetraXN->SetVisibility(false);
+	LetraYN->SetVisibility(false);
+	LetraZN->SetVisibility(false);
     TitilarEje(ETransformacionEje::EEjeX);
     TitilarEje(ETransformacionEje::EEjeY);
     TitilarEje(ETransformacionEje::EEjeZ);
@@ -456,6 +562,12 @@ void AEscena::OcultarWidget() {
 	FlechaXNegative->SetVisibility(false);
 	FlechaYNegative->SetVisibility(false);
 	FlechaZNegative->SetVisibility(false);
+	LetraX->SetVisibility(false);
+	LetraY->SetVisibility(false);
+	LetraZ->SetVisibility(false);
+	LetraXN->SetVisibility(false);
+	LetraYN->SetVisibility(false);
+	LetraZN->SetVisibility(false);
     NormalizarEje(ETransformacionEje::EEjeX);
     NormalizarEje(ETransformacionEje::EEjeY);
     NormalizarEje(ETransformacionEje::EEjeZ);

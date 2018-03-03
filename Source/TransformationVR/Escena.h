@@ -8,6 +8,7 @@
 #include "Materials/Material.h"
 #include "TransformacionWidget.h"
 #include "Casa.h"
+#include "Components/WidgetComponent.h"
 #include "Escena.generated.h"
 
 UCLASS()
@@ -53,6 +54,24 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * Origen;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * LetraX;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * LetraY;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * LetraZ;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * LetraXN;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * LetraYN;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformacion")
+    UWidgetComponent * LetraZN;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
 	UMaterial * EjeXNormal;
