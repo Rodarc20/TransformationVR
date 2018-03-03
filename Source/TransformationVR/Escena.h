@@ -26,6 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
     //usar felchas mas grandes
     /*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UTransformacionWidget * TWidget;*/
