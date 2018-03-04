@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TransformacionWidget.h"
+#include "Boton.h"
 #include "PanelBotones.generated.h"
 
 UCLASS()
@@ -25,6 +26,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    ABoton * BotonTrasladar;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    ABoton * BotonRotar;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    ABoton * BotonEscalar;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * BotonTraslacion;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
@@ -34,15 +44,6 @@ public:
     UStaticMeshComponent * BotonEscala;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BotonX;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BotonY;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BotonZ;
-	
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * BordeTraslacion;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
@@ -51,13 +52,10 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * BordeEscala;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BordeX;
+    UFUNCTION(BlueprintCallable, Category = "Transformation")
+    void Press(ETransformacionTarea BotonPresionado);
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BordeY;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BordeZ;
+    UFUNCTION(BlueprintCallable, Category = "Transformation")
+    void Release(ETransformacionTarea BotonPresionado);
 	
 };

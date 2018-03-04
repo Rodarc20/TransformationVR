@@ -107,3 +107,6 @@ enum class EVRCasaTask : uint8 {
     EPlayTask UMETA(DisplayName = "Play"),
     ENoTask UMETA(DisplayName = "Ninguno")
 };
+
+
+//o podria castear el owner a pila botn para evitar tener que incuir aqui eso
