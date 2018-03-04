@@ -46,7 +46,7 @@ ABotonTrasladar::ABotonTrasladar() {
     Boton->OnComponentBeginOverlap.AddDynamic(this, &ABotonTrasladar::OnBeginOverlapBoton);
     Boton->OnComponentEndOverlap.AddDynamic(this, &ABotonTrasladar::OnEndOverlapBoton);
 
-    VelocidadNormal = 1.0f;
+    VelocidadNormal = 6.0f;
     AlturaContacto = -3.0f;
     AlturaFondo = -4.0f;
     AlturaNormal = 0.0f;
@@ -60,7 +60,7 @@ void ABotonTrasladar::BeginPlay() {
 
 void ABotonTrasladar::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
-    if (bPressing) {//osea hay un elemento entrando en contacto con el boton
+    if (bPressing && !bPressed) {//osea hay un elemento entrando en contacto con el boton
         bPosicionNormal = false;
         bPosicionPresionado = false;
         float h = GetTransform().InverseTransformPosition(ColisionControl->GetComponentLocation()).Z;

@@ -31,10 +31,6 @@ void ABoton::Tick(float DeltaTime)
         bPosicionPresionado = false;
         SendSignalPressed();
     }
-    if (bPressed && PosicionActual.Z > AlturaContacto) {
-        bPressed = false;
-        SendSignalReleased();
-    }
 
 }
 //no habra señál de relaease
