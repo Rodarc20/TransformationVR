@@ -11,6 +11,7 @@
 #include "Casita.h"
 #include "PilaOpenGL.h"
 #include "Escena.h"
+#include "PanelBotones.h"
 
 
 // Sets default values
@@ -88,6 +89,16 @@ void ACasa::BeginPlay()
     AVRPawn * MyVRPawn = Cast<AVRPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
     if (MyVRPawn) {
         Usuario = MyVRPawn;
+    }
+
+    //UWorld * const World = GetWorld();
+    if (World) {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = Instigator;
+
+        APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(50.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
+        //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
     }
 }
 
@@ -354,6 +365,7 @@ void ACasa::SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea) 
     SetActorLocation(PosicionInicial);
     SetActorRotation(RotacionInicial);
     SetActorScale3D(EscalaInicial);
+    SetTransformacionEje(ETransformacionEje::ENone);
     //debo hacer ciertas cosas, como reestablecer valores tal vez, o botones fisicos
 }
 

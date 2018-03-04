@@ -26,7 +26,7 @@ void ABoton::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
     FVector PosicionActual = Boton->GetRelativeTransform().GetLocation();
-    if (!bPressed && PosicionActual.Z <= AlturaContacto) {
+    if (!bPressed && bPressing && PosicionActual.Z <= AlturaContacto) {
         bPressed = true;
         bPosicionPresionado = false;
         SendSignalPressed();

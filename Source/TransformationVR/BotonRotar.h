@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Boton.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "BotonRotar.generated.h"
 
 /**
@@ -29,6 +31,17 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * Borde;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    UCapsuleComponent * ColisionControl;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float DistanciaColision;
+	
+    UFUNCTION()
+    void OnBeginOverlapBoton(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+    UFUNCTION()
+	void OnEndOverlapBoton(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 	
 	
 };

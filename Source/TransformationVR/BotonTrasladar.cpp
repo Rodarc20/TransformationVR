@@ -11,6 +11,7 @@
 
 ABotonTrasladar::ABotonTrasladar() {
 	PrimaryActorTick.bCanEverTick = true;
+    TareaAsociada = ETransformacionTarea::ETrasladar;
 
     FVector EscalaBotones = FVector(0.5f);
     
@@ -60,17 +61,19 @@ void ABotonTrasladar::BeginPlay() {
 
 void ABotonTrasladar::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
-    if (bPressing && !bPressed) {//osea hay un elemento entrando en contacto con el boton
-        bPosicionNormal = false;
-        bPosicionPresionado = false;
-        float h = GetTransform().InverseTransformPosition(ColisionControl->GetComponentLocation()).Z;
-        //UE_LOG(LogClass, Log, TEXT("h: %f"), h);
-        //UE_LOG(LogClass, Log, TEXT("h - DistanciaColision: %f"), h - DistanciaColision);
-        float zPosicion = FMath::Clamp(h - DistanciaColision, -4.0f, 0.0f);
-        //UE_LOG(LogClass, Log, TEXT("zPosicion: %f"), zPosicion);
-        FVector NewBotonPosition = FVector(0.0f, 0.0f, zPosicion);
-        //UE_LOG(LogClass, Log, TEXT("Tocando boton"));
-        Boton->SetRelativeLocation(NewBotonPosition);
+    if (bPressing) {//osea hay un elemento entrando en contacto con el boton
+        if (!bPressed) {
+            bPosicionNormal = false;
+            bPosicionPresionado = false;
+            float h = GetTransform().InverseTransformPosition(ColisionControl->GetComponentLocation()).Z;
+            //UE_LOG(LogClass, Log, TEXT("h: %f"), h);
+            //UE_LOG(LogClass, Log, TEXT("h - DistanciaColision: %f"), h - DistanciaColision);
+            float zPosicion = FMath::Clamp(h - DistanciaColision, -4.0f, 0.0f);
+            //UE_LOG(LogClass, Log, TEXT("zPosicion: %f"), zPosicion);
+            FVector NewBotonPosition = FVector(0.0f, 0.0f, zPosicion);
+            //UE_LOG(LogClass, Log, TEXT("Tocando boton"));
+            Boton->SetRelativeLocation(NewBotonPosition);
+        }
     }
     else {
         if (!bPosicionNormal && !bPressed) {//si no estoy en la posicion normal y no he sidopresionado , regreso a la posicion normal
@@ -100,7 +103,7 @@ void ABotonTrasladar::OnBeginOverlapBoton(UPrimitiveComponent * OverlappedCompon
                 bPressing = true;
                 DistanciaColision = (GetTransform().InverseTransformPosition(ColisionController->GetComponentLocation()) - Boton->GetRelativeTransform().GetLocation()).Z;
                     //ColisionController->GetComponentLocation() - Boton->GetComponentLocation()).Z;
-                UE_LOG(LogClass, Log, TEXT("Tocando boton, DC: %f"), DistanciaColision);
+                //UE_LOG(LogClass, Log, TEXT("Tocando boton, DC: %f"), DistanciaColision);
                 /*if (ColisionController->GetName() == "ColisionControllerRight") {//podria ser util la diferencia
                 }
                 else if (ColisionController->GetName() == "ColisionControllerLeft") {
@@ -118,7 +121,7 @@ void ABotonTrasladar::OnEndOverlapBoton(UPrimitiveComponent * OverlappedComponen
             if (ColisionController == ColisionControl) {
                 ColisionControl = nullptr;
                 bPressing = false;
-                UE_LOG(LogClass, Log, TEXT("Soltando boton"));
+                //UE_LOG(LogClass, Log, TEXT("Soltando boton"));
                 /*if (ColisionController->GetName() == "ColisionControllerRight") {//podria ser util la diferencia
                 }
                 else if (ColisionController->GetName() == "ColisionControllerLeft") {

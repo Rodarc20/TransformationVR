@@ -34,24 +34,6 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     ABoton * BotonEscalar;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BotonTraslacion;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BotonRotacion;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BotonEscala;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BordeTraslacion;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BordeRotacion;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
-    UStaticMeshComponent * BordeEscala;
-
     UFUNCTION(BlueprintCallable, Category = "Transformation")
     void Press(ETransformacionTarea BotonPresionado);
 

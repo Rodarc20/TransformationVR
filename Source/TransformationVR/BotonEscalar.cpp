@@ -5,11 +5,13 @@
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
+#include "VRPawn.h"
 #include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
 
 ABotonEscalar::ABotonEscalar() {
 	PrimaryActorTick.bCanEverTick = true;
+    TareaAsociada = ETransformacionTarea::EEscalar;
 
     FVector EscalaBotones = FVector(0.5f);
     
@@ -42,6 +44,14 @@ ABotonEscalar::ABotonEscalar() {
         }
     }
 
+    Boton->OnComponentBeginOverlap.AddDynamic(this, &ABotonEscalar::OnBeginOverlapBoton);
+    Boton->OnComponentEndOverlap.AddDynamic(this, &ABotonEscalar::OnEndOverlapBoton);
+
+    VelocidadNormal = 6.0f;
+    AlturaContacto = -3.0f;
+    AlturaFondo = -4.0f;
+    AlturaNormal = 0.0f;
+    AlturaPresionado = -2.0f;
 }
 
 void ABotonEscalar::BeginPlay() {
@@ -50,8 +60,73 @@ void ABotonEscalar::BeginPlay() {
 
 void ABotonEscalar::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
+    if (bPressing) {//osea hay un elemento entrando en contacto con el boton
+        if (!bPressed) {
+            bPosicionNormal = false;
+            bPosicionPresionado = false;
+            float h = GetTransform().InverseTransformPosition(ColisionControl->GetComponentLocation()).Z;
+            //UE_LOG(LogClass, Log, TEXT("h: %f"), h);
+            //UE_LOG(LogClass, Log, TEXT("h - DistanciaColision: %f"), h - DistanciaColision);
+            float zPosicion = FMath::Clamp(h - DistanciaColision, -4.0f, 0.0f);
+            //UE_LOG(LogClass, Log, TEXT("zPosicion: %f"), zPosicion);
+            FVector NewBotonPosition = FVector(0.0f, 0.0f, zPosicion);
+            //UE_LOG(LogClass, Log, TEXT("Tocando boton"));
+            Boton->SetRelativeLocation(NewBotonPosition);
+        }
+    }
+    else {
+        if (!bPosicionNormal && !bPressed) {//si no estoy en la posicion normal y no he sidopresionado , regreso a la posicion normal
+            Boton->SetRelativeLocation(FMath::Lerp(Boton->GetRelativeTransform().GetLocation(), FVector(0.0f, 0.0f, AlturaNormal), DeltaTime * VelocidadNormal));
+            if (Boton->GetRelativeTransform().GetLocation() == FVector(0.0f, 0.0f, AlturaNormal)) {
+                bPosicionNormal = true;
+            }
+        }
+        if (!bPosicionPresionado && bPressed) {//si no estoy en la posicion normal y no he sidopresionado , regreso a la posicion normal
+            Boton->SetRelativeLocation(FMath::Lerp(Boton->GetRelativeTransform().GetLocation(), FVector(0.0f, 0.0f, AlturaPresionado), DeltaTime * VelocidadNormal));
+            if (Boton->GetRelativeTransform().GetLocation() == FVector(0.0f, 0.0f, AlturaPresionado)) {
+                bPosicionPresionado = true;
+            }
+        }
+    }
 }
 
+void ABotonEscalar::OnBeginOverlapBoton(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+    if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+        AVRPawn * const VRPawn = Cast<AVRPawn>(OtherActor);
+        if (VRPawn && !VRPawn->IsPendingKill()) {
+            UCapsuleComponent * const ColisionController = Cast<UCapsuleComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
+            if (ColisionController) {
+                ColisionControl = ColisionController;
+                bPressing = true;
+                DistanciaColision = (GetTransform().InverseTransformPosition(ColisionController->GetComponentLocation()) - Boton->GetRelativeTransform().GetLocation()).Z;
+                    //ColisionController->GetComponentLocation() - Boton->GetComponentLocation()).Z;
+                //UE_LOG(LogClass, Log, TEXT("Tocando boton, DC: %f"), DistanciaColision);
+                /*if (ColisionController->GetName() == "ColisionControllerRight") {//podria ser util la diferencia
+                }
+                else if (ColisionController->GetName() == "ColisionControllerLeft") {
+                }*/
+            }
+        }
+    }
+}
+
+void ABotonEscalar::OnEndOverlapBoton(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+    if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
+        AVRPawn * const VRPawn = Cast<AVRPawn>(OtherActor);
+        if (VRPawn && !VRPawn->IsPendingKill()) {
+            UCapsuleComponent * const ColisionController = Cast<UCapsuleComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
+            if (ColisionController == ColisionControl) {
+                ColisionControl = nullptr;
+                bPressing = false;
+                //UE_LOG(LogClass, Log, TEXT("Soltando boton"));
+                /*if (ColisionController->GetName() == "ColisionControllerRight") {//podria ser util la diferencia
+                }
+                else if (ColisionController->GetName() == "ColisionControllerLeft") {
+                }*/
+            }
+        }
+    }
+}
 
 
 
