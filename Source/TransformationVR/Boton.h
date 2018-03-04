@@ -31,9 +31,6 @@ public:
     UStaticMeshComponent * Boton;
 	
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
-    FVector PosionContacto;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     bool bPressed;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
@@ -43,7 +40,25 @@ public:
     bool bPosicionNormal;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    bool bPosicionPresionado;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    bool bPosicionContacto;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    bool bPosicionFondo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float AlturaNormal;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float AlturaPresionado;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     float AlturaContacto;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float AlturaFondo;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     float VelocidadNormal;

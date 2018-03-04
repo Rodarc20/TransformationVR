@@ -28,6 +28,7 @@ void ABoton::Tick(float DeltaTime)
     FVector PosicionActual = Boton->GetRelativeTransform().GetLocation();
     if (!bPressed && PosicionActual.Z <= AlturaContacto) {
         bPressed = true;
+        bPosicionPresionado = false;
         SendSignalPressed();
     }
     if (bPressed && PosicionActual.Z > AlturaContacto) {
@@ -36,8 +37,10 @@ void ABoton::Tick(float DeltaTime)
     }
 
 }
+//no habra señál de relaease
 
 void ABoton::SendSignalPressed() {
+    UE_LOG(LogClass, Log, TEXT("Send Signal Pressed"));
     APanelBotones * Panel = Cast<APanelBotones>(GetOwner());
     if (Panel) {
         Panel->Press(TareaAsociada);
@@ -45,6 +48,7 @@ void ABoton::SendSignalPressed() {
 }
 
 void ABoton::SendSignalReleased() {
+    UE_LOG(LogClass, Log, TEXT("Send Signal Released"));
     APanelBotones * Panel = Cast<APanelBotones>(GetOwner());
     if (Panel) {
         Panel->Release(TareaAsociada);
