@@ -7,7 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
+#include "Jerarquia.h"
 #include "Casa.h"
+#include "Robot.h"
 #include "Boton.h"
 #include "BotonTrasladar.h"
 #include "BotonRotar.h"
@@ -57,6 +59,28 @@ void APanelBotones::Press(ETransformacionTarea BotonPresionado) {
     ACasa * Casa = Cast<ACasa>(GetOwner());
     if (Casa) {
         Casa->SetTransformacionTarea(BotonPresionado);
+    }
+    ARobot * Robot = Cast<ARobot>(GetOwner());
+    if (Robot) {
+        switch (BotonPresionado) {
+            case ETransformacionTarea::ETrasladar: {
+                Robot->SetJerarquiaTask(EVRJerarquiaTask::ETraslationTask);
+            }
+            break;
+            case ETransformacionTarea::ERotar: {
+                Robot->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+            }
+            break;
+            case ETransformacionTarea::EEscalar: {
+                Robot->SetJerarquiaTask(EVRJerarquiaTask::EScaleTask);//en realidad aun no existe
+                //creo que necesito el boton play para ejecutar, tal vez
+            }
+            break;
+            default:
+            case ETransformacionTarea::ENone: {
+            }
+            break;
+        }
     }
     switch (BotonPresionado) {
         case ETransformacionTarea::ETrasladar: {

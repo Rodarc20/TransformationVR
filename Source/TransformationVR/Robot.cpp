@@ -12,6 +12,7 @@
 #include "Public/UObject/ConstructorHelpers.h"
 #include "TransformacionWidget.h"
 #include "Components/BoxComponent.h"
+#include "PanelBotones.h"
 
 
 // Sets default values
@@ -165,6 +166,15 @@ void ARobot::BeginPlay()
         LeftController = MyVRPawn->MotionControllerLeft;
 	}
 	UE_LOG(LogClass, Log, TEXT("Informacion pasada al VRPawn"));
+
+    if (World) {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = Instigator;
+
+        APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(50.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
+        //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+    }
 }
 
 // Called every frame
