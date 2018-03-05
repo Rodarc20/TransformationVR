@@ -49,6 +49,15 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     UBoxComponent * Zona;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector PosicionGlobalZona;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FRotator RotacionGlobalZona;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FVector EscalaGlobalZona;
+
     UFUNCTION(BlueprintCallable, Category = "TransformationVR")
     bool CasaArmada();
 

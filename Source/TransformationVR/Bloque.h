@@ -96,6 +96,12 @@ public:
 
 	UFUNCTION(Category = "Transformation")
 	virtual void WidgetNoSeguir();
+
+	UFUNCTION(Category = "Transformation")
+	virtual void MostrarTWidget();
+
+	UFUNCTION(Category = "Transformation")
+	virtual void OcultarTWidget();
 };
 
 

@@ -75,5 +75,13 @@ void ABloque::WidgetSeguir() {
 void ABloque::WidgetNoSeguir() {
 }
 
+void ABloque::MostrarTWidget() {
+    //TWidget->MostrarWidgetOrigen();
+}
+
+void ABloque::OcultarTWidget() {
+    //TWidget->OcultarWidgetOrigen();
+}
+
 
 //voya necesitar puntos centrales, puntos inciales escalas iniciales, para que sean usados por el hud de cada tarea

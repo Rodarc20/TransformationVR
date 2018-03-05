@@ -19,8 +19,10 @@ ACasa::ACasa()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+    RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Origin"));
     Zona = CreateDefaultSubobject<UBoxComponent>(TEXT("Zona"));
-    RootComponent = Zona;
+    Zona->SetupAttachment(RootComponent);
+    //RootComponent = Zona;
     Zona->InitBoxExtent(FVector(100.0f));
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ACasa::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ACasa::OnEndOverlapZona);
@@ -33,13 +35,17 @@ ACasa::ACasa()
     }
 
     bMoviendo = false;
-    Velocidad = 20.0f;
+    Velocidad = 5.0f;
     PosicionFlotando = FVector(0.0f, -380.0f, 40.0f);
     PosicionDescanso = FVector(0.0f, -380.0f, 0.0f);
 
     PosicionInicial = PosicionFlotando;
     RotacionInicial = FRotator::ZeroRotator;
     EscalaInicial = FVector::OneVector;
+
+    PosicionGlobalZona = PosicionDescanso;
+    RotacionGlobalZona = FRotator::ZeroRotator;
+    EscalaGlobalZona = FVector::OneVector;
 
 
     CurrentCasaTask = EVRCasaTask::ENoTask;
@@ -128,7 +134,7 @@ void ACasa::Tick(float DeltaTime) {
 
     if (bMoviendo) {
         //esto solo deberia poner el booleano a mobiendo
-        FVector direccion = PosicionObjetivo - GetActorLocation();
+        /*FVector direccion = PosicionObjetivo - GetActorLocation();
         if (direccion.IsNearlyZero(0.05f)) {//mejorar esa presicion
             bMoviendo = false;
             SetActorLocation(PosicionObjetivo);
@@ -136,6 +142,10 @@ void ACasa::Tick(float DeltaTime) {
         }
         else {
             SetActorLocation(GetActorLocation() + (direccion.GetSafeNormal() * Velocidad * DeltaTime));
+        }*/
+        SetActorLocation(FMath::Lerp(GetActorLocation(), PosicionObjetivo, Velocidad * DeltaTime));
+        if (GetActorLocation() == PosicionObjetivo) {
+            bMoviendo = false;
         }
     }
 
@@ -171,15 +181,13 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
         break;
         case EVRCasaTask::EPlayTask: {
             Flotar();
-            /*for (int i = 0; i < Bloques.Num(); i++) {
-                ACasita * Casa = Cast<ACasita>(Bloques[i]);
-                if (Casa) {
-                    Casa->TWidget->MostrarWidget();
+            if (Bloques.Num() && Bloques[0]->GetActorScale3D() != FVector(0.5f)) {
+                for (int i = 0; i < Bloques.Num(); i++) {
+                    Bloques[i]->SetActorScale3D(FVector(0.5f));
+                    Bloques[i]->GetRootComponent()->SetRelativeLocation(Bloques[i]->GetRootComponent()->GetRelativeTransform().GetLocation() * 0.5f);
+                    Bloques[i]->OcultarTWidget();
                 }
-                else {
-                    Bloques[i]->TWidget->OcultarWidget();
-                }
-            }*/
+            }
             //activar efectos visaules necesarios
             PilaCodigo->Mostrar();//no habra pila de codigo, seran solo las linesas en los indicadores o en algun lado
             TArray<AActor *> EscenasEncontradas;
@@ -357,6 +365,8 @@ void ACasa::PlayTaskTick() {
         }
         break;
     }
+    Zona->SetWorldLocationAndRotation(PosicionGlobalZona, RotacionGlobalZona);
+    Zona->SetWorldScale3D(EscalaGlobalZona);
 }
 
 void ACasa::SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea) {
