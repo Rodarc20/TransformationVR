@@ -22,7 +22,7 @@ ARobot::ARobot()
 
     Zona = CreateDefaultSubobject<UBoxComponent>(TEXT("Zona"));
     RootComponent = Zona;
-    Zona->InitBoxExtent(FVector(100.0f));
+    Zona->InitBoxExtent(FVector(100.0f, 100.0f, 180.0f));
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ARobot::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ARobot::OnEndOverlapZona);
 

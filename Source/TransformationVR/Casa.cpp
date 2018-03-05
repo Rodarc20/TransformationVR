@@ -23,7 +23,7 @@ ACasa::ACasa()
     Zona = CreateDefaultSubobject<UBoxComponent>(TEXT("Zona"));
     Zona->SetupAttachment(RootComponent);
     //RootComponent = Zona;
-    Zona->InitBoxExtent(FVector(100.0f));
+    Zona->InitBoxExtent(FVector(100.0f, 100.0f, 180.0f));
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ACasa::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ACasa::OnEndOverlapZona);
 
@@ -387,6 +387,17 @@ void ACasa::SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea) 
     SetActorScale3D(EscalaInicial);
     SetTransformacionEje(ETransformacionEje::ENone);
     //debo hacer ciertas cosas, como reestablecer valores tal vez, o botones fisicos
+
+    TArray<AActor *> EscenasEncontradas;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEscena::StaticClass(), EscenasEncontradas);
+    //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+    if (EscenasEncontradas.Num()) {
+        AEscena * const EscenaEncontrada = Cast<AEscena>(EscenasEncontradas[0]);
+        if (EscenaEncontrada) {
+            UE_LOG(LogClass, Log, TEXT("escena encontrada"));
+            EscenaEncontrada->MostrarWidget();//este mostrar mostrara los ejes titilando, apra que el usuario intente seleccionarlos
+        }
+    }
 }
 
 ETransformacionTarea ACasa::GetTransformacionTarea() {
