@@ -178,6 +178,9 @@ public:
 	float AngleZFin;
 	int signoZ;
 	bool bRotarZ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<FVector> InstruccionesRotacion;
 };
 
 

@@ -42,16 +42,6 @@ public:
 
 	Transformacion * Root;
 
-    FMatrix MatrizTraslacion(float x, float y, float z);
-
-    FMatrix MatrizRotacionX(float angle);
-
-    FMatrix MatrizRotacionY(float angle);
-
-    FMatrix MatrizRotacionZ(float angle);
-
-    FMatrix MultiplicacionMatriz(FMatrix a, FMatrix b);
-
 	void UnirPadreHijo(int IdPadre, int IdHijo);
 
 	void Actualizar();//actualiza toda la jerarquia
