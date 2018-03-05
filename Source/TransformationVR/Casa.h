@@ -8,7 +8,7 @@
 #include "Bloque.h"
 #include "Components/BoxComponent.h"
 #include "TransformacionWidget.h"
-#include "PilaOpenGL.h"
+#include "LineaCodigo.h"
 #include "Casa.generated.h"
 
 UCLASS()
@@ -28,11 +28,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
-    TSubclassOf<class APilaOpenGL> TipoPila;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    //TSubclassOf<class ALineaCodigo> TipoLinea;//esto no es practio llenarlo en el cosntructor, cuando esta clase pase a bluprint sera mejor
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
-	APilaOpenGL * PilaCodigo;
+	ALineaCodigo * LineaCodigo;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     TArray<ABloque *> Bloques;
@@ -121,6 +121,9 @@ public:
 	
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     float ValorAplicar;//sera usado para aplicar traslacion rotacion, esclala, este es el valor modificado por el pad;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+    FString CodigoAplicar;//sera usado para aplicar traslacion rotacion, esclala, este es el valor modificado por el pad;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     FVector PosicionInicial;//este sera el mismo que el de posicion flotar

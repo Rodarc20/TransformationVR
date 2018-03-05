@@ -9,7 +9,7 @@
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Bloque.h"
 #include "Casita.h"
-#include "PilaOpenGL.h"
+#include "LineaCodigo.h"
 #include "Escena.h"
 #include "PanelBotones.h"
 
@@ -27,12 +27,12 @@ ACasa::ACasa()
     Zona->OnComponentBeginOverlap.AddDynamic(this, &ACasa::OnBeginOverlapZona);
     Zona->OnComponentEndOverlap.AddDynamic(this, &ACasa::OnEndOverlapZona);
 
-    static ConstructorHelpers::FClassFinder<APilaOpenGL> PilaClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/PilaOpenGL_BP.PilaOpenGL_BP_C'"));
+    /*static ConstructorHelpers::FClassFinder<ALineaCodigo> PilaClass(TEXT("BlueprintGeneratedClass'/Game/Trasnformation/Blueprints/Jerarquia/PilaOpenGL_BP.PilaOpenGL_BP_C'"));
     if (PilaClass.Succeeded()) {
         //if(GEngine)//no hacer esta verificación provocaba error al iniciar el editor
             //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Pila encontrado."));
         TipoPila = PilaClass.Class;
-    }
+    }*/
 
     bMoviendo = false;
     Velocidad = 5.0f;
@@ -81,11 +81,11 @@ void ACasa::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-50.0f, -400.0f, 40.0f);
+		FVector SpawnLocation(50.0f, -380.0f, 20.0f);
 
-		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-        if (PilaCodigo) {
-            PilaCodigo->Ocultar();
+		LineaCodigo = World->SpawnActor<ALineaCodigo>(ALineaCodigo::StaticClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+        if (LineaCodigo) {
+            LineaCodigo->Ocultar();
         }
 		//if (Jerarquia)
 			//Jerarquia->PilaCodigo = PilaCodigo;
@@ -176,7 +176,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                     Bloques[i]->TWidget->MostrarWidgetOrigen();
                 }
             }*/
-            PilaCodigo->Mostrar();
+            LineaCodigo->Mostrar();
         }
         break;
         case EVRCasaTask::EPlayTask: {
@@ -189,7 +189,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                 }
             }
             //activar efectos visaules necesarios
-            PilaCodigo->Mostrar();//no habra pila de codigo, seran solo las linesas en los indicadores o en algun lado
+            LineaCodigo->Mostrar();//no habra pila de codigo, seran solo las linesas en los indicadores o en algun lado
             TArray<AActor *> EscenasEncontradas;
             UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEscena::StaticClass(), EscenasEncontradas);
             //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
@@ -213,7 +213,7 @@ void ACasa::SetCasaTask(EVRCasaTask NewCasaTask) {
                 Bloques[i]->TWidget->OcultarWidget();
             }*/
             Aterrizar();
-            PilaCodigo->Ocultar();
+            LineaCodigo->Ocultar();
             TArray<AActor *> EscenasEncontradas;
             UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEscena::StaticClass(), EscenasEncontradas);
             //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
@@ -293,14 +293,17 @@ void ACasa::PlayTaskTick() {
                 case ETransformacionEje::EEjeX: {
                     //esto deberia ser aplicado a los bloques no al actar, pero bueno ya lo cambio despues
                     SetActorLocation(PosicionInicial + FVector(ValorAplicar, 0.0f, 0.0f));
+                    CodigoAplicar = "glTraslate(" + FString::SanitizeFloat(ValorAplicar) + ", 0, 0);";
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
                     SetActorLocation(PosicionInicial + FVector(0.0f, ValorAplicar, 0.0f));
+                    CodigoAplicar = "glTraslate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
                     SetActorLocation(PosicionInicial + FVector(0.0f, 0.0f, ValorAplicar));
+                    CodigoAplicar = "glTraslate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
                 }
                 break;
                 default:
@@ -316,14 +319,17 @@ void ACasa::PlayTaskTick() {
                     //aplicar la rotacion a los bloques seria un poco mas complicado pero se podria hacer, sin embargo una forma de solucionar esto es solo dejar eque los ejes grandes que tendra este objeto esten siempre en la misma posicion global
                     //independiente de si se traslada o rota, o escala
                     SetActorRotation(RotacionInicial + FRotator(0.0f, 0.0f, ValorAplicar));//este valor a aplicar deberia tener alguna relacion, deberia ser mas facil seleccionar sei estoy en tarea rotar, verlo dentro de vrpawn, que verifique en que tarea esta la casa
+                    CodigoAplicar = "glRotate(" + FString::SanitizeFloat(ValorAplicar) + ", 0, 0);";
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
                     SetActorRotation(RotacionInicial + FRotator(ValorAplicar, 0.0f, 0.0f));
+                    CodigoAplicar = "glRotate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
                     SetActorRotation(RotacionInicial + FRotator(0.0f, ValorAplicar, 0.0f));
+                    CodigoAplicar = "glRotate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
                 }
                 break;
                 default:
@@ -338,18 +344,21 @@ void ACasa::PlayTaskTick() {
                 case ETransformacionEje::EEjeX: {
                     if (EscalaInicial.X + ValorAplicar > 0) {
                         SetActorScale3D(EscalaInicial + FVector(ValorAplicar, 0.0f, 0.0f));
+                        CodigoAplicar = "glScale(" + FString::SanitizeFloat(ValorAplicar) + ", 0, 0);";
                     }
                 }
                 break;
                 case ETransformacionEje::EEjeY: {
                     if (EscalaInicial.Y + ValorAplicar > 0) {
                         SetActorScale3D(EscalaInicial + FVector(0.0f, ValorAplicar, 0.0f));
+                        CodigoAplicar = "glScale(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
                     }
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
                     if (EscalaInicial.Z + ValorAplicar > 0) {
                         SetActorScale3D(EscalaInicial + FVector(0.0f, 0.0f, ValorAplicar));
+                        CodigoAplicar = "glScale(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
                     }
                 }
                 break;
@@ -372,6 +381,7 @@ void ACasa::PlayTaskTick() {
 void ACasa::SetTransformacionTarea(ETransformacionTarea NewTransformacionTarea) {
     CurrentTransformacionTarea = NewTransformacionTarea;
     ValorAplicar = 0;
+    CodigoAplicar = "";
     SetActorLocation(PosicionInicial);
     SetActorRotation(RotacionInicial);
     SetActorScale3D(EscalaInicial);
@@ -386,6 +396,7 @@ ETransformacionTarea ACasa::GetTransformacionTarea() {
 void ACasa::SetTransformacionEje(ETransformacionEje NewTransformacionEje) {
     CurrentTransformacionEje = NewTransformacionEje;
     ValorAplicar = 0;
+    CodigoAplicar = "";
     SetActorLocation(PosicionInicial);
     SetActorRotation(RotacionInicial);
     SetActorScale3D(EscalaInicial);
