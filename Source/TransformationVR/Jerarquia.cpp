@@ -364,8 +364,25 @@ void AJerarquia::EstablecerRotacionEje(int IdParte, float angle, ETransformacion
         }
         break;//no se como funciona esto
     }
-	Nodos[IdParte]->ActualizarTextRotacion();
+    TransformacionesPartesPunteros[IdParte]->ParteAsociada->AgregarRotacion(angle, EjeRotacion);
+	Nodos[IdParte]->ActualizarTextRotacion();//creo que necesitare conservar una funiocion que manipule el valor de bActualizar para asi actualizar los arreglos botones, etc en la itnerfaz del nodo
 	
+}
+
+void AJerarquia::ConfirmarRotacion(int IdParte, int IdRotacion) {
+    if (IdParte >= 0 && IdParte < TransformacionesPartesPunteros.Num()) {
+        TransformacionesPartesPunteros[IdParte]->ParteAsociada->ConfirmarRotacion(IdRotacion);
+    }
+}
+
+void AJerarquia::CancelarRotacion(int IdParte, int IdRotacion) {
+    if (IdParte >= 0 && IdParte < TransformacionesPartesPunteros.Num()) {
+        TransformacionesPartesPunteros[IdParte]->ParteAsociada->CancelarRotacion(IdRotacion);
+    }
+}
+
+AParte * AJerarquia::GetParte(int IdParte) {
+    return TransformacionesPartesPunteros[IdParte]->ParteAsociada;
 }
 
 bool AJerarquia::AllNodesCreated() {

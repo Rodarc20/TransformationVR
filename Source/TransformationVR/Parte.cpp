@@ -351,7 +351,7 @@ void AParte::OnEndOverlapArticulacion(UPrimitiveComponent * OverlappedComponent,
 				if(IndiceArticulacionSobrepuesta != -1)
 					ColorNormalArticulacion(IndiceArticulacionSobrepuesta);
 					//CambiarColorArticulacion(IndiceArticulacionSobrepuesta, ColorArticulacionNoConectada);
-				int IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
+				IndiceArticulacionSobrepuestaOtro = ParteEncontrada->IndiceColisionArticulacion(ArticulacionEncontrada);
 				if(IndiceArticulacionSobrepuestaOtro != -1)
 					ParteEncontrada->ColorNormalArticulacion(IndiceArticulacionSobrepuestaOtro);
 					//ParteEncontrada->CambiarColorArticulacion(IndiceArticulacionSobrepuestaOtro, ColorArticulacionNoConectada);
@@ -397,3 +397,57 @@ void AParte::CopiarTransform() {
 //debo tener 3 funciones
 //ResaltarArticulacion(int IdArticulacion)
 //esta funcion tomara el color de articulacion del arreglo dde colores sgund el indice, sumara algun valor al que lo hara mas birllante, y eso lo asignara al material
+
+
+//Necesito tener las rotaciones iniciales, una vez que se armo el robot
+//luego cuando agrego rotaciones se agregan al array, y la poarte se queda en la ultima rotacion, entonces cuand pase a la siguiente tarea debo empezar en la posicion incial
+//y luego ejecutar las rotacines del array
+//por ultimo si elimino alguna rotacino pues debo recalcular la posicon actual, aplicando las rotaciones que quedan desde la posicion inicial
+
+void AParte::AgregarRotacion(float angle, ETransformacionEje EjeRotacion) {
+    switch (EjeRotacion) {
+        case ETransformacionEje::EEjeX: {
+            InstruccionesRotacion.Add(FVector(angle, 0.0f, 0.0f));
+            InstruccionesRotacionConfirmado.Add(false);
+            InstruccionesRotacionValido.Add(true);
+			//EstablecerRotacionEjeX(IdParte, angle);
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeY: {
+            InstruccionesRotacion.Add(FVector(0.0f, angle, 0.0f));
+            InstruccionesRotacionConfirmado.Add(false);
+            InstruccionesRotacionValido.Add(true);
+			//EstablecerRotacionEjeY(IdParte, angle);
+        }
+        break;//no se como funciona esto
+        case ETransformacionEje::EEjeZ: {
+            InstruccionesRotacion.Add(FVector(0.0f, 0.0f, angle));
+            InstruccionesRotacionConfirmado.Add(false);
+            InstruccionesRotacionValido.Add(true);
+			//EstablecerRotacionEjeZ(IdParte, angle);
+        }
+        break;//no se como funciona esto
+        default:
+        case ETransformacionEje::ENone: {//unknown/ default state
+            //no hacer nada
+        }
+        break;//no se como funciona esto
+    }
+	UE_LOG(LogClass, Log, TEXT("Agreganda rotacion"));
+	//Nodos[IdParte]->ActualizarTextRotacion();
+	
+}
+
+void AParte::ConfirmarRotacion(int IdRotacion) {
+    if (IdRotacion >= 0 && IdRotacion < InstruccionesRotacionConfirmado.Num()) {
+        InstruccionesRotacionConfirmado[IdRotacion] = true;
+    }
+}
+
+void AParte::CancelarRotacion(int IdRotacion) {
+    //al eliminar del array los otros id que habia en la interfaz se tendrian que cambiar, quiza deberia tener otro array que contenga la informacion sobre quien es uno elimando y quien no
+    if (IdRotacion >= 0 && IdRotacion < InstruccionesRotacionValido.Num()) {
+        InstruccionesRotacionValido[IdRotacion] = false;
+    }
+
+}

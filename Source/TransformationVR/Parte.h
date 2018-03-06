@@ -156,6 +156,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void CopiarTransform();
 
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void AgregarRotacion(float angle, ETransformacionEje EjeRotacion);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void ConfirmarRotacion(int IdRotacion);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void CancelarRotacion(int IdRotacion);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void AnimacionRotar(FVector CantidadRotacion);
 
 	bool bRotar;
@@ -181,6 +191,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	TArray<FVector> InstruccionesRotacion;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<bool> InstruccionesRotacionConfirmado;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	TArray<bool> InstruccionesRotacionValido;
 };
 
 

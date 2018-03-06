@@ -109,6 +109,15 @@ public:
 	void EstablecerRotacionEjeZ(int IdParte, float angle);
 
 	void EstablecerRotacionEje(int IdParte, float angle, ETransformacionEje EjeRotacion);
+
+    UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void ConfirmarRotacion(int IdParte, int IdRotacion);
+
+    UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void CancelarRotacion(int IdParte, int IdRotacion);
+
+    UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    AParte * GetParte(int IdParte);
 	
 	bool AllNodesCreated();
 

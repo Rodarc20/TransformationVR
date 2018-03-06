@@ -740,6 +740,10 @@ void ARobot::GrabRightReleased() {
 				if (EjeSeleccionado != ETransformacionEje::ENone)
 					//Jerarquia->EstablecerRotacionEje(ParteSeleccionada->Id, AngleTemp, EjeSeleccionado);
 					Jerarquia->EstablecerRotacionEje(ParteSeleccionada->Id, AnguloAcum, EjeSeleccionado);
+
+                //aqui debo decirle a la jerarquia que cree un nuevo alemento, que agregue una nueva rotacion, pero la pregunta es donde esta la rotacion termporal?
+                //donde se muestra
+
 					ParteSeleccionada->TWidget->DeseleccionarEjeRotacion(EjeSeleccionado);
 				//se edberian aplicar las rotaciones permanentemente
 				EjeSeleccionado = ETransformacionEje::ENone;
