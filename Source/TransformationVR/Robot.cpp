@@ -223,6 +223,8 @@ void ARobot::Tick(float DeltaTime)
         }
         break;//no se como funciona esto
     }
+    GrabRightTick();
+    GrabLeftTick();
 }
 
 FVector ARobot::BuscarParte(AParte *& ParteEncontrada) {
@@ -696,6 +698,25 @@ void ARobot::GrabRightPressed() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabRightTrasladarPressed();
+			if (Usuario->OverlapedRightParte) {//encapsularlo en la funcion anterior para manter un orden
+				Usuario->bBuscarParteRight = false;
+				Usuario->bGrabRightParte = true;
+				//if (OverlapedRightParte->Id != OverlapedLeftParte->IdParteRaiz) { //esta condicion no es necesaria
+					//si no es la raiz de su jerarquia debo 
+					//en relaidad no encesito este if, defrente tomar el IdParteRaiz y trabanr con esa parte
+					//como hago en los demas, y da igual si
+                Usuario->OffsetRightParte = Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation() - Usuario->MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
+                //establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
+                UE_LOG(LogClass, Log, TEXT("Calculando offset"));
+                Usuario->PuntoReferenciaRight->SetWorldLocation(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
+                Usuario->PuntoReferenciaRight->SetWorldRotation(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
+                UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
+                //no hacer nada mas
+
+					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
+					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
+				//}
+			}
         }
         break;
         default:
@@ -718,6 +739,31 @@ void ARobot::GrabRightTick() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabRightTrasladarTick();
+			if (Usuario->bGrabRightParte && Usuario->OverlapedRightParte) {
+                //FVector PosicionLocal = GetActorTransform().InverseTransformPosition(Usuario->PuntoReferenciaRight->GetComponentLocation());
+                //las partes estan trabajando en el espacion global, que coincide co la posicion de robot
+                //trabajar con global
+                FVector PosicionNueva = Usuario->PuntoReferenciaRight->GetComponentLocation();
+                if (FMath::Abs(PosicionNueva.X) >= FMath::Abs(PosicionNueva.Y)) {
+                    PosicionNueva.Y = 0.0f;
+                    PosicionNueva.Z = 0.0f;
+                }
+                else {
+                    PosicionNueva.X = 0.0f;
+                    PosicionNueva.Z = 0.0f;
+                }
+                
+				//Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(Usuario->PuntoReferenciaRight->GetComponentLocation());
+				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PosicionNueva);
+				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(Usuario->PuntoReferenciaRight->GetComponentRotation());
+				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+                //el robot debe avanzar por umbrales, de uno en uno, para que sean valores enteros,
+                //asi mesmo la direccion es respecto al punto donde esta, sea solo se puede mover otrogonalmente no en diagoneles
+                //para ello determinar dependendo si el valor absoluto es de un eje es mayor que el del otro, entonces lo traslado al del mayor, estoy moviendome en ese eje.
+                //hay variaces al mecanismo, com oque solo funcione en un radio pequeño desde la ubicacion del objeto, despues de ese radio ya se determino un eje, y sobre ese eje se muve, para cambiar de direccion , el usuario debe regresar al punto de inico e ir e otra.
+				//Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->ActualizarNodos();
+				//Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->ActualizarPila();
+			}
         }
         break;
         default:
@@ -756,6 +802,12 @@ void ARobot::GrabRightReleased() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabRightTrasladarReleased();
+			if (Usuario->OverlapedRightParte) {
+				Usuario->bBuscarParteRight = true;
+				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
+                //crear punto para traslacion, en la ubicacion del robot
+				Usuario->bGrabRightParte = false;
+			}
         }
         break;
         default:
@@ -778,6 +830,8 @@ void ARobot::GrabLeftPressed() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabLeftTrasladarPressed();
+            //podria hacer que compruebe si usario tiene una parte sobrepuesta en su control izquierdo, y listo entonces a partir de ahi lo tomo el control auiq,
+            //es decir solo dbor poner los mismo s if aquie haciendo refernica alos boools del usuario
         }
         break;
         default:
@@ -916,16 +970,14 @@ void ARobot::VerificarRotaciones() {
 
 void ARobot::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
     if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
-        if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Zona"));
         //en realidad deberia haber un if afuera de cada uno de estos, verifcando que este en alguna tarea de casa o robot, si esttoy en no task de alguno de ellos no deberia estar conviriendo
         //ni comprobando
         AVRPawn * const VRPawn = Cast<AVRPawn>(OtherActor);
         if (VRPawn && !VRPawn->IsPendingKill()) {
-            if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("VRPawn"));
             USphereComponent * const ColisionHead = Cast<USphereComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
             if (ColisionHead) {
+                if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Zona VRPawn"));
                 VRPawn->SetJerarquiaTask(CurrentJerarquiaTask);
             }
         }
@@ -934,16 +986,14 @@ void ARobot::OnBeginOverlapZona(UPrimitiveComponent * OverlappedComponent, AActo
 
 void ARobot::OnEndOverlapZona(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
     if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor != GetOwner())) { //no es necesario el ultimo, solo para este caso particular en el que no quiero que el propio conejo active esta funconalidad
-        if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Overlap Zona"));
         //en realidad deberia haber un if afuera de cada uno de estos, verifcando que este en alguna tarea de casa o robot, si esttoy en no task de alguno de ellos no deberia estar conviriendo
         //ni comprobando
         AVRPawn * const VRPawn = Cast<AVRPawn>(OtherActor);
         if (VRPawn && !VRPawn->IsPendingKill()) {
-            if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
-                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("VRPawn"));
             USphereComponent * const ColisionHead = Cast<USphereComponent>(OtherComp);//para la casa no necesito verificar que haya tocado su staticmesh
             if (ColisionHead) {
+                if (GEngine)//no hacer esta verificación provocaba error al iniciar el editor
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("End Overlap Zona VRPawn"));
                 VRPawn->SetJerarquiaTask(EVRJerarquiaTask::ENoTask);
             }
         }
