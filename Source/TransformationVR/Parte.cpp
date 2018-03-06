@@ -22,6 +22,7 @@ AParte::AParte()
 	//ColorArticulacionConectada = FLinearColor(0.0f, 0.234375, 0.212609f, 0.0f);
 	ColorArticulacionConectada = FLinearColor(0.234375f, 0.0f, 0.002142f, 0.0f);
 
+    bAnimacion = false;
 	bRotar = false;
 	bRotarX = false;
 	bRotarY = false;
@@ -40,132 +41,100 @@ void AParte::BeginPlay()
 void AParte::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	/*UE_LOG(LogClass, Log, TEXT("TICK"));
-
-	UE_LOG(LogClass, Log, TEXT("bRotar: %b"), bRotar);
-	if (bRotar) {
-
-		UE_LOG(LogClass, Log, TEXT("bRotar: TRUE"));
-		float DeltaX = signoX * VelocidadRotacion * DeltaTime;
-		//float DeltaX = AngleXFin * DeltaTime;
-		AngleXCurrent += DeltaX;
-		if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
-			FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
-			AddActorLocalRotation(DeltaRotation);
-		}
-		else {
-			//llegue al angulo debo dejar de rotar
-			bRotarX = false;
-		}
-
-		float DeltaY = signoY * VelocidadRotacion * DeltaTime;
-		//float DeltaX = AngleXFin * DeltaTime;
-		AngleYCurrent += DeltaY;
-		if (AngleYCurrent <= AngleYFin) {
-			FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
-			AddActorLocalRotation(DeltaRotation);
-		}
-		else {
-			//llegue al angulo debo dejar de rotar
-			bRotarY = false;
-		}
-
-		float DeltaZ = signoZ * VelocidadRotacion * DeltaTime;
-		//float DeltaX = AngleXFin * DeltaTime;
-		AngleZCurrent += DeltaZ;
-		if (AngleZCurrent <= AngleZFin) {
-			FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
-			AddActorLocalRotation(DeltaRotation);
-		}
-		else {
-			//llegue al angulo debo dejar de rotar
-			bRotarZ = false;
-		}
-		bRotar = bRotarX && bRotarY && bRotarZ;
-	}*/
+    //AnimacionRotarTick(DeltaTime);
 }
 void AParte::AnimacionRotarTick(float DeltaTime) {
 	//UE_LOG(LogClass, Log, TEXT("bRotar: %b"), bRotar);
-	if (bRotar) {
+    if (bAnimacion) {
+        if (bRotar) {
 
-		//UE_LOG(LogClass, Log, TEXT("bRotar: TRUE"));
-		float DeltaX = signoX * VelocidadRotacion * DeltaTime;
-		//float DeltaX = AngleXFin * DeltaTime;
-		AngleXCurrent += DeltaX;
-		if (signoX >= 0) {
-			if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
-				FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
-				AddActorLocalRotation(DeltaRotation);
-			}
-			else {
-				//llegue al angulo debo dejar de rotar
-				bRotarX = false;
-			}
-		}
-		else {
-			if (AngleXCurrent >= AngleXFin) {//este if cambia si el anglefine es negativo
-				FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
-				AddActorLocalRotation(DeltaRotation);
-			}
-			else {
-				//llegue al angulo debo dejar de rotar
-				bRotarX = false;
-			}
-		}
+            //UE_LOG(LogClass, Log, TEXT("bRotar: TRUE"));
+            float DeltaX = signoX * VelocidadRotacion * DeltaTime;
+            //float DeltaX = AngleXFin * DeltaTime;
+            AngleXCurrent += DeltaX;
+            if (signoX >= 0) {
+                if (AngleXCurrent <= AngleXFin) {//este if cambia si el anglefine es negativo
+                    FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
+                    AddActorLocalRotation(DeltaRotation);
+                }
+                else {
+                    //llegue al angulo debo dejar de rotar
+                    bRotarX = false;
+                }
+            }
+            else {
+                if (AngleXCurrent >= AngleXFin) {//este if cambia si el anglefine es negativo
+                    FRotator DeltaRotation (0.0f, 0.0f, DeltaX);
+                    AddActorLocalRotation(DeltaRotation);
+                }
+                else {
+                    //llegue al angulo debo dejar de rotar
+                    bRotarX = false;
+                }
+            }
 
-		float DeltaY = signoY * VelocidadRotacion * DeltaTime;
-		//float DeltaX = AngleXFin * DeltaTime;
-		AngleYCurrent += DeltaY;
+            float DeltaY = signoY * VelocidadRotacion * DeltaTime;
+            //float DeltaX = AngleXFin * DeltaTime;
+            AngleYCurrent += DeltaY;
 
-		if (signoY >= 0) {
-			if (AngleYCurrent <= AngleYFin) {//este if cambia si el anglefine es negativo
-				FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
-				AddActorLocalRotation(DeltaRotation);
-			}
-			else {
-				//llegue al angulo debo dejar de rotar
-				bRotarY = false;
-			}
-		}
-		else {
-			if (AngleYCurrent >= AngleYFin) {//este if cambia si el anglefine es negativo
-				FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
-				AddActorLocalRotation(DeltaRotation);
-			}
-			else {
-				//llegue al angulo debo dejar de rotar
-				bRotarY = false;
-			}
-		}
+            if (signoY >= 0) {
+                if (AngleYCurrent <= AngleYFin) {//este if cambia si el anglefine es negativo
+                    FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
+                    AddActorLocalRotation(DeltaRotation);
+                }
+                else {
+                    //llegue al angulo debo dejar de rotar
+                    bRotarY = false;
+                }
+            }
+            else {
+                if (AngleYCurrent >= AngleYFin) {//este if cambia si el anglefine es negativo
+                    FRotator DeltaRotation (DeltaY, 0.0f, 0.0f );
+                    AddActorLocalRotation(DeltaRotation);
+                }
+                else {
+                    //llegue al angulo debo dejar de rotar
+                    bRotarY = false;
+                }
+            }
 
 
-		float DeltaZ = signoZ * VelocidadRotacion * DeltaTime;
-		//float DeltaX = AngleXFin * DeltaTime;
-		AngleZCurrent += DeltaZ;
+            float DeltaZ = signoZ * VelocidadRotacion * DeltaTime;
+            //float DeltaX = AngleXFin * DeltaTime;
+            AngleZCurrent += DeltaZ;
 
-		if (signoZ >= 0) {
-			if (AngleZCurrent <= AngleZFin) {//este if cambia si el anglefine es negativo
-				FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
-				AddActorLocalRotation(DeltaRotation);
-			}
-			else {
-				//llegue al angulo debo dejar de rotar
-				bRotarZ = false;
-			}
-		}
-		else {
-			if (AngleZCurrent >= AngleZFin) {//este if cambia si el anglefine es negativo
-				FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
-				AddActorLocalRotation(DeltaRotation);
-			}
-			else {
-				//llegue al angulo debo dejar de rotar
-				bRotarZ = false;
-			}
-		}
+            if (signoZ >= 0) {
+                if (AngleZCurrent <= AngleZFin) {//este if cambia si el anglefine es negativo
+                    FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
+                    AddActorLocalRotation(DeltaRotation);
+                }
+                else {
+                    //llegue al angulo debo dejar de rotar
+                    bRotarZ = false;
+                }
+            }
+            else {
+                if (AngleZCurrent >= AngleZFin) {//este if cambia si el anglefine es negativo
+                    FRotator DeltaRotation (0.0f, DeltaZ, 0.0f);
+                    AddActorLocalRotation(DeltaRotation);
+                }
+                else {
+                    //llegue al angulo debo dejar de rotar
+                    bRotarZ = false;
+                }
+            }
 
-		bRotar = bRotarX || bRotarY || bRotarZ;
-	}
+            bRotar = bRotarX || bRotarY || bRotarZ;
+        }
+        else if (!bRotar && IdRotacionActual < InstruccionesRotacion.Num() ) {
+            UE_LOG(LogClass, Log, TEXT("Llmando animacon rotar %d"), IdRotacionActual);
+            AnimacionRotar(InstruccionesRotacion[IdRotacionActual]);
+            IdRotacionActual++;
+        }
+        else if(IdRotacionActual == InstruccionesRotacion.Num()) {
+            bAnimacion = false;
+        }
+    }
 }
 
 void AParte::AnimacionRotar(FVector CantidadRotacion) {// es mejor recibir los angulos como vectores, para manejra loas negativos coreectamente, ya que debo recibir el delta
@@ -208,6 +177,34 @@ void AParte::AnimacionRotar(FVector CantidadRotacion) {// es mejor recibir los a
 		signoZ = 1; //o -1
 	else
 		signoZ = -1;
+
+    //necesito llamar a esta funcion varias veces, una por cada rotaicon en el arreglo, y el tiepo de ejecucion debe ser de tal forma que todas se ejecuten en un segundo o dos
+    // necesito recorrer e array y ejecutar una animacion hasta que funcione, es decir cuanod llame a ejecutar animaciones
+}
+
+void AParte::EjecutarAnimaciones() {
+    //establecer el tiempo para cada animacion, poner un boleano de animarconjunto
+    //entonces mientras este bool sea verdadero debo iterar en el arreglo, cada iteracion se determinar cuando se deteien una animaciones,
+    //por ejemplo
+    //cambia el bool a verdadero
+	UE_LOG(LogClass, Log, TEXT("Ejecutando Animaciones %s"), *NombreParte);
+    bAnimacion = true;
+    IdRotacionActual = 0;
+    //VelocidadRotacion =, este calculo es complicado, tendira que sumar la cantidad de rotacion que hay en todo y dividirlo en 1 segundo, y esa sera la velocidad
+    //por ahora dejar asi
+
+    //pongo el iterador en 0
+    //si bRotar = false y el iterador no esta en el tamaño de arreglo de rotacones, entonces llamo a ageregar rotacion
+    //incremento el iterador en 1
+    //entonces mientrar brotar sea verdadero esta ejecutando la animacion
+}
+
+bool AParte::RotacionesConfirmadas() {
+    bool res = true;
+    for (int i = 0; i < InstruccionesRotacionConfirmado.Num(); i++) {
+        res = res & InstruccionesRotacionConfirmado[i];
+    }
+    return res;
 }
 
 int AParte::IndiceColisionArticulacion(USphereComponent * ArticulacionSphere) {

@@ -168,6 +168,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void AnimacionRotar(FVector CantidadRotacion);
 
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void EjecutarAnimaciones();
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	bool RotacionesConfirmadas();
+
+	bool bAnimacion;
+    int IdRotacionActual;
+
 	bool bRotar;
 	float VelocidadRotacion;
 

@@ -170,6 +170,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "VRPawn")
 	void UnirJerarquiaPadreHijo(int IdPadre, int IdHijo);
 
+    UFUNCTION(BlueprintCallable, Category = "TransformationVR")
+    void VerificarRotaciones();
+
 
 
 };

@@ -60,6 +60,7 @@ void AJerarquia::BeginPlay()
 void AJerarquia::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    EjecutarAnimacionTick(DeltaTime);
 
 }
 
@@ -364,9 +365,10 @@ void AJerarquia::EstablecerRotacionEje(int IdParte, float angle, ETransformacion
         }
         break;//no se como funciona esto
     }
-    TransformacionesPartesPunteros[IdParte]->ParteAsociada->AgregarRotacion(angle, EjeRotacion);
 	Nodos[IdParte]->ActualizarTextRotacion();//creo que necesitare conservar una funiocion que manipule el valor de bActualizar para asi actualizar los arreglos botones, etc en la itnerfaz del nodo
 	
+    //solo importa lo que sigue
+    TransformacionesPartesPunteros[IdParte]->ParteAsociada->AgregarRotacion(angle, EjeRotacion);
 }
 
 void AJerarquia::ConfirmarRotacion(int IdParte, int IdRotacion) {
@@ -522,8 +524,10 @@ void AJerarquia::EjecutarAnimacion(int IdParte) {//para hallar niveles
     while (!pila.empty()) {
         Transformacion * V = pila.top();
         pila.pop();
+        UE_LOG(LogClass, Log, TEXT("Tamaño pila %d"), pila.size());
 		//ejecutar animacion
-		V->ParteAsociada->AnimacionRotar(Nodos[V->ParteAsociada->Id]->Rotacion);
+		//V->ParteAsociada->AnimacionRotar(Nodos[V->ParteAsociada->Id]->Rotacion);
+        V->ParteAsociada->EjecutarAnimaciones();
         if (V->Hijos.Num()) {
             for (int i = V->Hijos.Num()-1; i >= 0; i--) {
                 pila.push(V->Hijos[i]);
