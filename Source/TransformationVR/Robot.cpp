@@ -13,6 +13,7 @@
 #include "TransformacionWidget.h"
 #include "Components/BoxComponent.h"
 #include "PanelBotones.h"
+#include "PuntoTraslacion.h"
 
 
 // Sets default values
@@ -42,6 +43,7 @@ ARobot::ARobot()
     }
 
 	DistanciaLaserMaxima = 200.0f;
+    AlturaRobot = FVector(0.0f, 0.0f, 20.0f);
 
 	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
     //SetJerarquiaTask(EVRJerarquiaTask::ENoTask);
@@ -652,6 +654,19 @@ void ARobot::SelectPressed() {
 void ARobot::SelectReleased() {
 }
 
+void ARobot::CreatePuntoTraslacion(FVector PuntoSpawn) {
+    UWorld * const World = GetWorld();
+    if (World) {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = Instigator;
+
+        APuntoTraslacion * PuntoT = World->SpawnActor<APuntoTraslacion>(APuntoTraslacion::StaticClass(), PuntoSpawn - AlturaRobot, FRotator::ZeroRotator, SpawnParams);
+        //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+        PuntosTraslacionActors.Add(PuntoT);
+    }
+}
+
 void ARobot::GrabRightPressed() {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {
@@ -707,11 +722,15 @@ void ARobot::GrabRightPressed() {
 					//como hago en los demas, y da igual si
                 Usuario->OffsetRightParte = Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation() - Usuario->MotionControllerRight->GetComponentLocation();//creo que esto no sera necesario
                 //establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
-                UE_LOG(LogClass, Log, TEXT("Calculando offset"));
                 Usuario->PuntoReferenciaRight->SetWorldLocation(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
                 Usuario->PuntoReferenciaRight->SetWorldRotation(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
-                UE_LOG(LogClass, Log, TEXT("Actualizando punto referencia"));
                 //no hacer nada mas
+                //La posicion grab robot debe ser calculada de la mims forma a como calculo todo, mapeando solo los valores x y y, y usando la altura de altura robot
+                PosicionGrabRobot = Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation();
+                PosicionGrabRobot.Z = AlturaRobot.Z;
+                //aun que esto de cambiar el z no deberia estar, es decir si el robot se ubica en el centro, entonces, ya etara en alguna posicn con ese z adecuado, entonces no se necesita
+                //tambien deberia haber una posicion inical 0, 0 el conejo deberia estar alli desde el comienzo
+                //y deberia ser el primer punto de traslaccion
 
 					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
 					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
@@ -743,18 +762,18 @@ void ARobot::GrabRightTick() {
                 //FVector PosicionLocal = GetActorTransform().InverseTransformPosition(Usuario->PuntoReferenciaRight->GetComponentLocation());
                 //las partes estan trabajando en el espacion global, que coincide co la posicion de robot
                 //trabajar con global
-                FVector PosicionNueva = Usuario->PuntoReferenciaRight->GetComponentLocation();
+                FVector PosicionNueva = Usuario->PuntoReferenciaRight->GetComponentLocation() - PosicionGrabRobot;
+                //esta posicion nueva deberia ser un vector desede la posicion que se guardo al inicio, al momeno del press
                 if (FMath::Abs(PosicionNueva.X) >= FMath::Abs(PosicionNueva.Y)) {
                     PosicionNueva.Y = 0.0f;
-                    PosicionNueva.Z = 0.0f;
                 }
                 else {
                     PosicionNueva.X = 0.0f;
-                    PosicionNueva.Z = 0.0f;
                 }
+                PosicionNueva.Z = 0.0f;
                 
 				//Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(Usuario->PuntoReferenciaRight->GetComponentLocation());
-				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PosicionNueva);
+				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PosicionGrabRobot + PosicionNueva);
 				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(Usuario->PuntoReferenciaRight->GetComponentRotation());
 				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
                 //el robot debe avanzar por umbrales, de uno en uno, para que sean valores enteros,
@@ -804,6 +823,8 @@ void ARobot::GrabRightReleased() {
 			//GrabRightTrasladarReleased();
 			if (Usuario->OverlapedRightParte) {
 				Usuario->bBuscarParteRight = true;
+                PuntosTraslacion.Add(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->GetWorldLocation());
+                CreatePuntoTraslacion(PuntosTraslacion[PuntosTraslacion.Num() - 1]);
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
                 //crear punto para traslacion, en la ubicacion del robot
 				Usuario->bGrabRightParte = false;

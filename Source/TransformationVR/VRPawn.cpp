@@ -86,7 +86,7 @@ AVRPawn::AVRPawn()
 
     Interaction = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Interaction"));
     Interaction->SetupAttachment(MotionControllerRight);
-    Interaction->bShowDebug = true;
+    //Interaction->bShowDebug = true;
 
     Movimiento = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movimiento"));
 

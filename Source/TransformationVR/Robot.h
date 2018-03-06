@@ -11,6 +11,7 @@
 #include "Transformacion.h"
 #include "VRPawn.h"
 #include "Components/BoxComponent.h"
+#include "PuntoTraslacion.h"
 #include "Robot.generated.h"
 
 
@@ -146,7 +147,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
 	float AnguloAcum;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    TArray<FVector> PuntosTraslacion;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    TArray<APuntoTraslacion * > PuntosTraslacionActors;
 	
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void CreatePuntoTraslacion(FVector PuntoSpawn);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    FVector AlturaRobot;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    FVector PosicionGrabRobot;
 
 
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
