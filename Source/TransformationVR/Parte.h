@@ -172,13 +172,35 @@ public:
 	void EjecutarAnimaciones();
 
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void IniciarCicloAnimaciones();
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void DetenerCicloAnimaciones();
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	bool RotacionesConfirmadas();
 
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+	void CalcularVelociadaRotacion();
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	bool bCicloAnimacion;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bAnimacion;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     int IdRotacionActual;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	bool bRotar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	float VelocidadRotacion;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+	float DuracionAnimacionRotacion;
 
 	float AngleXIni;//no tendria que usar nada el angulo fin puede determinar la velocidad de rotaionc, es decir eses seria la velocidad por segundo, entonces el delta de X seria al angulo fin *dletatime y listo
 	float AngleXCurrent;

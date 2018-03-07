@@ -28,6 +28,9 @@ AParte::AParte()
 	bRotarY = false;
 	bRotarZ = false;
 	bBuscarArticulacion = true;
+
+	VelocidadRotacion = 10.0f;
+	DuracionAnimacionRotacion = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -133,6 +136,9 @@ void AParte::AnimacionRotarTick(float DeltaTime) {
         }
         else if(IdRotacionActual == InstruccionesRotacion.Num()) {
             bAnimacion = false;
+            if (bCicloAnimacion) {
+                EjecutarAnimaciones();
+            }
         }
     }
 }
@@ -144,7 +150,8 @@ void AParte::AnimacionRotar(FVector CantidadRotacion) {// es mejor recibir los a
 	//neceisto el valor actual
 	UE_LOG(LogClass, Log, TEXT("Ejecutando Animacion %s"), *NombreParte);
 
-	VelocidadRotacion = 45.0f;
+	//VelocidadRotacion = 45.0f;
+	//VelocidadRotacion = 15.0f;
 
 	bRotar = true;
 
@@ -190,6 +197,7 @@ void AParte::EjecutarAnimaciones() {
 	UE_LOG(LogClass, Log, TEXT("Ejecutando Animaciones %s"), *NombreParte);
     bAnimacion = true;
     IdRotacionActual = 0;
+    CalcularVelociadaRotacion();
     //VelocidadRotacion =, este calculo es complicado, tendira que sumar la cantidad de rotacion que hay en todo y dividirlo en 1 segundo, y esa sera la velocidad
     //por ahora dejar asi
 
@@ -199,12 +207,37 @@ void AParte::EjecutarAnimaciones() {
     //entonces mientrar brotar sea verdadero esta ejecutando la animacion
 }
 
+void AParte::IniciarCicloAnimaciones() {
+    bCicloAnimacion = true;
+    EjecutarAnimaciones();
+}
+
+void AParte::DetenerCicloAnimaciones() {
+    bCicloAnimacion = false;
+}
+
 bool AParte::RotacionesConfirmadas() {
     bool res = true;
     for (int i = 0; i < InstruccionesRotacionConfirmado.Num(); i++) {
         res = res & InstruccionesRotacionConfirmado[i];
     }
     return res;
+}
+
+void AParte::CalcularVelociadaRotacion() {
+    float acum = 0.0f;
+    for (int i = 0; i < InstruccionesRotacion.Num(); i++) {
+        if (InstruccionesRotacion[i].X != 0.0f) {
+            acum += FMath::Abs(InstruccionesRotacion[i].X);
+        }
+        else if (InstruccionesRotacion[i].Y != 0.0f) {
+            acum += FMath::Abs(InstruccionesRotacion[i].Y);
+        }
+        else if (InstruccionesRotacion[i].Z != 0.0f) {
+            acum += FMath::Abs(InstruccionesRotacion[i].Z);
+        }
+    }
+    VelocidadRotacion = acum / DuracionAnimacionRotacion;//todo debe ejecutarse en 2 segundos
 }
 
 int AParte::IndiceColisionArticulacion(USphereComponent * ArticulacionSphere) {

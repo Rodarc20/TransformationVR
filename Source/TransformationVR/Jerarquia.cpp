@@ -513,6 +513,52 @@ void AJerarquia::AplicarLayout() {
 	}*/
 }
 
+void AJerarquia::EjecutarCicloAnimacion(int IdParte) {//para hallar niveles
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+    //Transformacion * Root = &TransformacionesPartes[Nodos.Num() - 1];
+	//ya tengo un root
+	UE_LOG(LogClass, Log, TEXT("Ejecutando Animacion"));
+    //pila.push(Root);//no deberia dsencolarlo
+	pila.push(TransformacionesPartesPunteros[IdParte]);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+        UE_LOG(LogClass, Log, TEXT("Tamaño pila %d"), pila.size());
+		//ejecutar animacion
+		//V->ParteAsociada->AnimacionRotar(Nodos[V->ParteAsociada->Id]->Rotacion);
+        V->ParteAsociada->IniciarCicloAnimaciones();
+        if (V->Hijos.Num()) {
+            for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+                pila.push(V->Hijos[i]);
+            }
+        }
+    }
+}
+
+void AJerarquia::DetenerCicloAnimacion(int IdParte) {//para hallar niveles
+    std::stack<Transformacion *> pila;
+    //la raiz es el ultimo nodo
+    //Transformacion * Root = &TransformacionesPartes[Nodos.Num() - 1];
+	//ya tengo un root
+	UE_LOG(LogClass, Log, TEXT("Ejecutando Animacion"));
+    //pila.push(Root);//no deberia dsencolarlo
+	pila.push(TransformacionesPartesPunteros[IdParte]);
+    while (!pila.empty()) {
+        Transformacion * V = pila.top();
+        pila.pop();
+        UE_LOG(LogClass, Log, TEXT("Tamaño pila %d"), pila.size());
+		//ejecutar animacion
+		//V->ParteAsociada->AnimacionRotar(Nodos[V->ParteAsociada->Id]->Rotacion);
+        V->ParteAsociada->DetenerCicloAnimaciones();
+        if (V->Hijos.Num()) {
+            for (int i = V->Hijos.Num()-1; i >= 0; i--) {
+                pila.push(V->Hijos[i]);
+            }
+        }
+    }
+}
+
 void AJerarquia::EjecutarAnimacion(int IdParte) {//para hallar niveles
     std::stack<Transformacion *> pila;
     //la raiz es el ultimo nodo

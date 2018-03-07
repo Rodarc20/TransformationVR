@@ -66,6 +66,12 @@ public:
 	void AplicarLayout();
 
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void EjecutarCicloAnimacion(int IdParte);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void DetenerCicloAnimacion(int IdParte);
+
+	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void EjecutarAnimacion(int IdParte);
 
 	void EjecutarAnimacionTick(float DeltaTime);

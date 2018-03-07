@@ -712,6 +712,7 @@ void ARobot::AnimacionTick(float DeltaTime) {
         }
         else if(IdPuntoTrasladoActual == PuntosTraslacion.Num()) {
             bAnimacionTrasladar = false;
+            Jerarquia->DetenerCicloAnimacion(Jerarquia->Root->ParteAsociada->Id);
         }
     }
 }
@@ -720,6 +721,8 @@ void ARobot::IniciarAnimacion() {
     UE_LOG(LogClass, Log, TEXT("Iniciando animacion"));
     bAnimacionTrasladar = true;
     IdPuntoTrasladoActual = 1;
+    //usando el siclo de jerarquia, cuando llegue al final debo detenerla
+    Jerarquia->EjecutarCicloAnimacion(Jerarquia->Root->ParteAsociada->Id);
 }
 
 void ARobot::AnimacionTrasladar(FVector PuntoInicial, FVector PuntoFinal) {
