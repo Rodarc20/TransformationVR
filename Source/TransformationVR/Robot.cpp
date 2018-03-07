@@ -44,6 +44,7 @@ ARobot::ARobot()
 
 	DistanciaLaserMaxima = 200.0f;
     AlturaRobot = FVector(0.0f, 0.0f, 20.0f);
+    VelocidadTraslacion = 25.0f;
 
 	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
     //SetJerarquiaTask(EVRJerarquiaTask::ENoTask);
@@ -219,6 +220,10 @@ void ARobot::Tick(float DeltaTime)
 
         }
         break;//no se como funciona esto
+        case EVRJerarquiaTask::ETraslationTask: {//si  perdimos el juego
+            AnimacionTick(DeltaTime);
+        }
+        break;
         default:
         case EVRJerarquiaTask::ENoTask: {//unknown/ default state
             //no hacer nada
@@ -403,6 +408,14 @@ void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
         break;//no se como funciona esto
         case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
             PilaCodigo->Mostrar();
+        }
+        break;//no se como funciona esto
+        case EVRJerarquiaTask::ETraslationTask: {//si  perdimos el juego
+            //PilaCodigo->Mostrar();
+            UE_LOG(LogClass, Log, TEXT("Traslation Task"));
+            PuntosTraslacion.Add(FVector(0.0f, 0.0f, AlturaRobot.Z));
+            CreatePuntoTraslacion(PuntosTraslacion[0]);
+
         }
         break;//no se como funciona esto
         default:
@@ -665,6 +678,60 @@ void ARobot::CreatePuntoTraslacion(FVector PuntoSpawn) {
         //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
         PuntosTraslacionActors.Add(PuntoT);
     }
+}
+
+void ARobot::AnimacionTick(float DeltaTime) {
+    if (bAnimacionTrasladar) {//boleano podria estar controlado por por el witch ya que este funcion se llama solocuando este en esta tarea
+        UE_LOG(LogClass, Log, TEXT("bAnimacionTrasladar true"));
+        if (bTrasladar) {//para cuando se termina de traslacdar hacia el punto objetivo
+
+            //traslado con lerp
+            UE_LOG(LogClass, Log, TEXT("bTrasladar: true"));
+
+            //Jerarquia->Root->SetWorldLocation(FMath::Lerp(PuntoInicialTraslacion, PuntoFinalTraslacion, DeltaTime * VelocidadTraslacion / (PuntoFinalTraslacion - PuntoInicialTraslacion).Size()));
+            //Jerarquia->Root->SetWorldLocation(FMath::Lerp(PuntoInicialTraslacion, PuntoFinalTraslacion, Alpha));
+            Alpha += DeltaTime * VelocidadTraslacion / (PuntoFinalTraslacion - PuntoInicialTraslacion).Size();
+            Jerarquia->Root->ParteAsociada->SetActorLocation(FMath::Lerp(PuntoInicialTraslacion, PuntoFinalTraslacion, Alpha));
+            Jerarquia->Root->ActualizarDesdeParte();
+            //Alpha += 0.02f;
+            //esta funcionando? o me falta actualizar algo?
+            //if (Jerarquia->Root->GetWorldLocation() == PuntoFinalTraslacion) {
+            //if (Jerarquia->Root->ParteAsociada->GetActorLocation() == PuntoFinalTraslacion) {
+            UE_LOG(LogClass, Log, TEXT("Alpha: %f"), Alpha);
+            if (Alpha >= 1.0f) {
+                UE_LOG(LogClass, Log, TEXT("bTrasladar: false"), Alpha);
+                bTrasladar = false;
+            }
+        }
+        else if (!bTrasladar && IdPuntoTrasladoActual < PuntosTraslacion.Num() ) {
+            UE_LOG(LogClass, Log, TEXT("Llmando animacon traslacion punto %d"), IdPuntoTrasladoActual);
+            UE_LOG(LogClass, Log, TEXT("Punto Inicial (%f, %f, %f)"), PuntosTraslacion[IdPuntoTrasladoActual-1].X, PuntosTraslacion[IdPuntoTrasladoActual-1].Y, PuntosTraslacion[IdPuntoTrasladoActual-1].Z);
+            UE_LOG(LogClass, Log, TEXT("Punto Final (%f, %f, %f)"), PuntosTraslacion[IdPuntoTrasladoActual].X, PuntosTraslacion[IdPuntoTrasladoActual].Y, PuntosTraslacion[IdPuntoTrasladoActual].Z);
+            AnimacionTrasladar(PuntosTraslacion[IdPuntoTrasladoActual - 1], PuntosTraslacion[IdPuntoTrasladoActual]);
+            IdPuntoTrasladoActual++;
+        }
+        else if(IdPuntoTrasladoActual == PuntosTraslacion.Num()) {
+            bAnimacionTrasladar = false;
+        }
+    }
+}
+
+void ARobot::IniciarAnimacion() {
+    UE_LOG(LogClass, Log, TEXT("Iniciando animacion"));
+    bAnimacionTrasladar = true;
+    IdPuntoTrasladoActual = 1;
+}
+
+void ARobot::AnimacionTrasladar(FVector PuntoInicial, FVector PuntoFinal) {
+    bTrasladar = true;
+    PuntoInicialTraslacion = PuntoInicial;
+    PuntoFinalTraslacion = PuntoFinal;
+    Alpha = 0.0f;
+    //debo hacer que mire en esa direccion
+    Jerarquia->Root->ParteAsociada->SetActorLocation(PuntoInicialTraslacion);
+    FRotator NewRotation = FRotationMatrix::MakeFromX(PuntoFinalTraslacion - PuntoInicialTraslacion).Rotator();
+    Jerarquia->Root->ParteAsociada->SetActorRotation(NewRotation);
+    Jerarquia->Root->ActualizarDesdeParte();
 }
 
 void ARobot::GrabRightPressed() {

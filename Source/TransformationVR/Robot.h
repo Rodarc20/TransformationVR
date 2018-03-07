@@ -162,7 +162,33 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
     FVector PosicionGrabRobot;
 
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void AnimacionTick(float DeltaTime);//para ejecutar controlar el movimiento en la iteracion del arreglo algo similar a las rotaciones en las partes
 
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void IniciarAnimacion();//, ordena la ejecucion de las animaciones, es parecida a la de las rotaciones de las partes
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void AnimacionTrasladar(FVector PuntoInicial, FVector IdPuntoFinal);//se movera dentro de los puntos de array, por lo tanto no necesito crear, solo usar estos indices
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    FVector PuntoInicialTraslacion;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    FVector PuntoFinalTraslacion;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    bool bAnimacionTrasladar;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    bool bTrasladar;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    int IdPuntoTrasladoActual;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    float VelocidadTraslacion;
+    float Alpha;
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void GrabRightPressed();
 
