@@ -7,6 +7,7 @@
 #include "PilaOpenGL.h"
 #include "VRPawn.h"
 #include "Parte.h"
+#include "Robot.h"
 #include "MotionControllerComponent.h"
 #include "Public/UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
@@ -319,6 +320,56 @@ FString AJerarquia::Texto(Transformacion * T) {
 	return res;
 }
 
+FString AJerarquia::TextoRotaciones(Transformacion * T) {
+	FString res;
+    if (T) {
+        if (T->Padre) {
+            NumeroIdentaciones++;
+            res = Identacion(NumeroIdentaciones) + "glPushMatrix();\n";
+            //FVector Posicion = T->GetLocation();
+            //res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+            for (int i = 0; i < T->ParteAsociada->InstruccionesRotacion.Num(); i++) {
+                FVector Rotacion = T->ParteAsociada->InstruccionesRotacion[i];
+                //FRotator Rotacion = T->GetRotation();
+                res += Identacion(NumeroIdentaciones) + "glRotate(" + FString::SanitizeFloat(Rotacion.X) + ", " + FString::SanitizeFloat(Rotacion.Y) + ", " + FString::SanitizeFloat(Rotacion.Z) + ");\n";
+            }
+            res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
+            for (int i = 0; i < T->Hijos.Num(); i++) {
+                res += TextoRotaciones(T->Hijos[i]);
+            }
+            res += Identacion(NumeroIdentaciones) + "glPopMatrix();\n";
+            NumeroIdentaciones--;
+        }
+        else {
+            NumeroIdentaciones = 0;//la raiz
+            //como soy la raiz debo poner mi translate
+            res = Identacion(NumeroIdentaciones) + "glPushMatrix();\n";
+            TArray<AActor *> RobotsEncontrados;
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARobot::StaticClass(), RobotsEncontrados);
+            //UE_LOG(LogClass, Log, TEXT("Numero de Partes Encontradas: %d"), PartesEncontradas.Num());
+            if (RobotsEncontrados.Num()) {
+                ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[0]);
+                if (RobotEncontrado) {
+                    for (int i = 1; i < RobotEncontrado->PuntosTraslacion.Num(); i++) {
+                        FVector Posicion = RobotEncontrado->PuntosTraslacion[i];
+                        res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+                    }
+                }
+            }
+            else {
+                FVector Posicion = T->GetLocation();
+                res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+            }
+            res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
+            for (int i = 0; i < T->Hijos.Num(); i++) {
+                res += TextoRotaciones(T->Hijos[i]);
+            }
+            res += Identacion(NumeroIdentaciones) + "glPopMatrix();\n";
+        }
+    }
+	return res;
+}
+
 FString AJerarquia::Identacion(int Tam) {
 	FString res;
 	for (int i = 0; i < Tam; i++) {
@@ -330,6 +381,21 @@ FString AJerarquia::Identacion(int Tam) {
 
 void AJerarquia::ActualizarPila() {
     FString Codigo = Texto(Root);
+    PilaCodigo->CambiarCodigo(Codigo);//esto me esta dando error
+}
+
+void AJerarquia::ActualizarCodigoConRotaciones() {
+    FString Codigo = TextoRotaciones(Root);
+    PilaCodigo->CambiarCodigo(Codigo);//esto me esta dando error
+}
+
+void AJerarquia::ActualizarCodigoArmado() {
+    FString Codigo = TextoRotaciones(Root);
+    PilaCodigo->CambiarCodigo(Codigo);//esto me esta dando error
+}
+
+void AJerarquia::ActualizarCodigoTraslacion() {
+    FString Codigo = TextoRotaciones(Root);
     PilaCodigo->CambiarCodigo(Codigo);//esto me esta dando error
 }
 

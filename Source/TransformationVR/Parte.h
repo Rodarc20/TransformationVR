@@ -202,6 +202,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
 	float DuracionAnimacionRotacion;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    FRotator RotacionInicial;
+
 	float AngleXIni;//no tendria que usar nada el angulo fin puede determinar la velocidad de rotaionc, es decir eses seria la velocidad por segundo, entonces el delta de X seria al angulo fin *dletatime y listo
 	float AngleXCurrent;
 	float AngleXFin;

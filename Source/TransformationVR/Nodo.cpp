@@ -16,7 +16,7 @@ ANodo::ANodo()
 	RootComponent = Widget;
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(500.0f, 250.0f));
+    Widget->SetDrawSize(FVector2D(500.0f, 274.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (WidgetClass.Succeeded()) {

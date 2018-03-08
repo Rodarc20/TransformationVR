@@ -95,16 +95,28 @@ public:
 
 	float DeltaHermanos;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	APilaOpenGL * PilaCodigo;
 
 	int NumeroIdentaciones;
 
 	FString Texto(Transformacion * T);
 
+	FString TextoRotaciones(Transformacion * T);
+
 	FString Identacion(int Tam);
 
 	UFUNCTION(BlueprintCallable, Category = "Transformaciones")
 	void ActualizarPila();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void ActualizarCodigoConRotaciones();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void ActualizarCodigoArmado();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformaciones")
+    void ActualizarCodigoTraslacion();
 
 	float DistanciaLaserMaxima;
 

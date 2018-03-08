@@ -204,7 +204,7 @@ void ARobot::Tick(float DeltaTime)
 					//BuscarIntereseccionEjeRotacion();
 					RotarParteEnEje();
                     //Jerarquia->Imprimir();
-					Jerarquia->ActualizarPila();//esta linea esta producion errores
+					Jerarquia->ActualizarCodigoConRotaciones();//esta linea esta producion errores
 				}
 				else {
 					BuscandoComponenteRotacionConLaser();
@@ -408,6 +408,8 @@ void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
         break;//no se como funciona esto
         case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
             PilaCodigo->Mostrar();
+            if (Jerarquia)
+                Jerarquia->ActualizarCodigoConRotaciones();
         }
         break;//no se como funciona esto
         case EVRJerarquiaTask::ETraslationTask: {//si  perdimos el juego
@@ -898,6 +900,7 @@ void ARobot::GrabRightReleased() {
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
                 //crear punto para traslacion, en la ubicacion del robot
 				Usuario->bGrabRightParte = false;
+                Jerarquia->ActualizarCodigoTraslacion();
 			}
         }
         break;
