@@ -3,6 +3,7 @@
 #include "Boton.h"
 #include "PanelBotones.h"
 #include "Components/StaticMeshComponent.h"
+#include "Materials/Material.h"
 
 
 // Sets default values
@@ -27,7 +28,7 @@ void ABoton::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
     FVector PosicionActual = Boton->GetRelativeTransform().GetLocation();
     if (!bPressed && bPressing && PosicionActual.Z <= AlturaContacto) {
-        bPressed = true;
+        Presionado();//bPressed = true;
         bPosicionPresionado = false;
         SendSignalPressed();
     }
@@ -49,5 +50,15 @@ void ABoton::SendSignalReleased() {
     if (Panel) {
         Panel->Release(TareaAsociada);
     }
+}
+
+void ABoton::Presionado() {
+    bPressed = true;
+    Boton->SetMaterial(0, MaterialPresionado);
+}
+
+void ABoton::NoPresionado() {
+    bPressed = false;
+    Boton->SetMaterial(0, MaterialNormal);
 }
 

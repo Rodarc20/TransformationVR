@@ -103,7 +103,7 @@ void ACasa::BeginPlay()
         SpawnParams.Owner = this;
         SpawnParams.Instigator = Instigator;
 
-        APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(50.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
+        APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(45.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
         //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
     }
 }

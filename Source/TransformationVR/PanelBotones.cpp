@@ -35,13 +35,13 @@ void APanelBotones::BeginPlay()
         SpawnParams.Owner = this;
         SpawnParams.Instigator = Instigator;
 
-        BotonTrasladar = World->SpawnActor<ABoton>(ABotonTrasladar::StaticClass(), FVector(0.0f, -15.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+        BotonTrasladar = World->SpawnActor<ABoton>(ABotonTrasladar::StaticClass(), FVector(0.0f, -20.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
         BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
 
         BotonRotar = World->SpawnActor<ABoton>(ABotonRotar::StaticClass(), FVector(0.0f, 0.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
         BotonRotar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
 
-        BotonEscalar = World->SpawnActor<ABoton>(ABotonEscalar::StaticClass(), FVector(0.0f, 15.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+        BotonEscalar = World->SpawnActor<ABoton>(ABotonEscalar::StaticClass(), FVector(0.0f, 20.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
         BotonEscalar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
     }
 }
@@ -84,18 +84,24 @@ void APanelBotones::Press(ETransformacionTarea BotonPresionado) {
     }
     switch (BotonPresionado) {
         case ETransformacionTarea::ETrasladar: {
-            BotonRotar->bPressed = false;
-            BotonEscalar->bPressed = false;
+            //BotonRotar->bPressed = false;
+            //BotonEscalar->bPressed = false;
+            BotonRotar->NoPresionado();
+            BotonEscalar->NoPresionado();
         }
         break;
         case ETransformacionTarea::ERotar: {
-            BotonTrasladar->bPressed = false;
-            BotonEscalar->bPressed = false;
+            //BotonTrasladar->bPressed = false;
+            //BotonEscalar->bPressed = false;
+            BotonTrasladar->NoPresionado();
+            BotonEscalar->NoPresionado();
         }
         break;
         case ETransformacionTarea::EEscalar: {
-            BotonTrasladar->bPressed = false;
-            BotonRotar->bPressed = false;
+            //BotonTrasladar->bPressed = false;
+            //BotonRotar->bPressed = false;
+            BotonTrasladar->NoPresionado();
+            BotonRotar->NoPresionado();
         }
         break;
         default:

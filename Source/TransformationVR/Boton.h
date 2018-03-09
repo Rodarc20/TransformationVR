@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TransformacionWidget.h"
+#include "Materials/Material.h"
 #include "Boton.generated.h"
 
 UCLASS()
@@ -29,6 +30,12 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
     UStaticMeshComponent * Boton;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * MaterialNormal;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Transformation")
+	UMaterial * MaterialPresionado;
 	
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     bool bPressed;
@@ -68,6 +75,12 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Transformation")
     void SendSignalReleased();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformation")
+    void Presionado();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformation")
+    void NoPresionado();
 	
 };
 
