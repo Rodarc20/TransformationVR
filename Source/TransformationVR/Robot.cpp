@@ -13,6 +13,7 @@
 #include "TransformacionWidget.h"
 #include "Components/BoxComponent.h"
 #include "PanelBotones.h"
+#include "Malla.h"
 #include "PuntoTraslacion.h"
 
 
@@ -144,9 +145,10 @@ void ARobot::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-50.0f, -110.0f, 40.0f);
+		FVector SpawnLocation(-10.0f, -110.0f, 40.0f);
+        FRotator SpawnRotation(0.0f, 50.0f, 0.0f);
 
-		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, SpawnRotation, SpawnParams);
         if (PilaCodigo) {
             PilaCodigo->Ocultar();
         }
@@ -176,6 +178,15 @@ void ARobot::BeginPlay()
         SpawnParams.Instigator = Instigator;
 
         APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(50.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
+        //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+    }
+
+    if (World) {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = Instigator;
+
+        Malla = World->SpawnActor<AMalla>(AMalla::StaticClass(), GetActorLocation() + FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
         //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
     }
 }
@@ -404,10 +415,12 @@ void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
     switch (CurrentJerarquiaTask) {
         case EVRJerarquiaTask::EArmarTask: {//si el juego esta en Playing
             PilaCodigo->Ocultar();
+            Malla->Ocultar();
         }
         break;//no se como funciona esto
         case EVRJerarquiaTask::ERotationTask: {//si  perdimos el juego
             PilaCodigo->Mostrar();
+            Malla->Ocultar();
             if (Jerarquia)
                 Jerarquia->ActualizarCodigoConRotaciones();
         }
@@ -417,6 +430,9 @@ void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
             UE_LOG(LogClass, Log, TEXT("Traslation Task"));
             PuntosTraslacion.Add(FVector(0.0f, 0.0f, AlturaRobot.Z));
             CreatePuntoTraslacion(PuntosTraslacion[0]);
+            //Jerarquia->Root->ParteAsociada->SetActorLocation(PuntosTraslacion[0]);
+            Jerarquia->Root->SetWorldLocation(PuntosTraslacion[0]);
+            Malla->Mostrar();
 
         }
         break;//no se como funciona esto
@@ -424,6 +440,7 @@ void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
         case EVRJerarquiaTask::ENoTask: {//unknown/ default state
             //no hacer nada
             PilaCodigo->Ocultar();
+            Malla->Ocultar();
         }
         break;//no se como funciona esto
     }

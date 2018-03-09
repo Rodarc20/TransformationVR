@@ -606,10 +606,12 @@ void AVRPawn::GrabRightReleased() {
 						Jerarquia = Jerarquias[JerarquiaCompleta];
 						SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 						if (RobotEncontrado) {
-							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
 							//este jerarauias es las mismas del robot?? revisarlo mañana si es que no aguntas hoy
 							RobotEncontrado->Jerarquia = Jerarquias[JerarquiaCompleta];
                             Jerarquia->PilaCodigo = RobotEncontrado->PilaCodigo;
+							RobotEncontrado->SetJerarquiaTask(EVRJerarquiaTask::ERotationTask);
+                            Jerarquia->SetActorLocation(FVector(24.0f, 104.0f, 30.0f));
+                            Jerarquia->SetActorRotation(FRotator(0.0f, -60.0f, 0.0f));
 						}
 					}
                     bBuscarParteLeft = true;

@@ -10,6 +10,7 @@
 #include "PilaOpenGL.h"
 #include "Transformacion.h"
 #include "VRPawn.h"
+#include "Malla.h"
 #include "Components/BoxComponent.h"
 #include "PuntoTraslacion.h"
 #include "Robot.generated.h"
@@ -60,6 +61,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
 	APilaOpenGL * PilaCodigo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
+	AMalla * Malla;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR")
     TArray<AParte *> Partes;//se supone que hay 10 partes
