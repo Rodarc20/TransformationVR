@@ -941,8 +941,29 @@ void ARobot::GrabLeftPressed() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabLeftTrasladarPressed();
-            //podria hacer que compruebe si usario tiene una parte sobrepuesta en su control izquierdo, y listo entonces a partir de ahi lo tomo el control auiq,
-            //es decir solo dbor poner los mismo s if aquie haciendo refernica alos boools del usuario
+			if (Usuario->OverlapedLeftParte) {//encapsularlo en la funcion anterior para manter un orden
+				Usuario->bBuscarParteLeft = false;
+				Usuario->bGrabLeftParte = true;
+				//if (OverlapedRightParte->Id != OverlapedLeftParte->IdParteRaiz) { //esta condicion no es necesaria
+					//si no es la raiz de su jerarquia debo 
+					//en relaidad no encesito este if, defrente tomar el IdParteRaiz y trabanr con esa parte
+					//como hago en los demas, y da igual si
+                Usuario->OffsetLeftParte = Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation() - Usuario->MotionControllerLeft->GetComponentLocation();//creo que esto no sera necesario
+                //establecer la posicion y rotacion del punto de referenciay ponerlo de hijo de este control
+                Usuario->PuntoReferenciaLeft->SetWorldLocation(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation());
+                Usuario->PuntoReferenciaLeft->SetWorldRotation(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorRotation());
+                //no hacer nada mas
+                //La posicion grab robot debe ser calculada de la mims forma a como calculo todo, mapeando solo los valores x y y, y usando la altura de altura robot
+                PosicionGrabRobot = Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->ParteAsociada->GetActorLocation();
+                PosicionGrabRobot.Z = AlturaRobot.Z;
+                //aun que esto de cambiar el z no deberia estar, es decir si el robot se ubica en el centro, entonces, ya etara en alguna posicn con ese z adecuado, entonces no se necesita
+                //tambien deberia haber una posicion inical 0, 0 el conejo deberia estar alli desde el comienzo
+                //y deberia ser el primer punto de traslaccion
+
+					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
+					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
+				//}
+			}
         }
         break;
         default:
@@ -965,6 +986,24 @@ void ARobot::GrabLeftTick() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabLeftTrasladarTick();
+			if (Usuario->bGrabLeftParte && Usuario->OverlapedLeftParte) {
+                //FVector PosicionLocal = GetActorTransform().InverseTransformPosition(Usuario->PuntoReferenciaRight->GetComponentLocation());
+                //las partes estan trabajando en el espacion global, que coincide co la posicion de robot
+                //trabajar con global
+                FVector PosicionNueva = Usuario->PuntoReferenciaLeft->GetComponentLocation() - PosicionGrabRobot;
+                //esta posicion nueva deberia ser un vector desede la posicion que se guardo al inicio, al momeno del press
+                if (FMath::Abs(PosicionNueva.X) >= FMath::Abs(PosicionNueva.Y)) {
+                    PosicionNueva.Y = 0.0f;
+                }
+                else {
+                    PosicionNueva.X = 0.0f;
+                }
+                PosicionNueva.Z = 0.0f;
+                
+				Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->SetWorldLocation(PosicionGrabRobot + PosicionNueva);
+				Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->SetWorldRotation(Usuario->PuntoReferenciaLeft->GetComponentRotation());
+				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+			}
         }
         break;
         default:
@@ -987,6 +1026,15 @@ void ARobot::GrabLeftReleased() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabLeftTrasladarReleased();
+			if (Usuario->OverlapedLeftParte) {
+				Usuario->bBuscarParteLeft = true;
+                PuntosTraslacion.Add(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->GetWorldLocation());
+                CreatePuntoTraslacion(PuntosTraslacion[PuntosTraslacion.Num() - 1]);
+				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
+                //crear punto para traslacion, en la ubicacion del robot
+				Usuario->bGrabLeftParte = false;
+                Jerarquia->ActualizarCodigoTraslacion();
+			}
         }
         break;
         default:
