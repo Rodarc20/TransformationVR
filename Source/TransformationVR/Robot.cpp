@@ -424,6 +424,10 @@ void ARobot::SetJerarquiaTask(EVRJerarquiaTask NewJerarquiaTask) {
             Malla->Ocultar();
             if (Jerarquia)
                 Jerarquia->ActualizarCodigoConRotaciones();
+
+            Jerarquia->SetActorLocation(FVector(24.0f, 104.0f, 30.0f));
+            Jerarquia->SetActorRotation(FRotator(0.0f, -60.0f, 0.0f));
+            ActualizarAristas();
         }
         break;//no se como funciona esto
         case EVRJerarquiaTask::ETraslationTask: {//si  perdimos el juego
