@@ -163,9 +163,15 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
     TArray<AArista * > Aristas;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    TArray<AArista * > Lineas;
 	
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void CreateArista(USceneComponent * Source, USceneComponent * Target);
+
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void CreateLinea(USceneComponent * Source, USceneComponent * Target);
     
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void ActualizarAristas();

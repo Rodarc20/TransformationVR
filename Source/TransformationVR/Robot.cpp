@@ -715,6 +715,21 @@ void ARobot::CreateArista(USceneComponent * Source, USceneComponent * Target) {
     }
 }
 
+void ARobot::CreateLinea(USceneComponent * Source, USceneComponent * Target) {
+    UWorld * const World = GetWorld();
+    if (World) {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = Instigator;
+
+        AArista * linea = World->SpawnActor<AArista>(AArista::StaticClass(),FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+        linea->Source = Source;
+        linea->Target = Target;
+        Lineas.Add(linea);
+    }
+}
+
 void ARobot::ActualizarAristas() {
     for (int i = 0; i < Aristas.Num(); i++) {
         Aristas[i]->Actualizar();
