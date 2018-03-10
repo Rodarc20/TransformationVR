@@ -862,6 +862,8 @@ void ARobot::GrabRightPressed() {
 					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
 					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
 				//}
+                CreatePuntoTraslacion(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->GetWorldLocation());// ya habra un actor creado, solo debo ubicarlo alli, este actor se creara ahora en pressed
+                CreateLinea(PuntosTraslacionActors[PuntosTraslacionActors.Num()-2]->GetRootComponent(), PuntosTraslacionActors[PuntosTraslacionActors.Num()-1]->GetRootComponent());
 			}
         }
         break;
@@ -903,6 +905,10 @@ void ARobot::GrabRightTick() {
 				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PosicionGrabRobot + PosicionNueva);
 				Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(Usuario->PuntoReferenciaRight->GetComponentRotation());
 				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+                PuntosTraslacionActors[PuntosTraslacionActors.Num() - 1]->SetActorLocation(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->GetWorldLocation() - AlturaRobot);
+                if (Lineas.Num() > 0) {
+                    Lineas[Lineas.Num() - 1]->Actualizar();
+                }
                 //el robot debe avanzar por umbrales, de uno en uno, para que sean valores enteros,
                 //asi mesmo la direccion es respecto al punto donde esta, sea solo se puede mover otrogonalmente no en diagoneles
                 //para ello determinar dependendo si el valor absoluto es de un eje es mayor que el del otro, entonces lo traslado al del mayor, estoy moviendome en ese eje.
@@ -951,7 +957,9 @@ void ARobot::GrabRightReleased() {
 			if (Usuario->OverlapedRightParte) {
 				Usuario->bBuscarParteRight = true;
                 PuntosTraslacion.Add(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->GetWorldLocation());
-                CreatePuntoTraslacion(PuntosTraslacion[PuntosTraslacion.Num() - 1]);
+                //CreatePuntoTraslacion(PuntosTraslacion[PuntosTraslacion.Num() - 1]);// ya habra un actor creado, solo debo ubicarlo alli, este actor se creara ahora en pressed
+                PuntosTraslacionActors[PuntosTraslacionActors.Num() - 1]->SetActorLocation(Jerarquias[Usuario->OverlapedRightParte->IdParteRaiz]->Root->GetWorldLocation() - AlturaRobot);
+                Lineas[Lineas.Num() - 1]->Actualizar();
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
                 //crear punto para traslacion, en la ubicacion del robot
 				Usuario->bGrabRightParte = false;
@@ -1001,6 +1009,8 @@ void ARobot::GrabLeftPressed() {
 					//OverlapedRightParte->BuscarArticulacion();//en realidad esto deberia ser para todas las partes de la jerarquia, todo el tiempo, si es que esta en el modo de armado
 					//si para toda la jerarquia aplicarlo recursivo quiza solo en las partes que tenga articulaciones libres
 				//}
+                CreatePuntoTraslacion(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->GetWorldLocation());// ya habra un actor creado, solo debo ubicarlo alli, este actor se creara ahora en pressed
+                CreateLinea(PuntosTraslacionActors[PuntosTraslacionActors.Num()-2]->GetRootComponent(), PuntosTraslacionActors[PuntosTraslacionActors.Num()-1]->GetRootComponent());
 			}
         }
         break;
@@ -1041,6 +1051,10 @@ void ARobot::GrabLeftTick() {
 				Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->SetWorldLocation(PosicionGrabRobot + PosicionNueva);
 				Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->SetWorldRotation(Usuario->PuntoReferenciaLeft->GetComponentRotation());
 				UE_LOG(LogClass, Log, TEXT("Actualizando Poisicion jerarquia tick"));
+                PuntosTraslacionActors[PuntosTraslacionActors.Num() - 1]->SetActorLocation(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->GetWorldLocation() - AlturaRobot);
+                if (Lineas.Num() > 0) {
+                    Lineas[Lineas.Num() - 1]->Actualizar();
+                }
 			}
         }
         break;
@@ -1067,7 +1081,9 @@ void ARobot::GrabLeftReleased() {
 			if (Usuario->OverlapedLeftParte) {
 				Usuario->bBuscarParteLeft = true;
                 PuntosTraslacion.Add(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->GetWorldLocation());
-                CreatePuntoTraslacion(PuntosTraslacion[PuntosTraslacion.Num() - 1]);
+                //CreatePuntoTraslacion(PuntosTraslacion[PuntosTraslacion.Num() - 1]);
+                PuntosTraslacionActors[PuntosTraslacionActors.Num() - 1]->SetActorLocation(Jerarquias[Usuario->OverlapedLeftParte->IdParteRaiz]->Root->GetWorldLocation() - AlturaRobot);
+                Lineas[Lineas.Num() - 1]->Actualizar();
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
                 //crear punto para traslacion, en la ubicacion del robot
 				Usuario->bGrabLeftParte = false;
