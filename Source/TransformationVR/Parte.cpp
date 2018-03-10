@@ -316,7 +316,6 @@ void AParte::UnirConParteSobrepuesta() {//esta union deberia estar en la calse v
 						RobotEncontrado->UnirJerarquiaPadreHijo(Id, OverlapedParte->Id);//depende de cual sea el mayor de las partes
 					}
 				}
-
 			}
 
 		}

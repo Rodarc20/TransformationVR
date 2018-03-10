@@ -22,6 +22,13 @@ ANodo::ANodo()
     if (WidgetClass.Succeeded()) {
         Widget->SetWidgetClass(WidgetClass.Class);
     }
+    AristasIn = CreateDefaultSubobject<USceneComponent>(TEXT("AristasIn"));
+    AristasIn->SetupAttachment(RootComponent);
+    AristasIn->SetRelativeLocation(FVector(0.0f, 0.0f, 1400.0f));
+
+    AristasOut = CreateDefaultSubobject<USceneComponent>(TEXT("AristasOut"));
+    AristasOut->SetupAttachment(RootComponent);
+    AristasOut->SetRelativeLocation(FVector(0.0f, 0.0f, -140.0f));
 
 }
 

@@ -13,6 +13,7 @@
 #include "Malla.h"
 #include "Components/BoxComponent.h"
 #include "PuntoTraslacion.h"
+#include "Arista.h"
 #include "Robot.generated.h"
 
 
@@ -159,6 +160,15 @@ public:
 	
     UFUNCTION(BlueprintCallable, Category = "VRPawn")
     void CreatePuntoTraslacion(FVector PuntoSpawn);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
+    TArray<AArista * > Aristas;
+	
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void CreateArista(USceneComponent * Source, USceneComponent * Target);
+    
+    UFUNCTION(BlueprintCallable, Category = "VRPawn")
+    void ActualizarAristas();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TransformationVR - Referencias")
     FVector AlturaRobot;

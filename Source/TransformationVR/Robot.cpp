@@ -15,6 +15,7 @@
 #include "PanelBotones.h"
 #include "Malla.h"
 #include "PuntoTraslacion.h"
+#include "Arista.h"
 
 
 // Sets default values
@@ -699,6 +700,28 @@ void ARobot::CreatePuntoTraslacion(FVector PuntoSpawn) {
     }
 }
 
+void ARobot::CreateArista(USceneComponent * Source, USceneComponent * Target) {
+    UWorld * const World = GetWorld();
+    if (World) {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = Instigator;
+
+        AArista * arista = World->SpawnActor<AArista>(AArista::StaticClass(),FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
+        arista->Source = Source;
+        arista->Target = Target;
+        Aristas.Add(arista);
+    }
+}
+
+void ARobot::ActualizarAristas() {
+    for (int i = 0; i < Aristas.Num(); i++) {
+        Aristas[i]->Actualizar();
+    }
+}
+
+
 void ARobot::AnimacionTick(float DeltaTime) {
     if (bAnimacionTrasladar) {//boleano podria estar controlado por por el witch ya que este funcion se llama solocuando este en esta tarea
         UE_LOG(LogClass, Log, TEXT("bAnimacionTrasladar true"));
@@ -1065,6 +1088,8 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	Transformaciones[IdHijo]->Padre = Transformaciones[IdPadre];
 	Transformaciones[IdPadre]->Hijos.Add(Transformaciones[IdHijo]);
 	//se supone que el hijo es el nuevo nodo a crear, y el padre ya esta creado
+    //CreateArista(Nodos[IdPadre]->GetRootComponent(), Nodos[IdHijo]->GetRootComponent());
+    CreateArista(Nodos[IdPadre]->AristasOut, Nodos[IdHijo]->AristasIn);
 
 	Jerarquias[IdRaizHijo]->ActualizarIdRaizParte(IdRaizPadre);
 	//raiz actuazada
@@ -1110,6 +1135,7 @@ void ARobot::UnirJerarquiaPadreHijo(int IdPadre, int IdHijo) {
 	Jerarquias[IdRaizPadre]->AplicarLayout();
 	Jerarquias[IdRaizPadre]->ActualizarNodos();
 
+    ActualizarAristas();
 	//cuando haga desuniones debo recontablilizar a mano, las partes en la jerarquias
 	//y quiza sea mejor usar esa funcion aqui, esa funcon contara desde la razi todas las partes
 	

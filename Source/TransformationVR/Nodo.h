@@ -27,6 +27,12 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
     UWidgetComponent * Widget;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+    USceneComponent * AristasOut;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
+    USceneComponent * AristasIn;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Jerarquia")
 	bool bActualizado;
 
