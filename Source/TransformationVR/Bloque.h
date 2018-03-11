@@ -58,6 +58,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
     float Umbral;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    float UmbralEntero;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transformation")
+    int EnteroActual;
+
     FVector DireccionMovimiento;//para poder restringir el movimiento
     //restringido a este eje de movimiento
     // si sobrepaso el umbral ya no respetara este eje de moviemiento
@@ -75,6 +81,8 @@ public:
     FRotator RotacionInicial;
 
     FRotator RotacionInicialWidget;
+
+    FVector PosicionInicialWidget;
 
     FVector EscalaInicialWidget;
 

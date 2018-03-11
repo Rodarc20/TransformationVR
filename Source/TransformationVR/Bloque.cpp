@@ -34,7 +34,9 @@ void ABloque::SeguirObjeto(USceneComponent * Objeto) {
     Objeto->GetParentComponents(parents);
     RotacionInicialObjeto = parents[0]->GetRelativeTransform().GetRotation().Rotator();//esto es por que necesitoi rotacion del control, no del componente punto referencia
     PosicionInicial = GetRootComponent()->GetRelativeTransform().GetLocation();
+    EnteroActual = FMath::FloorToInt(PosicionInicial.Y);
     RotacionInicialWidget = GetRootComponent()->GetComponentRotation();
+    PosicionInicialWidget = Widget->GetComponentLocation();
     //RotacionInicialWidget = Widget->GetComponentRotation();
     PosicionInicialWorld = GetActorLocation();
     Widget->SetVisibility(true);
