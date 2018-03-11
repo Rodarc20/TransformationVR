@@ -523,6 +523,12 @@ void AVRPawn::GrabRightTick() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabRightTrasladarTick();
+            if (Laser->IsVisible()) {
+                CambiarPuntoFinal(MotionControllerRight->GetComponentLocation() + MotionControllerRight->GetForwardVector()*500);//debieria tener un punto por defecto, pero mejor lo dejamos asi
+                FVector Imp;
+                Laser->GetBeamTargetPoint(0, 0, Imp);
+                EfectoImpacto->SetWorldLocation(Imp);
+            }
 			/*if (bGrabRightParte && OverlapedRightParte) {
 				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldLocation(PuntoReferenciaRight->GetComponentLocation());
 				Jerarquias[OverlapedRightParte->IdParteRaiz]->Root->SetWorldRotation(PuntoReferenciaRight->GetComponentRotation());
