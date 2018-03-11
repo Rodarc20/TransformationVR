@@ -844,7 +844,8 @@ void ARobot::GrabRightPressed() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabRightTrasladarPressed();
-			if (Usuario->OverlapedRightParte) {//encapsularlo en la funcion anterior para manter un orden
+			//if (Usuario->OverlapedRightParte) {//encapsularlo en la funcion anterior para manter un orden
+            if (PuntosTraslacion.Num() < 5 && Usuario->OverlapedRightParte) {//encapsularlo en la funcion anterior para manter un orden
 				Usuario->bBuscarParteRight = false;
 				Usuario->bGrabRightParte = true;
 				//if (OverlapedRightParte->Id != OverlapedLeftParte->IdParteRaiz) { //esta condicion no es necesaria
@@ -968,6 +969,11 @@ void ARobot::GrabRightReleased() {
                 //crear punto para traslacion, en la ubicacion del robot
 				Usuario->bGrabRightParte = false;
                 Jerarquia->ActualizarCodigoTraslacion();
+                //deberia actualizar directamente el del toroso
+                Nodos[0]->ActualizarTextTraslacion();
+                if (PuntosTraslacion.Num() == 5) {
+                    Usuario->MostrarLaser();
+                }
 			}
         }
         break;

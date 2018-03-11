@@ -351,7 +351,8 @@ FString AJerarquia::TextoRotaciones(Transformacion * T) {
                 ARobot * const RobotEncontrado = Cast<ARobot>(RobotsEncontrados[0]);
                 if (RobotEncontrado) {
                     for (int i = 1; i < RobotEncontrado->PuntosTraslacion.Num(); i++) {
-                        FVector Posicion = RobotEncontrado->PuntosTraslacion[i];
+                        //FVector Posicion = RobotEncontrado->PuntosTraslacion[i];
+                        FVector Posicion = RobotEncontrado->PuntosTraslacion[i] - RobotEncontrado->PuntosTraslacion[i-1];
                         res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
                     }
                 }

@@ -444,6 +444,7 @@ void AVRPawn::GrabRightPressed() {
         }
         break;
         case EVRJerarquiaTask::ETraslationTask: {
+			Interaction->PressPointerKey(EKeys::LeftMouseButton);
 			//GrabRightTrasladarPressed();
 			/*if (OverlapedRightParte) {//encapsularlo en la funcion anterior para manter un orden
 				bBuscarParteRight = false;
@@ -630,6 +631,7 @@ void AVRPawn::GrabRightReleased() {
         break;
         case EVRJerarquiaTask::ETraslationTask: {
 			//GrabRightTrasladarReleased();
+			Interaction->ReleasePointerKey(EKeys::LeftMouseButton);
 			if (OverlapedRightParte) {
 				bBuscarParteRight = true;
 				//Jerarquias[OverlapedRightParte->IdParteRaiz]->RealizarUniones();
