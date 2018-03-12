@@ -873,6 +873,7 @@ void ARobot::GrabRightReleased() {
 				EjeSeleccionado = ETransformacionEje::ENone;
 				//rotar, es decir ver si hay componete, para capturar su plano, y empezar a hacer los calculos, aqui entra lo de la rotacion de ramas
 				//si hay algun componente seleccionado, o algo, debo marcarlo por ahora
+                Jerarquia->ActualizarCodigoTraslacion();
 			}
 			else {
 			}

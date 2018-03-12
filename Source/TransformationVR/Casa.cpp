@@ -81,9 +81,10 @@ void ACasa::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(50.0f, -380.0f, 20.0f);
+		FVector SpawnLocation(38.0f, -380.0f, 10.0f);
+		FRotator SpawnRotation(45.0f, 0.0f, 0.0f);
 
-		LineaCodigo = World->SpawnActor<ALineaCodigo>(ALineaCodigo::StaticClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		LineaCodigo = World->SpawnActor<ALineaCodigo>(ALineaCodigo::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
         if (LineaCodigo) {
             LineaCodigo->Ocultar();
         }

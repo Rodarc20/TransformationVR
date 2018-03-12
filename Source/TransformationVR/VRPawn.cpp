@@ -383,7 +383,7 @@ void AVRPawn::AumentarValor(float AxisValue) {
             ACasa * const CasaEncontrada = Cast<ACasa>(CasasEncontradas[0]);
             if (CasaEncontrada) {
                 UE_LOG(LogClass, Log, TEXT("Aumentando valor %f"), AxisValue);
-                CasaEncontrada->ValorAplicar += AxisValue;//debiera estar delimitidao de alguna forma o con alguna velocidad
+                CasaEncontrada->ValorAplicar += FMath::CeilToInt(AxisValue);//debiera estar delimitidao de alguna forma o con alguna velocidad
             }
         }
     }
