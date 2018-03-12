@@ -21,7 +21,6 @@ AVentanita::AVentanita() {
         }
     }
     BloqueMesh->SetCollisionProfileName(FName(TEXT("Bloque")));
-    Umbral = 15.0f;
 
     static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/WidgetEscala.WidgetEscala_C'"));
     Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetEscala"));
@@ -62,6 +61,8 @@ void AVentanita::Tick(float DeltaTime) {
     if (bSeguir && ObjetoSeguirFinal) {
         DistanciaObjetos = (ObjetoSeguirFinal->GetComponentLocation() - ObjetoSeguir->GetComponentLocation()).Size();
         EscalaTemp = (DistanciaObjetos - DistanciaInicialObjetos) / DistanciaInicialObjetos;
+        //EscalaTemp = DistanciaObjetos - DistanciaInicialObjetos) / DistanciaInicialObjetos;
+        UE_LOG(LogClass, Log, TEXT("DistanciaObjetos: %f"), DistanciaObjetos);
         UE_LOG(LogClass, Log, TEXT("Escala Temp: %f"), EscalaTemp);
         DimensionActual = EscalaTemp * DimensionInicial;
         //Escala temp es la escala que se aplica

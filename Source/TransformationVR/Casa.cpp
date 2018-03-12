@@ -298,12 +298,14 @@ void ACasa::PlayTaskTick() {
                 break;
                 case ETransformacionEje::EEjeY: {
                     SetActorLocation(PosicionInicial + FVector(0.0f, ValorAplicar, 0.0f));
-                    CodigoAplicar = "glTraslate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
+                    //CodigoAplicar = "glTraslate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
+                    CodigoAplicar = "glTraslate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
                     SetActorLocation(PosicionInicial + FVector(0.0f, 0.0f, ValorAplicar));
-                    CodigoAplicar = "glTraslate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
+                    //CodigoAplicar = "glTraslate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
+                    CodigoAplicar = "glTraslate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
                 }
                 break;
                 default:
@@ -324,12 +326,14 @@ void ACasa::PlayTaskTick() {
                 break;
                 case ETransformacionEje::EEjeY: {
                     SetActorRotation(RotacionInicial + FRotator(ValorAplicar, 0.0f, 0.0f));
-                    CodigoAplicar = "glRotate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
+                    //CodigoAplicar = "glRotate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
+                    CodigoAplicar = "glRotate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
                     SetActorRotation(RotacionInicial + FRotator(0.0f, ValorAplicar, 0.0f));
-                    CodigoAplicar = "glRotate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
+                    //CodigoAplicar = "glRotate(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
+                    CodigoAplicar = "glRotate(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
                 }
                 break;
                 default:
@@ -351,14 +355,16 @@ void ACasa::PlayTaskTick() {
                 case ETransformacionEje::EEjeY: {
                     if (EscalaInicial.Y + ValorAplicar > 0) {
                         SetActorScale3D(EscalaInicial + FVector(0.0f, ValorAplicar, 0.0f));
-                        CodigoAplicar = "glScale(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
+                        //CodigoAplicar = "glScale(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
+                        CodigoAplicar = "glScale(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
                     }
                 }
                 break;
                 case ETransformacionEje::EEjeZ: {
                     if (EscalaInicial.Z + ValorAplicar > 0) {
                         SetActorScale3D(EscalaInicial + FVector(0.0f, 0.0f, ValorAplicar));
-                        CodigoAplicar = "glScale(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
+                        //CodigoAplicar = "glScale(0, 0, " + FString::SanitizeFloat(ValorAplicar) + ");";
+                        CodigoAplicar = "glScale(0, " + FString::SanitizeFloat(ValorAplicar) + ", 0);";
                     }
                 }
                 break;

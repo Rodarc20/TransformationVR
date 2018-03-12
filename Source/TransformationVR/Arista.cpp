@@ -18,7 +18,7 @@ AArista::AArista()
     //hay que instanciar y al final recien rotar, lamentablement estas aristas dependeran de los nodos, una vez instanciasdas debo llamar a una funcion apra que actualice sus posicion y rotación, etc
     AristaMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AristaMesh"));
     RootComponent = AristaMesh;
-    AristaMesh->SetupAttachment(RootComponent);
+    //AristaMesh->SetupAttachment(RootComponent);
 
     //este estatic mesh es de 100 x100x100
     //static ConstructorHelpers::FObjectFinder<UStaticMesh> AristaMeshAsset(TEXT("/Engine/BasicShapes/Cylinder"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
