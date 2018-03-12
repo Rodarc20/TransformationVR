@@ -54,70 +54,52 @@ void APuertita::BeginPlay() {
 void APuertita::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
 
-    //UE_LOG(LogClass, Log, TEXT("siguiendo %d"), bSeguir);
-    //if (bSobrepasoUmbral) {
-        //SetActorLocation(ObjetoSeguir->GetComponentLocation());
-    //}
-    //else {
-        if (bSeguir) {
-            //no tengo una rotacion objetivo
-            TArray<USceneComponent *> parents;
-            ObjetoSeguir->GetParentComponents(parents);
-            FRotator DiferenciaRotacion = parents[0]->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
-            DiferenciaRotacion.Pitch = 0.0f;
-            DiferenciaRotacion.Yaw = 0.0f;
-            RotacionTemp = DiferenciaRotacion.Roll;
-            DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
-            FRotator NuevaRotacion = RotacionInicial + DiferenciaRotacion;
-            float Diferencia = FMath::Abs(NuevaRotacion.Roll - RotacionObjetivo.Roll);
-            if (Diferencia > Umbral){
-                bSobrepasoUmbral = true;
-            }
-            else {
-                bSobrepasoUmbral = false;
-            }
-            if (bSobrepasoUmbral) {
-                //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
-                SetActorRelativeRotation(NuevaRotacion);
-                Widget->SetWorldRotation(RotacionInicialWidget);
-            }
-            else {
-                SetActorRelativeRotation(RotacionObjetivo);
-                Widget->SetWorldRotation(RotacionInicialWidget);
+    if (bSeguir) {
+        //no tengo una rotacion objetivo
+        TArray<USceneComponent *> parents;
+        ObjetoSeguir->GetParentComponents(parents);
+        FRotator DiferenciaRotacion = parents[0]->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
+        DiferenciaRotacion.Pitch = 0.0f;
+        DiferenciaRotacion.Yaw = 0.0f;
+        RotacionTemp = DiferenciaRotacion.Roll;
+        DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
+        FRotator NuevaRotacion = RotacionInicial + DiferenciaRotacion;
+        float Diferencia = FMath::Abs(NuevaRotacion.Roll - RotacionObjetivo.Roll);
+        if (Diferencia > Umbral){
+            bSobrepasoUmbral = true;
+        }
+        else {
+            bSobrepasoUmbral = false;
+        }
+        bSobrepasoUmbral = true;
+        if (bSobrepasoUmbral) {
+            //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
+            //SetActorRelativeRotation(NuevaRotacion);
+            //Widget->SetWorldRotation(RotacionInicialWidget);
+
+            float DiferenciaEntero = DiferenciaRotacion.Roll - EnteroActual;//el entero actual es como la posicion inicial
+            if (FMath::Abs(DiferenciaEntero) >= UmbralEntero) {
+                if (DiferenciaEntero >= 0.0f) {//osa es un  numero positivo
+                    RotacionTemp = FMath::CeilToInt(DiferenciaEntero);
+                    DiferenciaRotacion.Roll = FMath::CeilToInt(DiferenciaEntero);
+                    FRotator NuevaRot = RotacionInicial + DiferenciaRotacion;
+                    //SetActorRelativeLocation(FVector(PosicionObjetivo.X, EnteroActual + FMath::CeilToInt(DiferenciaEntero), PosicionObjetivo.Z));//ese mas uno deberia ser en funcion de cuanto sea la diferencia, podria apelar al techo
+                    SetActorRelativeRotation(NuevaRot);
+                    Widget->SetWorldRotation(RotacionInicialWidget);
+                }
+                else {//la deifernica es menor a 0, por lo tanto debo ir hacia abajo, reducir el entero actual
+                    RotacionTemp = FMath::FloorToInt(DiferenciaEntero);
+                    DiferenciaRotacion.Roll = FMath::FloorToInt(DiferenciaEntero);
+                    FRotator NuevaRot = RotacionInicial + DiferenciaRotacion;
+                    //SetActorRelativeLocation(FVector(PosicionObjetivo.X, EnteroActual + FMath::CeilToInt(DiferenciaEntero), PosicionObjetivo.Z));//ese mas uno deberia ser en funcion de cuanto sea la diferencia, podria apelar al techo
+                    SetActorRelativeRotation(NuevaRot);
+                    Widget->SetWorldRotation(RotacionInicialWidget);
+                }
             }
         }
-        /*if (bSeguir) {
-            FVector PuntoSeguido = GetAttachParentActor()->GetActorTransform().InverseTransformPosition(ObjetoSeguir->GetComponentLocation());//de world a local
-            FVector PuntoSeguidoSinY = PuntoSeguido;
-            PuntoSeguidoSinY.Y = 0.0f;
-            float Diferencia = (PuntoSeguidoSinY - PosicionObjetivo).Size();
-            if (Diferencia > Umbral){
-                bSobrepasoUmbral = true;
-            }
-            else {
-                bSobrepasoUmbral = false;
-            }
-            if (bSobrepasoUmbral) {
-                //SetActorLocation(ObjetoSeguir->GetComponentLocation());
-                //debo verificar que este otra vz dentro del rango para regresar elsobrepaso el umbra a falso
-                //a travez de esto puedo solucionar el problema de fisicas
-            }
-            else {
-                //SetActorRelativeLocation(FVector(PosicionObjetivo.X, PuntoSeguido.Y, PosicionObjetivo.Z));
-            }
-            //UE_LOG(LogClass, Log, TEXT("siguiendo"));
-            TArray<USceneComponent *> parents;
-            ObjetoSeguir->GetParentComponents(parents);
-            FRotator DiferenciaRotacion = parents[0]->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
-            //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
-            DiferenciaRotacion.Pitch = 0.0f;
-            DiferenciaRotacion.Yaw = 0.0f;
-            RotacionTemp = DiferenciaRotacion.Roll;
-            DiferenciaRotacion *= -1;// este menos deberia ser dependiendo de aodnde este mirando el control
-            SetActorRelativeRotation(RotacionInicial + DiferenciaRotacion);
-            Widget->SetWorldRotation(RotacionInicialWidget);
-        }*/
-    //}
+        else {
+        }
+    }
 }
 
 void APuertita::WidgetSeguir() {
