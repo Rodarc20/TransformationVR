@@ -515,38 +515,19 @@ void ARobot::RotarParteEnEje() {
     switch (EjeSeleccionado) {
         case ETransformacionEje::EEjeX: {
 			FVector PuntoInterseccionWorld = ParteSeleccionada->TWidget->TransformTemporal.TransformPosition(PuntoInterseccion);
-
-			//esta forma funciona bien, pero gira en sentido diferente
-			//float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoInterseccion.GetClampedToSize(1.0f, 1.0f), PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f))));
-			//float DeltaSing = FVector::CrossProduct(PuntoInterseccion.GetClampedToSize(1.0f, 1.0f), PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f)).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
-
 			float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoInterseccion.GetSafeNormal(), PuntoRotacionInicial.GetSafeNormal())));
 			float DeltaSing = FVector::CrossProduct(PuntoInterseccion.GetSafeNormal(), PuntoRotacionInicial.GetSafeNormal()).X;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
 
-			//float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f), PuntoInterseccion.GetClampedToSize(1.0f, 1.0f))));
-			//float DeltaSing = FVector::CrossProduct(PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f), PuntoInterseccion.GetClampedToSize(1.0f, 1.0f)).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
 			if (DeltaSing >= 0) {
 				DeltaAngle = 360-DeltaAngle;
 			}
-			//UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
-			//UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
-			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
-			//AngleTemp = DeltaAngle;
-			//AngleTemp = -DeltaAngle;
 			FRotator VariacionRotation(0.0f, 0.0f, -DeltaAngle);
-			//UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
 			ParteSeleccionada->SetActorRelativeRotation(RotacionInicial);
 			ParteSeleccionada->AddActorLocalRotation(VariacionRotation);
-			//consigue la rotacion sin errores pero siempre en sentido contrario!!! 
 			FRotator RotacionCambiada = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
-			//UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
-
 
 			AnguloActual = DeltaAngle;
-			//UE_LOG(LogClass, Log, TEXT("AnguloAnterior: %f"), AnguloAnterior);
-			//UE_LOG(LogClass, Log, TEXT("AnguloActual: %f"), AnguloActual);
 			float DeltaFrame = AnguloActual - AnguloAnterior;
-			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
 
 			if (DeltaFrame > 180.0f) {
 				DeltaFrame = 360.0f - DeltaFrame;
@@ -554,64 +535,30 @@ void ARobot::RotarParteEnEje() {
 			else if (DeltaFrame < -180.0f ) {
 				DeltaFrame = DeltaFrame + 360.0f;
 			}
-			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
+
 			AnguloAcum += DeltaFrame;
 
-			//UE_LOG(LogClass, Log, TEXT("AnguloAcum: %f"), AnguloAcum);
-
 			AnguloAnterior = AnguloActual;
-
-
-
         }
         break;//no se como funciona esto
         case ETransformacionEje::EEjeY: {
 			FVector PuntoInterseccionWorld = ParteSeleccionada->TWidget->TransformTemporal.TransformPosition(PuntoInterseccion);
 
-			//esta forma funciona bien, pero gira en sentido diferente
-			//float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoInterseccion.GetClampedToSize(1.0f, 1.0f), PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f))));
-			//float DeltaSing = FVector::CrossProduct(PuntoInterseccion.GetClampedToSize(1.0f, 1.0f), PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f)).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
-
 			float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoInterseccion.GetSafeNormal(), PuntoRotacionInicial.GetSafeNormal())));
 			float DeltaSing = FVector::CrossProduct(PuntoInterseccion.GetSafeNormal(), PuntoRotacionInicial.GetSafeNormal()).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
 
-			//float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f), PuntoInterseccion.GetClampedToSize(1.0f, 1.0f))));
-			//float DeltaSing = FVector::CrossProduct(PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f), PuntoInterseccion.GetClampedToSize(1.0f, 1.0f)).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
 			if (DeltaSing >= 0) {
 				DeltaAngle = 360-DeltaAngle;
 			}
-			//if (DeltaSing >= 0) {
-				//DeltaAngle = DeltaAngle * -1;
-			//}
-			//por ahora aplicar la rotacion
-			//AngleTemp = DeltaAngle;
-			//AngleTemp = -DeltaAngle;
-			//UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
-			//UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
-			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
 			FRotator VariacionRotation(-DeltaAngle, 0.0f, 0.0f);
-			//ParteSeleccionada->SetActorRelativeRotation(RotacionInicial + VariacionRotation);
-			//ParteSeleccionada->AddActorLocalRotation(VariacionRotation);
-
-			//FRotator VariacionRotation = RotacionInicial;
-			//VariacionRotation.Add(DeltaAngle, 0.0f, 0.0f);
-			//UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
-			//ParteSeleccionada->SetActorRelativeRotation(VariacionRotation);
-
 
 			ParteSeleccionada->SetActorRelativeRotation(RotacionInicial);
 			ParteSeleccionada->AddActorLocalRotation(VariacionRotation);
-			//consigue la rotacion sin errores pero siempre en sentido contrario!!! 
-
 
 			FRotator RotacionCambiada = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
-			//UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
 
 			AnguloActual = DeltaAngle;
-			//UE_LOG(LogClass, Log, TEXT("AnguloAnterior: %f"), AnguloAnterior);
-			//UE_LOG(LogClass, Log, TEXT("AnguloActual: %f"), AnguloActual);
 			float DeltaFrame = AnguloActual - AnguloAnterior;
-			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
 
 			if (DeltaFrame > 180.0f) {
 				DeltaFrame = 360.0f - DeltaFrame;
@@ -619,48 +566,26 @@ void ARobot::RotarParteEnEje() {
 			else if (DeltaFrame < -180.0f ) {
 				DeltaFrame = DeltaFrame + 360.0f;
 			}
-			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
 			AnguloAcum += DeltaFrame;
-
-			//UE_LOG(LogClass, Log, TEXT("AnguloAcum: %f"), AnguloAcum);
-
 			AnguloAnterior = AnguloActual;
-
         }
         break;//no se como funciona esto
         case ETransformacionEje::EEjeZ: {
 			FVector PuntoInterseccionWorld = ParteSeleccionada->TWidget->TransformTemporal.TransformPosition(PuntoInterseccion);
 
-			//esta forma funciona bien, pero gira en sentido diferente
-			//float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoInterseccion.GetClampedToSize(1.0f, 1.0f), PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f))));
-			//float DeltaSing = FVector::CrossProduct(PuntoInterseccion.GetClampedToSize(1.0f, 1.0f), PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f)).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
-
 			float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoInterseccion.GetSafeNormal(), PuntoRotacionInicial.GetSafeNormal())));
 			float DeltaSing = FVector::CrossProduct(PuntoInterseccion.GetSafeNormal(), PuntoRotacionInicial.GetSafeNormal()).Z;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
 
-			//float DeltaAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f), PuntoInterseccion.GetClampedToSize(1.0f, 1.0f))));
-			//float DeltaSing = FVector::CrossProduct(PuntoRotacionInicial.GetClampedToSize(1.0f, 1.0f), PuntoInterseccion.GetClampedToSize(1.0f, 1.0f)).Y;//esto es por que el signo es impotante para saber si fue un angulo mayor de 180 o no
 			if (DeltaSing >= 0) {
 				DeltaAngle = 360-DeltaAngle;
 			}
-			//AngleTemp = DeltaAngle;
-			//AngleTemp = -DeltaAngle;
-			//UE_LOG(LogClass, Log, TEXT("DeltaAngle: %f"), DeltaAngle);
-			//UE_LOG(LogClass, Log, TEXT("Rotator Inicial: %f, %f, %f"), RotacionInicial.Roll, RotacionInicial.Pitch, RotacionInicial.Yaw);
-			//FRotator VariacionRotation(DeltaAngle, 0.0f, 0.0f);
 			FRotator VariacionRotation(0.0f, DeltaAngle, 0.0f);
-			//UE_LOG(LogClass, Log, TEXT("Variacion Rotacion: %f, %f, %f"), VariacionRotation.Roll, VariacionRotation.Pitch, VariacionRotation.Yaw);
 			ParteSeleccionada->SetActorRelativeRotation(RotacionInicial);
 			ParteSeleccionada->AddActorLocalRotation(VariacionRotation);
-			//consigue la rotacion sin errores pero siempre en sentido contrario!!! 
 			FRotator RotacionCambiada = ParteSeleccionada->GetRootComponent()->GetRelativeTransform().GetRotation().Rotator();
-			//UE_LOG(LogClass, Log, TEXT("Rotator Cambiado: %f, %f, %f"), RotacionCambiada.Roll, RotacionCambiada.Pitch, RotacionCambiada.Yaw);
 
 			AnguloActual = DeltaAngle;
-			//UE_LOG(LogClass, Log, TEXT("AnguloAnterior: %f"), AnguloAnterior);
-			//UE_LOG(LogClass, Log, TEXT("AnguloActual: %f"), AnguloActual);
 			float DeltaFrame = AnguloActual - AnguloAnterior;
-			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
 
 			if (DeltaFrame > 180.0f) {
 				DeltaFrame = 360.0f - DeltaFrame;
@@ -668,11 +593,7 @@ void ARobot::RotarParteEnEje() {
 			else if (DeltaFrame < -180.0f ) {
 				DeltaFrame = DeltaFrame + 360.0f;
 			}
-			//UE_LOG(LogClass, Log, TEXT("DeltaFrame: %f"), DeltaFrame);
 			AnguloAcum += DeltaFrame;
-
-			//UE_LOG(LogClass, Log, TEXT("AnguloAcum: %f"), AnguloAcum);
-
 			AnguloAnterior = AnguloActual;
         }
         break;//no se como funciona esto

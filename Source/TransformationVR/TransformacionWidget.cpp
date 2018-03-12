@@ -6,6 +6,7 @@
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
+#include "Engine/StaticMesh.h"
 
 // Sets default values for this component's properties
 UTransformacionWidget::UTransformacionWidget()
@@ -37,11 +38,13 @@ UTransformacionWidget::UTransformacionWidget()
     FlechaY->SetupAttachment(this);
 	FlechaY->SetRelativeScale3D(FVector(0.5f, 0.25f, 0.25f));
 	FlechaY->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	//FlechaY->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	FlechaZ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaZ"));
     FlechaZ->SetupAttachment(this);
 	FlechaZ->SetRelativeScale3D(FVector(0.5f, 0.25f, 0.25f));
 	FlechaZ->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+	//FlechaZ->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> FlechaAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Flecha.Flecha'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (FlechaAsset.Succeeded()) {
@@ -53,12 +56,12 @@ UTransformacionWidget::UTransformacionWidget()
 			EjeXNormal = FlechaXMaterialAsset.Object;
             FlechaX->SetMaterial(0, FlechaXMaterialAsset.Object);
         }
-        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaYMaterialAsset.Succeeded()) {
 			EjeYNormal = FlechaYMaterialAsset.Object;
             FlechaY->SetMaterial(0, FlechaYMaterialAsset.Object);
         }
-        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaZMaterialAsset.Succeeded()) {
 			EjeZNormal = FlechaZMaterialAsset.Object;
             FlechaZ->SetMaterial(0, FlechaZMaterialAsset.Object);
@@ -88,11 +91,11 @@ UTransformacionWidget::UTransformacionWidget()
         if (FlechaXMaterialAsset.Succeeded()) {
             ArcoX->SetMaterial(0, FlechaXMaterialAsset.Object);
         }
-        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaYMaterialAsset.Succeeded()) {
             ArcoY->SetMaterial(0, FlechaYMaterialAsset.Object);
         }
-        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaZMaterialAsset.Succeeded()) {
             ArcoZ->SetMaterial(0, FlechaZMaterialAsset.Object);
         }
@@ -103,12 +106,12 @@ UTransformacionWidget::UTransformacionWidget()
 		EjeXSelected = FlechaXMaterialAsset.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYResaltado.FlechaYResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZResaltado.FlechaZResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaYMaterialAsset.Succeeded()) {
 		EjeYSelected = FlechaYMaterialAsset.Object;
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZResaltado.FlechaZResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYResaltado.FlechaYResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaZMaterialAsset.Succeeded()) {
 		EjeZSelected = FlechaZMaterialAsset.Object;
 	}

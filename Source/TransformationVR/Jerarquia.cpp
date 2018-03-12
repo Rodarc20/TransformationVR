@@ -331,7 +331,8 @@ FString AJerarquia::TextoRotaciones(Transformacion * T) {
             for (int i = 0; i < T->ParteAsociada->InstruccionesRotacion.Num(); i++) {
                 FVector Rotacion = T->ParteAsociada->InstruccionesRotacion[i];
                 //FRotator Rotacion = T->GetRotation();
-                res += Identacion(NumeroIdentaciones) + "glRotate(" + FString::SanitizeFloat(Rotacion.X) + ", " + FString::SanitizeFloat(Rotacion.Y) + ", " + FString::SanitizeFloat(Rotacion.Z) + ");\n";
+                //res += Identacion(NumeroIdentaciones) + "glRotate(" + FString::SanitizeFloat(Rotacion.X) + ", " + FString::SanitizeFloat(Rotacion.Y) + ", " + FString::SanitizeFloat(Rotacion.Z) + ");\n";
+                res += Identacion(NumeroIdentaciones) + "glRotate(" + FString::SanitizeFloat(Rotacion.X) + ", " + FString::SanitizeFloat(Rotacion.Z) + ", " + FString::SanitizeFloat(Rotacion.Y) + ");\n";
             }
             res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
             for (int i = 0; i < T->Hijos.Num(); i++) {
@@ -353,13 +354,15 @@ FString AJerarquia::TextoRotaciones(Transformacion * T) {
                     for (int i = 1; i < RobotEncontrado->PuntosTraslacion.Num(); i++) {
                         //FVector Posicion = RobotEncontrado->PuntosTraslacion[i];
                         FVector Posicion = RobotEncontrado->PuntosTraslacion[i] - RobotEncontrado->PuntosTraslacion[i-1];
-                        res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+                        //res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+                        res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Z) + ", " + FString::SanitizeFloat(Posicion.Y) + ");\n";
                     }
                 }
             }
             else {
                 FVector Posicion = T->GetLocation();
-                res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+                //res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Y) + ", " + FString::SanitizeFloat(Posicion.Z) + ");\n";
+                res += Identacion(NumeroIdentaciones) + "glTranslate(" + FString::SanitizeFloat(Posicion.X) + ", " + FString::SanitizeFloat(Posicion.Z) + ", " + FString::SanitizeFloat(Posicion.Y) + ");\n";
             }
             res += Identacion(NumeroIdentaciones) + T->ParteAsociada->NombreParte + "();\n";
             for (int i = 0; i < T->Hijos.Num(); i++) {
