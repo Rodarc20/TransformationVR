@@ -71,7 +71,6 @@ void APuertita::Tick(float DeltaTime) {
         else {
             bSobrepasoUmbral = false;
         }
-        bSobrepasoUmbral = true;
         if (bSobrepasoUmbral) {
             //FRotator DiferenciaRotacion = ObjetoSeguir->GetRelativeTransform().GetRotation().Rotator() - RotacionInicialObjeto;
             //SetActorRelativeRotation(NuevaRotacion);
@@ -98,6 +97,25 @@ void APuertita::Tick(float DeltaTime) {
             }
         }
         else {
+            float DiferenciaEntero = DiferenciaRotacion.Roll - EnteroActual;//el entero actual es como la posicion inicial
+            if (FMath::Abs(DiferenciaEntero) >= UmbralEntero) {
+                if (DiferenciaEntero >= 0.0f) {//osa es un  numero positivo
+                    RotacionTemp = FMath::CeilToInt(DiferenciaEntero);
+                    DiferenciaRotacion.Roll = FMath::CeilToInt(DiferenciaEntero);
+                    FRotator NuevaRot = RotacionInicial + DiferenciaRotacion;
+                    //SetActorRelativeLocation(FVector(PosicionObjetivo.X, EnteroActual + FMath::CeilToInt(DiferenciaEntero), PosicionObjetivo.Z));//ese mas uno deberia ser en funcion de cuanto sea la diferencia, podria apelar al techo
+                    SetActorRelativeRotation(NuevaRot);
+                    Widget->SetWorldRotation(RotacionInicialWidget);
+                }
+                else {//la deifernica es menor a 0, por lo tanto debo ir hacia abajo, reducir el entero actual
+                    RotacionTemp = FMath::FloorToInt(DiferenciaEntero);
+                    DiferenciaRotacion.Roll = FMath::FloorToInt(DiferenciaEntero);
+                    FRotator NuevaRot = RotacionInicial + DiferenciaRotacion;
+                    //SetActorRelativeLocation(FVector(PosicionObjetivo.X, EnteroActual + FMath::CeilToInt(DiferenciaEntero), PosicionObjetivo.Z));//ese mas uno deberia ser en funcion de cuanto sea la diferencia, podria apelar al techo
+                    SetActorRelativeRotation(NuevaRot);
+                    Widget->SetWorldRotation(RotacionInicialWidget);
+                }
+            }
         }
     }
 }
