@@ -16,7 +16,7 @@ ANodo::ANodo()
 	RootComponent = Widget;
     Widget->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
-    Widget->SetDrawSize(FVector2D(600.0f, 300.0f));
+    Widget->SetDrawSize(FVector2D(680.0f, 340.0f));
     Widget->SetPivot(FVector2D(0.5f, 0.5f));
     Widget->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (WidgetClass.Succeeded()) {
@@ -24,11 +24,11 @@ ANodo::ANodo()
     }
     AristasIn = CreateDefaultSubobject<USceneComponent>(TEXT("AristasIn"));
     AristasIn->SetupAttachment(RootComponent);
-    AristasIn->SetRelativeLocation(FVector(0.0f, 0.0f, 1400.0f));
+    AristasIn->SetRelativeLocation(FVector(0.0f, 0.0f, 170.0f));
 
     AristasOut = CreateDefaultSubobject<USceneComponent>(TEXT("AristasOut"));
     AristasOut->SetupAttachment(RootComponent);
-    AristasOut->SetRelativeLocation(FVector(0.0f, 0.0f, -140.0f));
+    AristasOut->SetRelativeLocation(FVector(0.0f, 0.0f, -170.0f));
 
 }
 
