@@ -39,36 +39,32 @@ AEscena::AEscena() {
 
 	FlechaX = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaX"));
     FlechaX->SetupAttachment(RootComponent);
-	FlechaX->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
+	FlechaX->SetRelativeScale3D(FVector(0.8f, 0.25f, 0.25f));
 
 	FlechaY = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaY"));
     FlechaY->SetupAttachment(RootComponent);
-	FlechaY->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
-	//FlechaY->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
-	FlechaY->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+	FlechaY->SetRelativeScale3D(FVector(0.8f, 0.25f, 0.25f));
+	FlechaY->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 
 	FlechaZ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaZ"));
     FlechaZ->SetupAttachment(RootComponent);
-	FlechaZ->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
-	//FlechaZ->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-	FlechaZ->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	FlechaZ->SetRelativeScale3D(FVector(0.8f, 0.25f, 0.25f));
+	FlechaZ->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	FlechaXNegative = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaXNegative"));
     FlechaXNegative->SetupAttachment(RootComponent);
-	FlechaXNegative->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
+	FlechaXNegative->SetRelativeScale3D(FVector(0.8f, 0.25f, 0.25f));
 	FlechaXNegative->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
 	FlechaYNegative = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaYNegative"));
     FlechaYNegative->SetupAttachment(RootComponent);
-	FlechaYNegative->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
-	//FlechaYNegative->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-	FlechaYNegative->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+	FlechaYNegative->SetRelativeScale3D(FVector(0.8f, 0.25f, 0.25f));
+	FlechaYNegative->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
 	FlechaZNegative = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlechaZNegative"));
     FlechaZNegative->SetupAttachment(RootComponent);
-	FlechaZNegative->SetRelativeScale3D(FVector(1.0f, 0.25f, 0.25f));
-	//FlechaZNegative->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
-	FlechaZNegative->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	FlechaZNegative->SetRelativeScale3D(FVector(0.8f, 0.25f, 0.25f));
+	FlechaZNegative->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> FlechaAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/FlechaGrande.FlechaGrande'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (FlechaAsset.Succeeded()) {
@@ -84,13 +80,13 @@ AEscena::AEscena() {
             FlechaX->SetMaterial(0, FlechaXMaterialAsset.Object);
             FlechaXNegative->SetMaterial(0, FlechaXMaterialAsset.Object);
         }
-        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaYMaterialAsset.Succeeded()) {
 			EjeYNormal = FlechaYMaterialAsset.Object;
             FlechaY->SetMaterial(0, FlechaYMaterialAsset.Object);
             FlechaYNegative->SetMaterial(0, FlechaYMaterialAsset.Object);
         }
-        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZ.FlechaZ'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+        static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaY.FlechaY'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
         if (FlechaZMaterialAsset.Succeeded()) {
 			EjeZNormal = FlechaZMaterialAsset.Object;
             FlechaZ->SetMaterial(0, FlechaZMaterialAsset.Object);
@@ -114,12 +110,12 @@ AEscena::AEscena() {
 		EjeXSelected = FlechaXRMaterialAsset.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYRMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYResaltado.FlechaYResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYRMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZResaltado.FlechaZResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaYRMaterialAsset.Succeeded()) {
 		EjeYSelected = FlechaYRMaterialAsset.Object;
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZRMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZResaltado.FlechaZResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZRMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYResaltado.FlechaYResaltado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaZRMaterialAsset.Succeeded()) {
 		EjeZSelected = FlechaZRMaterialAsset.Object;
 	}
@@ -129,12 +125,12 @@ AEscena::AEscena() {
 		EjeXTitilando = FlechaXTMaterialAsset.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYTMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYTitilando.FlechaYTitilando'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYTMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZTitilando.FlechaZTitilando'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaYTMaterialAsset.Succeeded()) {
 		EjeYTitilando = FlechaYTMaterialAsset.Object;
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZTMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZTitilando.FlechaZTitilando'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZTMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYTitilando.FlechaYTitilando'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaZTMaterialAsset.Succeeded()) {
 		EjeZTitilando = FlechaZTMaterialAsset.Object;
 	}
@@ -144,12 +140,12 @@ AEscena::AEscena() {
 		EjeXPresionado = FlechaXPMaterialAsset.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYPMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYPresionado.FlechaYPresionado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYPMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZPresionado.FlechaZPresionado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaYPMaterialAsset.Succeeded()) {
 		EjeYPresionado = FlechaYPMaterialAsset.Object;
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZPMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZPresionado.FlechaZPresionado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZPMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYPresionado.FlechaYPresionado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaZPMaterialAsset.Succeeded()) {
 		EjeZPresionado = FlechaZPMaterialAsset.Object;
 	}
@@ -159,12 +155,12 @@ AEscena::AEscena() {
 		EjeXInhabilitado = FlechaXIMaterialAsset.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYIMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYInhabilitado.FlechaYInhabilitado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaYIMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZInhabilitado.FlechaZInhabilitado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaYIMaterialAsset.Succeeded()) {
 		EjeYInhabilitado = FlechaYIMaterialAsset.Object;
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZIMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZInhabilitado.FlechaZInhabilitado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+	static ConstructorHelpers::FObjectFinder<UMaterial> FlechaZIMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaYInhabilitado.FlechaYInhabilitado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	if (FlechaZIMaterialAsset.Succeeded()) {
 		EjeZInhabilitado = FlechaZIMaterialAsset.Object;
 	}
@@ -176,7 +172,7 @@ AEscena::AEscena() {
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraX->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraX->SetPivot(FVector2D(0.5f, 0.5f));
-    LetraX->SetRelativeLocation(FVector(70.0f, 0.0f, 0.0f));
+    LetraX->SetRelativeLocation(FVector(55.0f, 0.0f, 0.0f));
     LetraX->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraX->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraXClass.Succeeded()) {
@@ -184,15 +180,14 @@ AEscena::AEscena() {
     }
     LetraX->SetVisibility(false);
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> LetraYClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraY.LetraY_C'"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraYClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraZ.LetraZ_C'"));
     LetraY = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraY"));
     LetraY->SetupAttachment(RootComponent);
     LetraY->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraY->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraY->SetPivot(FVector2D(0.5f, 0.5f));
-    //LetraY->SetRelativeLocation(FVector(0.0f, 70.0f, 0.0f));
-    LetraY->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
+    LetraY->SetRelativeLocation(FVector(0.0f, 55.0f, 0.0f));
     LetraY->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraY->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraYClass.Succeeded()) {
@@ -200,15 +195,14 @@ AEscena::AEscena() {
     }
     LetraY->SetVisibility(false);
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> LetraZClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraZ.LetraZ_C'"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraZClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraY.LetraY_C'"));
     LetraZ = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraZ"));
     LetraZ->SetupAttachment(RootComponent);
     LetraZ->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraZ->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraZ->SetPivot(FVector2D(0.5f, 0.5f));
-    //LetraZ->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
-    LetraZ->SetRelativeLocation(FVector(0.0f, 70.0f, 0.0f));
+    LetraZ->SetRelativeLocation(FVector(0.0f, 0.0f, 55.0f));
     LetraZ->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraZ->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraZClass.Succeeded()) {
@@ -223,7 +217,7 @@ AEscena::AEscena() {
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraXN->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraXN->SetPivot(FVector2D(0.5f, 0.5f));
-    LetraXN->SetRelativeLocation(FVector(-70.0f, 0.0f, 0.0f));
+    LetraXN->SetRelativeLocation(FVector(-55.0f, 0.0f, 0.0f));
     LetraXN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraXN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraXNClass.Succeeded()) {
@@ -231,15 +225,14 @@ AEscena::AEscena() {
     }
     LetraXN->SetVisibility(false);
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> LetraYNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraYN.LetraYN_C'"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraYNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraZN.LetraZN_C'"));
     LetraYN = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraYN"));
     LetraYN->SetupAttachment(RootComponent);
     LetraYN->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraYN->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraYN->SetPivot(FVector2D(0.5f, 0.5f));
-    //LetraYN->SetRelativeLocation(FVector(0.0f, -70.0f, 0.0f));
-    LetraYN->SetRelativeLocation(FVector(0.0f, 0.0f, -70.0f));
+    LetraYN->SetRelativeLocation(FVector(0.0f, -55.0f, 0.0f));
     LetraYN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraYN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraYNClass.Succeeded()) {
@@ -247,15 +240,14 @@ AEscena::AEscena() {
     }
     LetraYN->SetVisibility(false);
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> LetraZNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraZN.LetraZN_C'"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> LetraZNClass(TEXT("WidgetBlueprintGeneratedClass'/Game/Trasnformation/UMG/LetraYN.LetraYN_C'"));
     LetraZN = CreateDefaultSubobject<UWidgetComponent>(TEXT("LetraZN"));
     LetraZN->SetupAttachment(RootComponent);
     LetraZN->SetWidgetSpace(EWidgetSpace::World);
     //Widget->SetupAttachment(MotionControllerLeft);
     LetraZN->SetDrawSize(FVector2D(200.0f, 200.0f));
     LetraZN->SetPivot(FVector2D(0.5f, 0.5f));
-    //LetraZN->SetRelativeLocation(FVector(0.0f, 0.0f, -70.0f));
-    LetraZN->SetRelativeLocation(FVector(0.0f, -70.0f, 0.0f));
+    LetraZN->SetRelativeLocation(FVector(0.0f, 0.0f, -55.0f));
     LetraZN->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
     LetraZN->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
     if (LetraZNClass.Succeeded()) {

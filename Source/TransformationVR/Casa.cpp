@@ -36,7 +36,7 @@ ACasa::ACasa()
 
     bMoviendo = false;
     Velocidad = 5.0f;
-    PosicionFlotando = FVector(0.0f, -380.0f, 40.0f);
+    PosicionFlotando = FVector(0.0f, -380.0f, 60.0f);
     PosicionDescanso = FVector(0.0f, -380.0f, 0.0f);
 
     PosicionInicial = PosicionFlotando;
@@ -81,7 +81,7 @@ void ACasa::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(38.0f, -380.0f, 10.0f);
+		FVector SpawnLocation(38.0f, -380.0f, 15.0f);
 		FRotator SpawnRotation(45.0f, 0.0f, 0.0f);
 
 		LineaCodigo = World->SpawnActor<ALineaCodigo>(ALineaCodigo::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);

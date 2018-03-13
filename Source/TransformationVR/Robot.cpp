@@ -85,7 +85,7 @@ void ARobot::BeginPlay()
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
 
-		FVector SpawnLocation(Partes[i]->Id * 5);
+		FVector SpawnLocation(Partes[i]->Id * 8);
 		
 		SpawnLocation = GetTransform().TransformPosition(SpawnLocation);
 		SpawnLocation += FVector(-300.0f, 0.0f, 200.0f);
@@ -119,7 +119,7 @@ void ARobot::BeginPlay()
         //esta jerarquia no uso
 		//creadas las jerarquias para cada parte
 		for (int i = 0; i < Jerarquias.Num(); i++) {
-			Jerarquias[i] = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation + (i+1)*FVector(0.0f, -30.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+			Jerarquias[i] = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation + (i+1)*FVector(0.0f, -40.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
 		}
         Jerarquia = Jerarquias[0];
 	}
@@ -146,7 +146,7 @@ void ARobot::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		FVector SpawnLocation(-10.0f, -110.0f, 40.0f);
+		FVector SpawnLocation(-10.0f, -110.0f, 60.0f);
         FRotator SpawnRotation(0.0f, 50.0f, 0.0f);
 
 		PilaCodigo = World->SpawnActor<APilaOpenGL>(TipoPila, SpawnLocation, SpawnRotation, SpawnParams);
