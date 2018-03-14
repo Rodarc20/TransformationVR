@@ -16,6 +16,8 @@
 #include "Parte.h"
 #include "Jerarquia.h"
 #include "Bloque.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "VRPawn.generated.h"
 
 
@@ -38,6 +40,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    USceneCaptureComponent2D * Capture;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "VRPawn")
+    UTextureRenderTarget2D * Render;
 
     //Root component
     UPROPERTY(VisibleAnywhere, Category = "VRPawn")

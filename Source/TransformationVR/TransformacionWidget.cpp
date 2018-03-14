@@ -136,11 +136,11 @@ UTransformacionWidget::UTransformacionWidget()
 	ArcoZ->bRenderCustomDepth = true;
 	Origen->SetCustomDepthStencilValue(255);
 	FlechaX->SetCustomDepthStencilValue(254);
-	FlechaY->SetCustomDepthStencilValue(252);
-	FlechaZ->SetCustomDepthStencilValue(253);
+	FlechaY->SetCustomDepthStencilValue(253);
+	FlechaZ->SetCustomDepthStencilValue(252);
 	ArcoX->SetCustomDepthStencilValue(254);
-	ArcoY->SetCustomDepthStencilValue(252);
-	ArcoZ->SetCustomDepthStencilValue(253);
+	ArcoY->SetCustomDepthStencilValue(253);
+	ArcoZ->SetCustomDepthStencilValue(252);
 
 	//OcultarWidgetOrigen();
 	//OcultarWidgetTraslacion();
