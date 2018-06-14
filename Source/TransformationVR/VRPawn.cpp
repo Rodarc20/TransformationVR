@@ -41,7 +41,7 @@ AVRPawn::AVRPawn()
     ColisionHead->SetRelativeLocation(FVector::ZeroVector);
     ColisionHead->InitSphereRadius(20.0f);
 
-    Capture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Capture"));
+    /*Capture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Capture"));
     Capture->SetupAttachment(VRCamera);
     Render = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("Render"));
     static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D> RenderAsset(TEXT("TextureRenderTarget2D'/Game/Trasnformation/VRCapture.VRCapture'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -49,11 +49,11 @@ AVRPawn::AVRPawn()
         Render = RenderAsset.Object;
         Capture->TextureTarget = Render;
         Capture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-    }
+    }*/
 
     MotionControllerLeft = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionControllerLeft"));
     MotionControllerLeft->SetupAttachment(RootComponent);
-    MotionControllerLeft->SetRelativeLocation(FVector(50.0f, -40.0f, -20.0f));
+    MotionControllerLeft->SetRelativeLocation(FVector(-50.0f, -40.0f, -20.0f));
     MotionControllerLeft->Hand = EControllerHand::Left;
 
     MotionControllerRight = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionControllerRight"));
@@ -199,9 +199,11 @@ void AVRPawn::BeginPlay()
 
     //eliminar ya que disminuye el rendimiento
     //solo con vr
+    /*
     UHeadMountedDisplayFunctionLibrary::SetSpectatorScreenModeTexturePlusEyeLayout(FVector2D(0.0f, 0.0f), FVector2D(1.0f, 1.0f), FVector2D(0.0f, 0.0f), FVector2D(1.0f, 1.0f), true, false);
     UHeadMountedDisplayFunctionLibrary::SetSpectatorScreenMode(ESpectatorScreenMode::TexturePlusEye);
     UHeadMountedDisplayFunctionLibrary::SetSpectatorScreenTexture(Render);
+    */
 }
 
 // Called every frame

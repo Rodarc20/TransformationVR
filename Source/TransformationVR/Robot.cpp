@@ -45,7 +45,7 @@ ARobot::ARobot()
     }
 
 	DistanciaLaserMaxima = 200.0f;
-    AlturaRobot = FVector(0.0f, 0.0f, 20.0f);
+    AlturaRobot = FVector(0.0f, 0.0f, 50.0f);
     VelocidadTraslacion = 25.0f;
 
 	CurrentJerarquiaTask = EVRJerarquiaTask::EArmarTask;
