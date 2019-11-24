@@ -20,7 +20,7 @@ UTransformacionWidget::UTransformacionWidget()
 	Origen->SetRelativeScale3D(FVector(0.40f));
 	//ArticulacionCuello->SetWorldScale3D(FVector(0.05f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> OrigenAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> OrigenAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (OrigenAsset.Succeeded()) {
         Origen->SetStaticMesh(OrigenAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> OrigenMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/Origen.Origen'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -46,7 +46,7 @@ UTransformacionWidget::UTransformacionWidget()
 	FlechaZ->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 	//FlechaZ->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> FlechaAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Flecha.Flecha'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> FlechaAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Flecha.Flecha'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (FlechaAsset.Succeeded()) {
         FlechaX->SetStaticMesh(FlechaAsset.Object);
         FlechaY->SetStaticMesh(FlechaAsset.Object);
@@ -82,7 +82,7 @@ UTransformacionWidget::UTransformacionWidget()
     ArcoZ->SetupAttachment(this);
 	ArcoZ->SetRelativeScale3D(FVector(0.58f, 0.58f, 0.58f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArcoAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Arco.Arco'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArcoAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Arco.Arco'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (ArcoAsset.Succeeded()) {
         ArcoX->SetStaticMesh(ArcoAsset.Object);
         ArcoY->SetStaticMesh(ArcoAsset.Object);

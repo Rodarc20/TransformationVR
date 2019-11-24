@@ -15,7 +15,7 @@ APiernaIzquierda::APiernaIzquierda() {
 	IdParteRaiz = Id;
 	NombreParte = "Pierna Izquierda";
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	static ConstructorHelpers::FObjectFinder<UMaterial> ArticulacionMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 
 	ColisionCaderaI = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionCaderaI"));
@@ -63,7 +63,7 @@ APiernaIzquierda::APiernaIzquierda() {
 	ParteMesh->SetRelativeLocation(FVector(10.0f, 0.0f, 0.0f));
 	ParteMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> PiernaIMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/PiernaI.PiernaI'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> PiernaIMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/PiernaI.PiernaI'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (PiernaIMeshAsset.Succeeded()) {
         ParteMesh->SetStaticMesh(PiernaIMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

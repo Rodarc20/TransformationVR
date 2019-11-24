@@ -26,7 +26,7 @@ ACabeza::ACabeza() {
     ArticulacionCuello->SetupAttachment(RootComponent);
 	//ArticulacionCuello->SetWorldScale3D(FVector(0.05f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> CuelloMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CuelloMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (CuelloMeshAsset.Succeeded()) {
         ArticulacionCuello->SetStaticMesh(CuelloMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> CuelloMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -40,7 +40,7 @@ ACabeza::ACabeza() {
     ParteMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ParteMesh"));
 	ParteMesh->SetupAttachment(RootComponent);
 	ParteMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 7.0f));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> CabezaMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Cabeza.Cabeza'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CabezaMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Cabeza.Cabeza'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (CabezaMeshAsset.Succeeded()) {
         ParteMesh->SetStaticMesh(CabezaMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> CabezaMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

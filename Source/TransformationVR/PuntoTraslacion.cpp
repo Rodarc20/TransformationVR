@@ -20,7 +20,7 @@ APuntoTraslacion::APuntoTraslacion()
     Guia->SetupAttachment(RootComponent);
     Guia->SetRelativeScale3D(FVector(0.5f));
 	//ParteMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 7.0f));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> GuiaMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> GuiaMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (GuiaMeshAsset.Succeeded()) {
         Guia->SetStaticMesh(GuiaMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> GuiaMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/Origen.Origen'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -32,7 +32,7 @@ APuntoTraslacion::APuntoTraslacion()
     Globo = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Globo"));
 	Globo->SetupAttachment(RootComponent);
 	Globo->SetRelativeLocation(FVector(0.0f, 0.0f, 7.0f));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> GloboMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> GloboMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (GloboMeshAsset.Succeeded()) {
         Globo->SetStaticMesh(GloboMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> GloboMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/FlechaZTitilando.FlechaZTitilando'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

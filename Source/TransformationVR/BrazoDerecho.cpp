@@ -15,7 +15,7 @@ ABrazoDerecho::ABrazoDerecho() {
 	IdParteRaiz = Id;
 	NombreParte = "Brazo Derecho";
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	static ConstructorHelpers::FObjectFinder<UMaterial> ArticulacionMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 
 	ColisionHombroD = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionHombroD"));
@@ -64,7 +64,7 @@ ABrazoDerecho::ABrazoDerecho() {
 	ParteMesh->SetupAttachment(RootComponent);
 	ParteMesh->SetRelativeLocation(FVector(8.0f, 0.0f, 0.0f));
 	ParteMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> BrazoDMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/BrazoD.BrazoD'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> BrazoDMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/BrazoD.BrazoD'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (BrazoDMeshAsset.Succeeded()) {
         ParteMesh->SetStaticMesh(BrazoDMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

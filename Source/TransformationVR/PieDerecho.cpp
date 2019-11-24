@@ -15,7 +15,7 @@ APieDerecho::APieDerecho() {
 	IdParteRaiz = Id;
 	NombreParte = "Pie Derecho";
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	static ConstructorHelpers::FObjectFinder<UMaterial> ArticulacionMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 
 	ColisionTobilloD = CreateDefaultSubobject<USphereComponent>(TEXT("ColisionTobilloD"));
@@ -41,7 +41,7 @@ APieDerecho::APieDerecho() {
 	ParteMesh->SetupAttachment(RootComponent);
 	ParteMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -5.5f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> PieDMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/PieD.PieD'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> PieDMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/PieD.PieD'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (PieDMeshAsset.Succeeded()) {
         ParteMesh->SetStaticMesh(PieDMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> ParteMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

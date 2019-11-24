@@ -20,7 +20,7 @@ ATorso::ATorso() {
     //Torso->SetupAttachment(RootComponent);
 	RootComponent = ParteMesh;
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> TorsoMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Torso.Torso'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> TorsoMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Torso.Torso'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (TorsoMeshAsset.Succeeded()) {
         ParteMesh->SetStaticMesh(TorsoMeshAsset.Object);
         static ConstructorHelpers::FObjectFinder<UMaterial> TorsoMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/ParteBasico.ParteBasico'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
@@ -40,7 +40,7 @@ ATorso::ATorso() {
     ArticulacionCuello->SetupAttachment(RootComponent);
 	ArticulacionCuello->SetRelativeLocation(FVector(0.0f, 0.0f, 15.0f));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ArticulacionMeshAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Partes/Articulacion.Articulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
 	static ConstructorHelpers::FObjectFinder<UMaterial> ArticulacionMaterialAsset(TEXT("Material'/Game/Trasnformation/Materials/BurbujaArticulacion.BurbujaArticulacion'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     if (ArticulacionMeshAsset.Succeeded()) {
         ArticulacionCuello->SetStaticMesh(ArticulacionMeshAsset.Object);
