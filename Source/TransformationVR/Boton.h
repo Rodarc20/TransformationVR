@@ -77,6 +77,12 @@ public:
     void SendSignalReleased();
 
     UFUNCTION(BlueprintCallable, Category = "Transformation")
+    void SendSignalActivated();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformation")
+    void SendSignalDeactivated();
+
+    UFUNCTION(BlueprintCallable, Category = "Transformation")
     void Presionado();
 
     UFUNCTION(BlueprintCallable, Category = "Transformation")

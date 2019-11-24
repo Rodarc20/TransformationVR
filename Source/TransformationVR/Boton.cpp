@@ -52,6 +52,12 @@ void ABoton::SendSignalReleased() {
     }
 }
 
+void ABoton::SendSignalActivated() {
+}
+
+void ABoton::SendSignalDeactivated() {
+}
+
 void ABoton::Presionado() {
     bPressed = true;
     Boton->SetMaterial(0, MaterialPresionado);
