@@ -26,10 +26,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UFUNCTION(Category = "Transformation")
 	virtual void WidgetSeguir() override;
 
-	UFUNCTION(Category = "Transformation")
 	virtual void WidgetNoSeguir() override;
 
 

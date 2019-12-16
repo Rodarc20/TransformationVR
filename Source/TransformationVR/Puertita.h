@@ -28,10 +28,8 @@ public:
 
     FRotator RotacionObjetivo;
 	
-	UFUNCTION(Category = "Transformation")
 	virtual void WidgetSeguir() override;
 
-	UFUNCTION(Category = "Transformation")
 	virtual void WidgetNoSeguir() override;
 
 	
