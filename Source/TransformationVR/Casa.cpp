@@ -6,7 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Bloque.h"
 #include "Casita.h"
 #include "LineaCodigo.h"

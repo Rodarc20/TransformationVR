@@ -2,7 +2,7 @@
 
 #include "BotonRotar.h"
 #include "Components/StaticMeshComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
 #include "VRPawn.h"

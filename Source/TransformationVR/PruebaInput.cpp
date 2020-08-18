@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PruebaInput.h"
-#include "Classes/Components/InputComponent.h"
+#include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 

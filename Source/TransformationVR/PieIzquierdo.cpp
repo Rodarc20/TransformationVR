@@ -4,7 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"

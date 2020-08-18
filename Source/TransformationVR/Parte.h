@@ -7,7 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
-#include "Public/Math/Color.h"
+#include "Math/Color.h"
 #include "TransformacionWidget.h"
 #include "Parte.generated.h"
 

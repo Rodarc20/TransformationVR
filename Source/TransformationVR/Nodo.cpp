@@ -2,7 +2,7 @@
 
 #include "Nodo.h"
 #include "Components/WidgetComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 
 
 // Sets default values

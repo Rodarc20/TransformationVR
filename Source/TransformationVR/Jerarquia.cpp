@@ -9,7 +9,7 @@
 #include "Parte.h"
 #include "Robot.h"
 #include "MotionControllerComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include <stack>
 

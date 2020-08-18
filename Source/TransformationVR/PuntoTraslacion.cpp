@@ -2,7 +2,7 @@
 
 #include "PuntoTraslacion.h"
 #include "Components/StaticMeshComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/KismetMathLibrary.h"

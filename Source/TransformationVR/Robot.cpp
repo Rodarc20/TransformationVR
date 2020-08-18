@@ -9,7 +9,7 @@
 #include "PilaOpenGL.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "TransformacionWidget.h"
 #include "Components/BoxComponent.h"
 #include "PanelBotones.h"
