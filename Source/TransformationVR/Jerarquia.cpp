@@ -126,7 +126,7 @@ void AJerarquia::CrearNodo(AParte * ParteAsociada) {
 		if (World) {
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
-			SpawnParams.Instigator = Instigator;
+			SpawnParams.Instigator = GetInstigator();
 
 			FVector SpawnLocation(ParteAsociada->Id * 5);
 			

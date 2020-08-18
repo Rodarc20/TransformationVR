@@ -83,7 +83,7 @@ void ARobot::BeginPlay()
 	for (int i = 0; World && i < Partes.Num(); i++) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
+		SpawnParams.Instigator = GetInstigator();
 
 		FVector SpawnLocation(Partes[i]->Id * 8);
 		
@@ -112,7 +112,7 @@ void ARobot::BeginPlay()
 	if (World) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
+		SpawnParams.Instigator = GetInstigator();
 		FVector SpawnLocation(-50.0f, 180.0f, 30.0f);
 
 		//Jerarquia = World->SpawnActor<AJerarquia>(AJerarquia::StaticClass(), SpawnLocation - FVector(-30.0f, 0.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
@@ -145,7 +145,7 @@ void ARobot::BeginPlay()
 	if (World) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
+		SpawnParams.Instigator = GetInstigator();
 		FVector SpawnLocation(-10.0f, -110.0f, 60.0f);
         FRotator SpawnRotation(0.0f, 50.0f, 0.0f);
 
@@ -176,7 +176,7 @@ void ARobot::BeginPlay()
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(45.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
         //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
@@ -185,7 +185,7 @@ void ARobot::BeginPlay()
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         Malla = World->SpawnActor<AMalla>(AMalla::StaticClass(), GetActorLocation() + FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
         //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
@@ -617,7 +617,7 @@ void ARobot::CreatePuntoTraslacion(FVector PuntoSpawn) {
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         APuntoTraslacion * PuntoT = World->SpawnActor<APuntoTraslacion>(APuntoTraslacion::StaticClass(), PuntoSpawn - AlturaRobot, FRotator::ZeroRotator, SpawnParams);
         //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
@@ -630,7 +630,7 @@ void ARobot::CreateArista(USceneComponent * Source, USceneComponent * Target) {
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         AArista * arista = World->SpawnActor<AArista>(AArista::StaticClass(),FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
         //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
@@ -645,7 +645,7 @@ void ARobot::CreateLinea(USceneComponent * Source, USceneComponent * Target) {
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         AArista * linea = World->SpawnActor<AArista>(AArista::StaticClass(),FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
         //BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto

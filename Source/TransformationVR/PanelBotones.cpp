@@ -33,7 +33,7 @@ void APanelBotones::BeginPlay()
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         BotonTrasladar = World->SpawnActor<ABoton>(ABotonTrasladar::StaticClass(), FVector(0.0f, -20.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
         BotonTrasladar->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
