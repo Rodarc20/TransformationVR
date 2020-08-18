@@ -2,7 +2,7 @@
 
 #include "BotonEscalar.h"
 #include "Components/StaticMeshComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
 #include "VRPawn.h"
@@ -35,7 +35,8 @@ ABotonEscalar::ABotonEscalar() {
 	Boton = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Boton"));
     Boton->SetupAttachment(RootComponent);
 	Boton->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	Boton->SetWorldScale3D(EscalaBotones);
+	//Boton->SetWorldScale3D(EscalaBotones);
+	Boton->SetWorldScale3D(FVector(1.0f));
 
     //static ConstructorHelpers::FObjectFinder<UStaticMesh> BotonAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Botones/BotonS_Boton.BotonS_Boton'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BotonAsset(TEXT("StaticMesh'/Game/Trasnformation/Assets/Meshes/Botones/BotonC_BotonCuadrado.BotonC_BotonCuadrado'"));//de usar este creo que debo crear un obtener un  material y ponerselo, este tiene el pivot en el centro de la esfera

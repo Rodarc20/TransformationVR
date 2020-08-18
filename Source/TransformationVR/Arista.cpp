@@ -2,7 +2,7 @@
 
 #include "Arista.h"
 #include "Components/StaticMeshComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Engine/StaticMesh.h"
 

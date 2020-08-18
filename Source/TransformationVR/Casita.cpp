@@ -2,7 +2,7 @@
 
 #include "Casita.h"
 #include "Components/StaticMeshComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 
 ACasita::ACasita() {

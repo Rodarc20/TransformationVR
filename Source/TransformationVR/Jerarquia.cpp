@@ -9,7 +9,7 @@
 #include "Parte.h"
 #include "Robot.h"
 #include "MotionControllerComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include <stack>
 
@@ -126,7 +126,7 @@ void AJerarquia::CrearNodo(AParte * ParteAsociada) {
 		if (World) {
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
-			SpawnParams.Instigator = Instigator;
+			SpawnParams.Instigator = GetInstigator();
 
 			FVector SpawnLocation(ParteAsociada->Id * 5);
 			

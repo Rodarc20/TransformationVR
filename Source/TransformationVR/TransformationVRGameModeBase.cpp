@@ -7,7 +7,7 @@
 #include "PilaOpenGL.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 
 
 ATransformationVRGameModeBase::ATransformationVRGameModeBase() {

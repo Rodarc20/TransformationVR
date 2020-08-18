@@ -2,7 +2,7 @@
 
 #include "Malla.h"
 #include "Components/StaticMeshComponent.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/Material.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/StaticMesh.h"

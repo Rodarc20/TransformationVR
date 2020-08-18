@@ -6,7 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Public/UObject/ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Bloque.h"
 #include "Casita.h"
 #include "LineaCodigo.h"
@@ -80,7 +80,7 @@ void ACasa::BeginPlay()
 	if (World) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
+		SpawnParams.Instigator = GetInstigator();
 		FVector SpawnLocation(38.0f, -380.0f, 15.0f);
 		FRotator SpawnRotation(45.0f, 0.0f, 0.0f);
 
@@ -102,7 +102,7 @@ void ACasa::BeginPlay()
     if (World) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+        SpawnParams.Instigator = GetInstigator();
 
         APanelBotones * const PanelBotones = World->SpawnActor<APanelBotones>(APanelBotones::StaticClass(), GetActorLocation() + FVector(45.0f, 0.0f, 0.0f), FRotator(0.0f, 180.0f, 0.0f), SpawnParams);
         //PanelBotones->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);//segun el compilador de unral debo usar esto
