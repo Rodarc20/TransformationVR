@@ -173,7 +173,7 @@ AVRPawn::AVRPawn()
 
     Velocidad = 200.0f;
     bPadDerecho = false;
-    bPadIzquierdo = false;
+    bPadIzquierdo = true;
     LaserIndice = 0;
 
 	bGrabRightParte = false;
